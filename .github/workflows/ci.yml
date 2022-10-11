@@ -6,6 +6,9 @@ jobs:
   build-frontend:
     if: ${{ contains(github.event.pull_request.labels.*.name, 'frontend') }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
 
     steps:
       - uses: actions/checkout@v3
@@ -13,17 +16,20 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: npm
+          cache: yarn
 
       - name: Install dependencies
-        run: npm install
+        run: yarn install
         
       - name: Build
-        run: npm run build
+        run: yarn build
 
   lint-frontend:
     if: ${{ contains(github.event.pull_request.labels.*.name, 'frontend') }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
 
     steps:
       - uses: actions/checkout@v3
@@ -31,13 +37,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: npm
+          cache: yarn
 
       - name: Install dependencies
-        run: npm install
+        run: yarn install
 
       - name: Lint
-        run: npm run lint
+        run: yarn lint
 
       - name: Format
-        run: npm run format
+        run: yarn format
