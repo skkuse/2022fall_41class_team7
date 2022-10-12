@@ -65,7 +65,6 @@ jobs:
           activate-environment: skkuse-team7
           environment-file: backend/env.yaml
           python-version: 3.9
-          auto-activate-base: false
 
       - name: Lint
         run: flake8
