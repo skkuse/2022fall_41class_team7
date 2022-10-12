@@ -63,7 +63,7 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: skkuse-team7
-          environment-file: env.yaml
+          environment-file: backend/env.yaml
           python-version: 3.10
           auto-activate-base: false
 
