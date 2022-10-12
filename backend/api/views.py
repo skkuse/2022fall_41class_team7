@@ -3,6 +3,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def hello(request: Request):
     return Response({"message": "Hello, world!"})
