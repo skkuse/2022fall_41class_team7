@@ -66,8 +66,10 @@ jobs:
           environment-file: backend/env.yaml
           python-version: 3.9
           auto-activate-base: false
+      
+      - name: Activate environment
+        run: conda activate skkuse-team7
 
       - name: Lint
         run: |
-          conda install flake8
           python -m flake8
