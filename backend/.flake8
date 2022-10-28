@@ -1,0 +1,15 @@
+[flake8]
+exclude =
+    .git,
+    .gitignore,
+    *.py[co],
+    __pycache__,
+    *.yaml,
+
+ignore =
+    F401,
+    F403,
+    F405,
+
+max-line-length = 200
+inline-quotes = double

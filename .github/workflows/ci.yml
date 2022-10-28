@@ -49,3 +49,24 @@ jobs:
 
       - name: Format
         run: yarn format
+        
+  lint-backend:
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'backend') }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: skkuse-team7
+          environment-file: backend/env.yaml
+          python-version: 3.9
+          auto-activate-base: false
+
+      - name: Lint
+        shell: bash -l {0}
+        run: python -m flake8
