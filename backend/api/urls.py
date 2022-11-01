@@ -6,5 +6,4 @@ from .views import hello
 
 urlpatterns = [
     path("hello/", hello),
-    path("login/",loginUser),
 ]
