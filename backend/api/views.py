@@ -1,18 +1,35 @@
+import uuid
+from os import remove
+
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 import api.executor as executor
-from api.serializers import *
+from server.settings.base import BASE_DIR
 
 
 @api_view(["POST"])
 def execute(request: Request):
-    serializer = ExecuteSerializer(data=request.data)
-    if serializer.is_valid():
-        code = serializer.validated_data.get("code")
-        inp = serializer.validated_data.get("input")
-        outp, err = executor.run(code, inp)
-        return Response({"result": outp, "error": err})
+    data = request.data
 
-    return Response({"message": "Invalid request"})
+    code = data.get("code")
+    inp = data.get("input")
+
+    file_name = f"{uuid.uuid4()}.py"
+    file_path = BASE_DIR.joinpath("tmp", file_name)
+
+    # create directory if not exists
+    if not file_path.parent.exists():
+        file_path.parent.mkdir()
+
+    # write code to file
+    with open(file_path, "w") as f:
+        f.write(code)
+
+    outp, err = executor.run(file_path, code, inp)
+
+    # remove file
+    remove(file_path)
+
+    return Response({"result": outp, "error": err})
