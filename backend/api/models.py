@@ -49,7 +49,9 @@ class Problem(models.Model):
     )
     explanation = models.CharField(max_length=2000)
     reference = models.CharField(max_length=2000)
-    testcases = models.JSONField(default=list)  # [{"input": "x", "output": "y", "timeout": null, "is_hidden": false}]
+    testcases = models.JSONField(
+        default=list
+    )  # [{"input": "x", "output": "y", "timeout": null, "is_hidden": false}]
     skeleton_code = models.CharField(max_length=2000)
     answer_code = models.CharField(max_length=2000)
     related_content = models.CharField(max_length=2000)

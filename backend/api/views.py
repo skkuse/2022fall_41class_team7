@@ -30,12 +30,7 @@ def execute(request: Request):
     # remove file
     remove(file_path)
 
-    return Response(
-        {
-            "result": outp,
-            "error": err
-        }
-    )
+    return Response({"result": outp, "error": err})
 
 
 @api_view(["POST"])
@@ -78,6 +73,6 @@ def grade(request: Request, problem_id: int, testcase_num: int):
             "input": tc_inp,
             "output": tc_outp,
             "result": outp,
-            "error": err
+            "error": err,
         }
     )

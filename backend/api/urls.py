@@ -7,5 +7,5 @@ from .views import execute, grade
 
 urlpatterns = [
     path("execute/", execute),
-    path("problems/<int:problem_id>/grade/<int:testcase_num>/", grade)
+    path("problems/<int:problem_id>/grade/<int:testcase_num>/", grade),
 ]
