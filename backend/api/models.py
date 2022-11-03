@@ -17,7 +17,7 @@ class User(models.Model):
 
 class Class(models.Model):
     id = models.BigAutoField(help_text="Class Id", primary_key=True)
-    name = models.IntegerField()
+    name = models.CharField(max_length=2000)
     deadline = models.DateTimeField()
     submission_capacity = models.IntegerField()
     storage_capacity = models.IntegerField()

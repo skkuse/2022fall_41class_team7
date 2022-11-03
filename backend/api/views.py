@@ -3,13 +3,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from .models import *
 from .serializers import *
-
-from django.http.response import HttpResponse
+from datetime import datetime
 
 
 @api_view(["GET"])
 def getClasses(request):
-    classes = Class.objects.all()
+    classes = Class.objects.filter(deadline__gte=datetime.now())
     serializer = ClassSerializer(classes, many=True)
 
     return Response(serializer.data)
@@ -30,22 +29,22 @@ def getIdClasses(request, id):
     enrolled_classes = []
     for i in serializer3.data:
         enrolled_classes.append(i["class_id"])
-
+    serializer.data[0]["problems"] = serializer2.data
     serializer.data["Problem"] = serializer2.data
 
     # enrollment check
     if id in enrolled_classes:
         return Response(serializer.data)
     else:
-        return HttpResponse("Invalid Access")
+        return Response("Invalid Access")
 
 
-@api_view(["GET", "POST"])
+@api_view(["POST"])
 def enrollClasses(request, id):
     login_user_id = request.user.id  # user id
 
     enroll = Enrollment.objects.all()
-    classes = Class.objects.all()
+    classes = Class.objects.filter(deadline__gte=datetime.now())
 
     serializer = EnrolledClassSerializer(enroll, many=True)
     serializer2 = ClassSerializer(classes, many=True)
@@ -66,8 +65,9 @@ def enrollClasses(request, id):
             serializer3 = EnrolledClassSerializer(data=request.data)
             if serializer3.is_valid():
                 serializer3.save()
-                return Response(serializer3.data, status=status.HTTP_201_CREATED)
+                return Response(status=200)
             return Response(serializer3.errors, status=status.HTTP_400_BAD_REQUEST)
 
     else:
-        return HttpResponse("Invalid Class")
+        return Response("Invalid Class")
+        
