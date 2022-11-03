@@ -9,12 +9,14 @@ from .models import *
 
 
 class UserCreationForm(forms.ModelForm):
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+    password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
+    password2 = forms.CharField(
+        label="Password confirmation", widget=forms.PasswordInput
+    )
 
     class Meta:
         model = User
-        fields = ('student_id', 'name')
+        fields = ("student_id", "name")
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -36,28 +38,31 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('student_id', 'name', 'password', 'is_active', 'is_admin')
+        fields = ("student_id", "name", "password", "is_active", "is_admin")
 
 
 class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('student_id', 'name', 'is_admin')
-    list_filter = ('is_admin', "is_active")
+    list_display = ("student_id", "name", "is_admin")
+    list_filter = ("is_admin", "is_active")
     fieldsets = (
-        (None, {'fields': ('student_id', 'name', 'password')}),
-        ('Permissions', {'fields': ('is_admin', 'is_active')}),
+        (None, {"fields": ("student_id", "name", "password")}),
+        ("Permissions", {"fields": ("is_admin", "is_active")}),
     )
 
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('student_id', 'name', 'password1', 'password2')
-        }),
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("student_id", "name", "password1", "password2"),
+            },
+        ),
     )
-    search_fields = ('student_id',)
-    ordering = ('student_id',)
+    search_fields = ("student_id",)
+    ordering = ("student_id",)
 
 
 admin.site.register(User, UserAdmin)
