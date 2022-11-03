@@ -6,8 +6,40 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 import api.executor as executor
-from api.models import Problem
 from server.settings.base import BASE_DIR
+
+from .models import *
+from .serializers import *
+
+
+@api_view(["POST"])
+def loginAPI(request: Request):
+    student_id = request.data.get("student_id")
+    password = request.data.get("password")
+
+    try:
+        user = User.objects.get(student_id=student_id)
+    except User.DoesNotExist:
+        return Response(status=404)
+
+    if password == user.password:
+        user_dict = UserSerializer(user).data
+        user_dict["password"] = None
+        return Response(user_dict, status=200)
+    else:
+        return Response(status=401)
+
+
+@api_view(["GET"])
+def problemAPI(request: Request, id):
+
+    problem = Problem.objects.get(id=id)
+
+    problem_dict = ProblemSerializer(problem).data
+    problem_dict["answer_code"] = None
+    problem_dict["related_content"] = None
+
+    return Response(problem_dict, status=200)
 
 
 @api_view(["POST"])
