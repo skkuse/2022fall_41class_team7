@@ -25,19 +25,33 @@ class Class(models.Model):
 
 class Enrollment(models.Model):
     id = models.BigAutoField(help_text="Enrollment Id", primary_key=True)
-    user_id = models.ForeignKey("User", related_name="Enrollment_user_id", on_delete=models.CASCADE,
-                                db_column="user_id")
-    class_id = models.ForeignKey("Class", related_name="Enrollment_class_id", on_delete=models.CASCADE,
-                                 db_column="class_id")
+    user_id = models.ForeignKey(
+        "User",
+        related_name="Enrollment_user_id",
+        on_delete=models.CASCADE,
+        db_column="user_id",
+    )
+    class_id = models.ForeignKey(
+        "Class",
+        related_name="Enrollment_class_id",
+        on_delete=models.CASCADE,
+        db_column="class_id",
+    )
 
 
 class Problem(models.Model):
     id = models.BigAutoField(help_text="Problem Id", primary_key=True)
-    class_id = models.ForeignKey("Class", related_name="Problem_user_id", on_delete=models.CASCADE,
-                                 db_column="class_id")
+    class_id = models.ForeignKey(
+        "Class",
+        related_name="Problem_user_id",
+        on_delete=models.CASCADE,
+        db_column="class_id",
+    )
     explanation = models.CharField(max_length=2000)
     reference = models.CharField(max_length=2000)
-    testcases = models.JSONField(default=dict)
+    testcases = models.JSONField(
+        default=list
+    )  # [{"input": "x", "output": "y", "timeout": null, "is_hidden": false}]
     skeleton_code = models.CharField(max_length=2000)
     answer_code = models.CharField(max_length=2000)
     related_content = models.CharField(max_length=2000)
@@ -45,19 +59,36 @@ class Problem(models.Model):
 
 class Storage(models.Model):
     id = models.BigAutoField(help_text="Storage Id", primary_key=True)
-    user_id = models.ForeignKey("User", related_name="Storage_user_id", on_delete=models.CASCADE, db_column="user_id")
-    problem_id = models.ForeignKey("Problem", related_name="Storage_problem_id", on_delete=models.CASCADE,
-                                   db_column="problem_id")
+    user_id = models.ForeignKey(
+        "User",
+        related_name="Storage_user_id",
+        on_delete=models.CASCADE,
+        db_column="user_id",
+    )
+    problem_id = models.ForeignKey(
+        "Problem",
+        related_name="Storage_problem_id",
+        on_delete=models.CASCADE,
+        db_column="problem_id",
+    )
     code = models.CharField(max_length=2000)
     updated_at = models.DateTimeField()
 
 
 class Submission(models.Model):
     id = models.BigAutoField(help_text="Submission Id", primary_key=True)
-    user_id = models.ForeignKey("User", related_name="Submission_user_id", on_delete=models.CASCADE,
-                                db_column="user_id")
-    problem_id = models.ForeignKey("Problem", related_name="Submission_problem_id", on_delete=models.CASCADE,
-                                   db_column="problem_id")
+    user_id = models.ForeignKey(
+        "User",
+        related_name="Submission_user_id",
+        on_delete=models.CASCADE,
+        db_column="user_id",
+    )
+    problem_id = models.ForeignKey(
+        "Problem",
+        related_name="Submission_problem_id",
+        on_delete=models.CASCADE,
+        db_column="problem_id",
+    )
     code = models.CharField(max_length=2000)
     created_at = models.DateTimeField()
     state = enum.EnumField(SubmissionState, default=SubmissionState.GRADING)
