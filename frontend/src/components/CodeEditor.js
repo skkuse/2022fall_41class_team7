@@ -1,12 +1,20 @@
 import "../styles/editor.css";
 import React, { useState, useRef } from "react";
-import { IconButton, Button, Select, CircularProgress, CircularProgressLabel, Box, Divider } from "@chakra-ui/react";
+import {
+  IconButton,
+  Button,
+  Select,
+  CircularProgress,
+  CircularProgressLabel,
+  Box,
+  Divider,
+} from "@chakra-ui/react";
 import { SearchIcon, DownloadIcon, CopyIcon, RepeatClockIcon } from "@chakra-ui/icons";
 import Editor from "@monaco-editor/react";
 
 const progress = {
   width: "32px",
-  height: "32px"
+  height: "32px",
 };
 
 function CodeEditor() {
@@ -52,7 +60,13 @@ function CodeEditor() {
             icon={<SearchIcon />}
             onClick={inputFile}
           />
-          <input type="file" id="hiddenFileInput" accept=".py" onChange={handleFileInput} style={{ display: "none" }} />
+          <input
+            type="file"
+            id="hiddenFileInput"
+            accept=".py"
+            onChange={handleFileInput}
+            style={{ display: "none" }}
+          />
           <IconButton
             size="32px"
             background="#718096"
@@ -78,22 +92,13 @@ function CodeEditor() {
           />
         </Box>
         <Box className="header-item">
-          <Select
-            className="select"
-            placeholder="Select option"
-            size="sm"
-            width="250px"
-          >
+          <Select className="select" placeholder="Select option" size="sm" width="250px">
             <option value="option1">Option 1</option>
             <option value="option2">Option 2</option>
             <option value="option3">Option 3</option>
           </Select>
-          <Button
-            className="saveBtn"
-            size="sm"
-            width="50px"
-            backgroundColor="#38A169"
-          >저장
+          <Button className="saveBtn" size="sm" width="50px" backgroundColor="#38A169">
+            저장
           </Button>
           <CircularProgress value={33} size="32px" style={progress}>
             <CircularProgressLabel>1/3</CircularProgressLabel>

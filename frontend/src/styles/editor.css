@@ -1,38 +1,38 @@
 /* code-Editor */
 .container {
-    position: absolute;
-    width: 758px;
-    left: 612px;
-    height: calc( 100% - 61px);
-    background: #1A202C;
+  position: absolute;
+  width: 758px;
+  left: 612px;
+  height: calc(100% - 61px);
+  background: #1a202c;
 }
 .header {
-    display: flex;
-    justify-content: space-between;
-    height: 60px;
-    padding: 0 20px;
-    background: #1A202C;
+  display: flex;
+  justify-content: space-between;
+  height: 60px;
+  padding: 0 20px;
+  background: #1a202c;
 }
 .header-item {
-    height: inherit;
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
+  height: inherit;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
 }
 .iconBtn {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    color: #FFFFFF;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  color: #ffffff;
 }
 .select {
-    width: 250px;
-    height: 32px;
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: #171923;
-    color: #FFFFFF;
+  width: 250px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #171923;
+  color: #ffffff;
 }
 /* .saveBtn {
     width: 50px;
@@ -42,4 +42,3 @@
     background: #38A169;
     color: #FFFFFF;
 } */
-  
