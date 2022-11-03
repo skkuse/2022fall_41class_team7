@@ -1,19 +1,18 @@
 import uuid
 from os import remove
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 import api.executor as executor
 from server.settings.base import BASE_DIR
-
-from .models import *
 from .serializers import *
 
 
 @api_view(["POST"])
-def loginAPI(request: Request):
+@authentication_classes([])
+def login(request: Request):
     student_id = request.data.get("student_id")
     password = request.data.get("password")
 
@@ -32,7 +31,6 @@ def loginAPI(request: Request):
 
 @api_view(["GET"])
 def problemAPI(request: Request, id):
-
     problem = Problem.objects.get(id=id)
 
     problem_dict = ProblemSerializer(problem).data
