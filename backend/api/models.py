@@ -1,18 +1,19 @@
 from django.db import models
 from django_enumfield import enum
 
-# !pip install jsonfield
 
-class StateStyle(enum.Enum):
-    NORMAL = 0 # 완료
-    SCORING = 1 # 채점중
-    ANALYZING = 2 # 분석중
-    
+class SubmissionState(enum.Enum):
+    GRADING = 0  # 채점중
+    ANALYZING = 1  # 분석중
+    COMPLETE = 2  # 완료
+
+
 # Create your models here.
 class User(models.Model):
     id = models.BigAutoField(help_text="User Id", primary_key=True)
     student_id = models.IntegerField()
     password = models.CharField(max_length=20)
+
 
 class Class(models.Model):
     id = models.BigAutoField(help_text="Class Id", primary_key=True)
@@ -20,40 +21,50 @@ class Class(models.Model):
     deadline = models.DateTimeField()
     submission_capacity = models.IntegerField()
     storage_capacity = models.IntegerField()
-    
+
+
 class Enrollment(models.Model):
     id = models.BigAutoField(help_text="Enrollment Id", primary_key=True)
-    user_id = models.ForeignKey("User", related_name="Enrollment_user_id", on_delete=models.CASCADE, db_column="user_id")
-    class_id = models.ForeignKey("Class", related_name="Enrollment_class_id", on_delete=models.CASCADE, db_column="class_id")
+    user_id = models.ForeignKey("User", related_name="Enrollment_user_id", on_delete=models.CASCADE,
+                                db_column="user_id")
+    class_id = models.ForeignKey("Class", related_name="Enrollment_class_id", on_delete=models.CASCADE,
+                                 db_column="class_id")
+
 
 class Problem(models.Model):
     id = models.BigAutoField(help_text="Problem Id", primary_key=True)
-    class_id = models.ForeignKey("Class", related_name="Problem_user_id", on_delete=models.CASCADE, db_column="class_id")
-    explanation =  models.CharField(max_length=2000)
+    class_id = models.ForeignKey("Class", related_name="Problem_user_id", on_delete=models.CASCADE,
+                                 db_column="class_id")
+    explanation = models.CharField(max_length=2000)
     reference = models.CharField(max_length=2000)
     testcases = models.JSONField(default=dict)
     skeleton_code = models.CharField(max_length=2000)
     answer_code = models.CharField(max_length=2000)
     related_content = models.CharField(max_length=2000)
-    
+
+
 class Storage(models.Model):
     id = models.BigAutoField(help_text="Storage Id", primary_key=True)
     user_id = models.ForeignKey("User", related_name="Storage_user_id", on_delete=models.CASCADE, db_column="user_id")
-    problem_id = models.ForeignKey("Problem", related_name="Storage_problem_id", on_delete=models.CASCADE, db_column="problem_id")
+    problem_id = models.ForeignKey("Problem", related_name="Storage_problem_id", on_delete=models.CASCADE,
+                                   db_column="problem_id")
     code = models.CharField(max_length=2000)
     updated_at = models.DateTimeField()
-    
+
+
 class Submission(models.Model):
     id = models.BigAutoField(help_text="Submission Id", primary_key=True)
-    user_id = models.ForeignKey("User", related_name="Submission_user_id", on_delete=models.CASCADE, db_column="user_id")
-    problem_id = models.ForeignKey("Problem", related_name="Submission_problem_id", on_delete=models.CASCADE, db_column="problem_id")
+    user_id = models.ForeignKey("User", related_name="Submission_user_id", on_delete=models.CASCADE,
+                                db_column="user_id")
+    problem_id = models.ForeignKey("Problem", related_name="Submission_problem_id", on_delete=models.CASCADE,
+                                   db_column="problem_id")
     code = models.CharField(max_length=2000)
     created_at = models.DateTimeField()
-    state = enum.EnumField(StateStyle, default=StateStyle.NORMAL)
+    state = enum.EnumField(SubmissionState, default=SubmissionState.GRADING)
     result = models.JSONField(default=dict)
     analysis = models.JSONField(default=dict)
-    
-   
+
+
 """
 Table user {
   id int [pk, increment]
