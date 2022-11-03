@@ -6,7 +6,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 import api.executor as executor
-from api.models import Problem
 from server.settings.base import BASE_DIR
 
 from .models import *
