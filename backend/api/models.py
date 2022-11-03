@@ -17,7 +17,7 @@ class User(models.Model):
 
 class Class(models.Model):
     id = models.BigAutoField(help_text="Class Id", primary_key=True)
-    name = models.IntegerField()
+    name = models.CharField(max_length=2000)
     deadline = models.DateTimeField()
     submission_capacity = models.IntegerField()
     storage_capacity = models.IntegerField()
@@ -41,6 +41,7 @@ class Enrollment(models.Model):
 
 class Problem(models.Model):
     id = models.BigAutoField(help_text="Problem Id", primary_key=True)
+    name = models.CharField(max_length=2000)
     class_id = models.ForeignKey(
         "Class",
         related_name="Problem_user_id",

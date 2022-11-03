@@ -6,6 +6,9 @@ from .views import *
 # 추후 server의 urls에 연결
 
 urlpatterns = [
+    path("classes/", getClasses),
+    path("classes/<int:id>/enroll/", enrollClasses),
+    path("classes/<int:id>/", getIdClasses),
     path("login/", loginAPI),
     path("problems/", problemAPI),
     path("problems/<id>/", problemAPI),
