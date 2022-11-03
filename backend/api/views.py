@@ -29,7 +29,7 @@ def login(request: Request):
 
     # 로그인 처리
     auth_login(request, user)
-    return Response({"success": "login success"}, status=200)
+    return Response({"id": user.id, "student_id": user.student_id}, status=200)
 
 
 @api_view(["GET"])
