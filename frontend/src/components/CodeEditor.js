@@ -18,7 +18,7 @@ function CodeEditor() {
   };
 
   const resetValue = () => {
-    console.log("reset");
+    // console.log("reset");
   };
 
   const handleEditorDidMount = (editor, monaco) => {
