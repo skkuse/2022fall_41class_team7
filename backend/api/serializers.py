@@ -6,29 +6,27 @@ from datetime import datetime
 class ClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
-        fields = ('id','name')
+        fields = ("id", "name")
 
-    def validate(self, data): # check deadline
-        if data['deadline'] < datetime.now():
+    def validate(self, data):  # check deadline
+        if data["deadline"] < datetime.now():
             raise serializer.ValidationError("finished class")
         return data
+
 
 class ProblemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Problem
-        fields = '__all__'
+        fields = "__all__"
+
 
 class OneClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
-        fields = '__all__'
+        fields = "__all__"
+
 
 class EnrolledClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = Enrollment
-        fields = '__all__'
-
-
-
-
-        
+        fields = "__all__"
