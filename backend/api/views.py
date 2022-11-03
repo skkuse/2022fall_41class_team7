@@ -1,7 +1,8 @@
 import uuid
 from os import remove
 
-from rest_framework.decorators import api_view, authentication_classes
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -12,21 +13,30 @@ from .serializers import *
 
 @api_view(["POST"])
 @authentication_classes([])
+@permission_classes([])
 def login(request: Request):
     student_id = request.data.get("student_id")
     password = request.data.get("password")
 
-    try:
-        user = User.objects.get(student_id=student_id)
-    except User.DoesNotExist:
-        return Response(status=404)
+    # 요청 validation
+    if student_id is None or password is None:
+        return Response({"error": "student_id or password is not given"}, status=400)
 
-    if password == user.password:
-        user_dict = UserSerializer(user).data
-        user_dict["password"] = None
-        return Response(user_dict, status=200)
-    else:
-        return Response(status=401)
+    # 유저 정보 검증
+    user = authenticate(student_id=student_id, password=password)
+    if user is None:
+        return Response({"error": "student_id or password is wrong"}, status=400)
+
+    # 로그인 처리
+    auth_login(request, user)
+    return Response({"success": "login success"}, status=200)
+
+
+@api_view(["GET"])
+def logout(request: Request):
+    # 로그아웃 처리
+    auth_logout(request)
+    return Response({"success": "logout success"}, status=200)
 
 
 @api_view(["GET"])
