@@ -1,17 +1,13 @@
 import uuid
+from datetime import datetime
 from os import remove
 
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.response import Response
-from .models import *
-from .serializers import *
-from datetime import datetime
 
 import api.executor as executor
 from server.settings.base import BASE_DIR
-
-from .models import *
 from .serializers import *
 
 
@@ -68,8 +64,6 @@ def getIdClasses(request, id):
 
 @api_view(["POST"])
 def enrollClasses(request, id):
-    login_user_id = request.user.id  # user id
-
     enroll = Enrollment.objects.all()
     classes = Class.objects.filter(deadline__gte=datetime.now())
 
@@ -101,7 +95,6 @@ def enrollClasses(request, id):
 
 @api_view(["GET"])
 def problemAPI(request: Request, id):
-
     problem = Problem.objects.get(id=id)
 
     problem_dict = ProblemSerializer(problem).data
