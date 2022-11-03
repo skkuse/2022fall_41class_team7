@@ -7,6 +7,8 @@ class ClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
         fields = ("id", "name")
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
