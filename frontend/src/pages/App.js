@@ -1,7 +1,8 @@
+import "../styles/base.css";
 import { ChakraProvider, Box, Divider } from "@chakra-ui/react";
-import "../styles/style.css";
 import Nav from "../components/Nav";
 import Problem from "../components/Problem";
+import CodeEditor from "../components/CodeEditor";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             left="611px"
           />
         </Box>
+        <CodeEditor />
         <Box className="divider_container">
           <Divider
             orientation="vertical"
