@@ -5,8 +5,8 @@ import { useState, useEffect } from "react";
 import Nav from "../components/Nav";
 import Problem from "../components/Problem";
 import CodeEditor from "../components/CodeEditor";
-import testProblems from "../dummyFiles/test_problems.json";
-import testClasses from "../dummyFiles/test_classes.json";
+import testProblems from "../dummyFiles/DummyProblems.json";
+import testClasses from "../dummyFiles/DummyClasses.json";
 
 function App() {
   const problems = testProblems.map((p) => p);
