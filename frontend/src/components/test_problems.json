@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "week 1 : 피보나치 수",
+    "class_id": 1,
+    "explanation": "피보나치 수는 0과 1로 시작한다. 0번째 피보나치 수는 0이고, 1번째 피보나치 수는 1이다. 그 다음 2번째 부터는 바로 앞 두 피보나치 수의 합이 된다.\n\n이를 식으로 써보면 Fn = Fn-1 + Fn-2 (n ≥ 2)가 된다.\n\nn=17일때 까지 피보나치 수를 써보면 다음과 같다.\n\n0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597\n\nn이 주어졌을 때, n번째 피보나치 수를 구하는 프로그램을 작성하시오.",
+    "reference": "첫째 줄에 N이 주어진다. N은 45보다 작거나 같은 자연수이다.",
+    "testcases": [
+      { "input": "4", "output": "3", "is_hidden": false },
+      { "input": "4", "output": "3", "is_hidden": false },
+      { "input": "4", "output": "3", "is_hidden": true }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "week 2 : ",
+    "class_id": 1,
+    "explanation": "문제 2번 설명",
+    "reference": "문제 2번 참조",
+    "testcases": [
+      { "input": "1", "output": "1", "is_hidden": false },
+      { "input": "1", "output": "1", "is_hidden": true },
+      { "input": "1", "output": "1", "is_hidden": true }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "week 3 : ",
+    "class_id": 1,
+    "explanation": "문제 3번 설명",
+    "reference": "문제 3번 참조",
+    "testcases": [
+      { "input": "2", "output": "2", "is_hidden": false },
+      { "input": "2", "output": "2", "is_hidden": false },
+      { "input": "2", "output": "2", "is_hidden": false }
+    ]
+  }
+]

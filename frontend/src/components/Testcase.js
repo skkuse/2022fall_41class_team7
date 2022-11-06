@@ -50,8 +50,8 @@ function Testcase({ title, input, output }) {
 
 Testcase.propTypes = {
   title: PropTypes.string.isRequired,
-  input: PropTypes.number.isRequired,
-  output: PropTypes.number.isRequired,
+  input: PropTypes.string.isRequired,
+  output: PropTypes.string.isRequired,
 };
 
 export default Testcase;
