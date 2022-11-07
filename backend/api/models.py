@@ -62,6 +62,9 @@ class Class(models.Model):
     submission_capacity = models.IntegerField()
     storage_capacity = models.IntegerField()
 
+    def __str__(self):
+        return self.name
+
 
 class Enrollment(models.Model):
     id = models.BigAutoField(help_text="Enrollment Id", primary_key=True)
@@ -96,6 +99,9 @@ class Problem(models.Model):
     skeleton_code = models.CharField(max_length=2000)
     answer_code = models.CharField(max_length=2000)
     related_content = models.CharField(max_length=2000)
+
+    def __str__(self):
+        return self.name
 
 
 class Storage(models.Model):
