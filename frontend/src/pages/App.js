@@ -1,7 +1,7 @@
 import "../styles/base.css";
-import { ChakraProvider, Box, Divider } from "@chakra-ui/react";
+import { ChakraProvider, Box, Divider, Button } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-// import axios from "axios";
+import axios from "axios";
 import Nav from "../components/Nav";
 import Problem from "../components/Problem";
 import CodeEditor from "../components/CodeEditor";
@@ -15,19 +15,37 @@ function App() {
   const [selectedProblem, setSelectedProblem] = useState(1);
   const userName = "홍길동";
 
-  // const getProblems = async () => {
-  //   try {
-  //     const response = await axios.get("http://127.0.0.1:8000/api/problems/1");
-  //     console.log(response.data);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  const getClasses = () => {
+    axios
+      .get("/api/classes/", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => console.log(res.data));
+  };
 
-  // getProblems();
+  const login = () => {
+    axios.defaults.withCredentials = true;
+    axios.defaults.xsrfCookieName = "csrftoken";
+    axios.defaults.xsrfHeaderName = "X-CSRFToken";
+
+    axios
+      .post(
+        "/api/login/",
+        { student_id: "2019315516", password: "fpdlwl*0829" },
+        { headers: { "Content-Type": "application/json" } }
+      )
+      .then((res) => console.log(res.data));
+  };
+
   const onChangeProblem = (value) => {
     setSelectedProblem(value);
   };
+
+  useEffect(() => {
+    getClasses();
+  }, []);
 
   return (
     <ChakraProvider>
