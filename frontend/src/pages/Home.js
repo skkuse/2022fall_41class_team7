@@ -29,7 +29,7 @@ function Home() {
       )
       .then((response) => {
         if (response.status === 200) {
-          console.log("성공");
+          // console.log("성공");
           setIsFailed(false);
         }
       })
