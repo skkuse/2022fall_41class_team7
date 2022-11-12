@@ -16,13 +16,12 @@ function App() {
   const userName = "홍길동";
 
   const getClasses = () => {
-    axios
-      .get("/api/classes/", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => console.log(res.data));
+    axios.get("/api/classes/", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    // .then((res) => console.log(res.data));
   };
 
   const login = () => {
@@ -30,13 +29,12 @@ function App() {
     axios.defaults.xsrfCookieName = "csrftoken";
     axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
-    axios
-      .post(
-        "/api/login/",
-        { student_id: "2019315516", password: "fpdlwl*0829" },
-        { headers: { "Content-Type": "application/json" } }
-      )
-      .then((res) => console.log(res.data));
+    axios.post(
+      "/api/login/",
+      { student_id: "2019315516", password: "fpdlwl*0829" },
+      { headers: { "Content-Type": "application/json" } }
+    );
+    // .then((res) => console.log(res.data));
   };
 
   const onChangeProblem = (value) => {
