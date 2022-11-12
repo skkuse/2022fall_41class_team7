@@ -24,7 +24,7 @@ function Home() {
     axios
       .post(
         "/api/login/",
-        { student_id: id, password: password },
+        { student_id: id, password },
         { headers: { "Content-Type": "application/json" } }
       )
       .then((response) => {
