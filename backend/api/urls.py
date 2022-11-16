@@ -1,9 +1,15 @@
 from django.urls import path
 
-from api.views.auth_views import login, logout
-from api.views.execute_views import execute
-from api.views.lecture_views import get_lectures, enroll_lecture, get_lecture_by_id
-from api.views.problem_views import get_problem_by_id, grade
+from api.views import (
+    login,
+    logout,
+    execute,
+    get_problem_by_id,
+    grade,
+    get_lectures,
+    enroll_lecture,
+    get_lecture_by_id,
+)
 
 # api 앱 내의 url 관리
 # 추후 server의 urls에 연결

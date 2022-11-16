@@ -1,6 +1,6 @@
-from .auth import User
-from .enrollment import Enrollment
-from .lecture import Lecture
-from .problem import Problem
-from .storage import Storage
-from .submission import Submission, SubmissionState
+from .auth import *
+from .enrollment import *
+from .lecture import *
+from .problem import *
+from .storage import *
+from .submission import *

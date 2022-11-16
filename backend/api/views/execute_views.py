@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-import api.common.executor as executor
+from api.common import executor
 from server.settings.base import BASE_DIR
 
 

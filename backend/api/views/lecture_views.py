@@ -5,8 +5,12 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from api.models import Lecture, Problem, Enrollment
-from api.serializers.lecture_serializers import LectureSerializer, OneLectureSerializer, EnrolledLectureSerializer
-from api.serializers.problem_serializers import ProblemSerializer
+from api.serializers import (
+    LectureSerializer,
+    OneLectureSerializer,
+    EnrolledLectureSerializer,
+    ProblemSerializer,
+)
 
 
 @api_view(["GET"])
