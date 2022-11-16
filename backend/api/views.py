@@ -3,6 +3,7 @@ from datetime import datetime
 from os import remove
 
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from rest_framework import status
 from rest_framework.decorators import (
     api_view,
     authentication_classes,
@@ -45,76 +46,79 @@ def logout(request: Request):
 
 
 @api_view(["GET"])
-def getClasses(request):
-    classes = Class.objects.filter(deadline__gte=datetime.now())
-    serializer = ClassSerializer(classes, many=True)
+def get_lectures(request):
+    lectures = Lecture.objects.filter(deadline__gte=datetime.now())
+    serializer = LectureSerializer(lectures, many=True)
 
     return Response(serializer.data)
 
 
 @api_view(["GET"])
-def getIdClasses(request, id):
+def get_lecture_by_id(request, id):
     login_user_id = request.user.id  # user id
 
-    class_ = Class.objects.filter(id=id)
-    problems = Problem.objects.filter(class_id=id)
+    lecture = Lecture.objects.filter(id=id)
+    problems = Problem.objects.filter(lecture=id)
     enroll = Enrollment.objects.filter(user_id=login_user_id)
 
-    serializer = OneClassSerializer(class_, many=True)
+    serializer = OneLectureSerializer(lecture, many=True)
     serializer2 = ProblemSerializer(problems, many=True)
-    serializer3 = EnrolledClassSerializer(enroll, many=True)
+    serializer3 = EnrolledLectureSerializer(enroll, many=True)
 
-    enrolled_classes = []
+    enrolled_lectures = []
     for i in serializer3.data:
-        enrolled_classes.append(i["class_id"])
+        enrolled_lectures.append(i["lecture_id"])
     serializer.data[0]["problems"] = serializer2.data
     serializer.data["Problem"] = serializer2.data
 
     # enrollment check
-    if id in enrolled_classes:
+    if id in enrolled_lectures:
         return Response(serializer.data)
     else:
         return Response("Invalid Access")
 
 
 @api_view(["POST"])
-def enrollClasses(request, id):
+def enroll_lecture(request, id):
     enroll = Enrollment.objects.all()
-    classes = Class.objects.filter(deadline__gte=datetime.now())
+    lectures = Lecture.objects.filter(deadline__gte=datetime.now())
 
-    serializer = EnrolledClassSerializer(enroll, many=True)
-    serializer2 = ClassSerializer(classes, many=True)
+    serializer = EnrolledLectureSerializer(enroll, many=True)
+    serializer2 = LectureSerializer(lectures, many=True)
 
-    classes_list = []
+    lecture_list = []
     for i in serializer2.data:
-        classes_list.append(i["class_id"])
+        lecture_list.append(i["lecture_id"])
 
-    # check valid class
-    if id in classes_list:
+    # check valid lecture
+    if id in lecture_list:
 
-        enrolled_classes = []
+        enrolled_lectures = []
         for i in serializer.data:
-            enrolled_classes.append(i["class_id"])
+            enrolled_lectures.append(i["lecture_id"])
 
         # non-exist
-        if id not in enrolled_classes:
-            serializer3 = EnrolledClassSerializer(data=request.data)
+        if id not in enrolled_lectures:
+            serializer3 = EnrolledLectureSerializer(data=request.data)
             if serializer3.is_valid():
                 serializer3.save()
                 return Response(status=200)
             return Response(serializer3.errors, status=status.HTTP_400_BAD_REQUEST)
 
     else:
-        return Response("Invalid Class")
+        return Response("Invalid Lecture")
 
 
 @api_view(["GET"])
-def problemAPI(request: Request, id):
-    problem = Problem.objects.get(id=id)
+def get_problem_by_id(request: Request, id):
+    # 문제, 저장소, 제출 가져오기
+    problem = Problem.objects.filter(id=id).prefetch_related("storage_set").prefetch_related("submission_set").get()
+    storages = problem.storage_set.all()
+    submissions = problem.submission_set.all()
 
     problem_dict = ProblemSerializer(problem).data
-    problem_dict["answer_code"] = None
-    problem_dict["related_content"] = None
+    problem_dict["storages"] = StorageSerializer(storages, many=True).data
+    problem_dict["submissions"] = StorageSerializer(submissions, many=True).data
 
     return Response(problem_dict, status=200)
 

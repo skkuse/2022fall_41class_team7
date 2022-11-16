@@ -68,5 +68,5 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
 
-admin.site.register(Class)
+admin.site.register(Lecture)
 admin.site.register(Problem)

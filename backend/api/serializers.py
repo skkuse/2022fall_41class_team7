@@ -3,9 +3,9 @@ from rest_framework import serializers
 from .models import *
 
 
-class ClassSerializer(serializers.ModelSerializer):
+class LectureSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Class
+        model = Lecture
         fields = ("id", "name")
 
 
@@ -21,26 +21,28 @@ class ProblemSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class OneClassSerializer(serializers.ModelSerializer):
+class StorageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Class
+        model = Storage
         fields = "__all__"
 
 
-class EnrolledClassSerializer(serializers.ModelSerializer):
+class SubmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Submission
+        fields = "__all__"
+
+
+class OneLectureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lecture
+        fields = "__all__"
+
+
+class EnrolledLectureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Enrollment
         fields = "__all__"
-        fields = (
-            "id",
-            "class_id",
-            "explanation",
-            "reference",
-            "testcases",
-            "skeleton_code",
-            "answer_code",
-            "related_content",
-        )
 
 
 class ExecuteSerializer(serializers.Serializer):
