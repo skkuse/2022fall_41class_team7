@@ -16,10 +16,7 @@
   align-items: center;
   gap: 4px;
 }
-.lectureTitle {
-  font-weight: 700;
-  font-size: 16px;
-}
+
 .nav_left {
   display: flex;
   align-items: center;
@@ -36,6 +33,11 @@
   font-size: 16px;
   font-weight: 700;
 }
+
+.lecture_option {
+  color: #1a202c;
+}
+
 .nav_right {
   display: flex;
   gap: 17px;
@@ -194,3 +196,30 @@
   background: #38A169;
   color: #FFFFFF;
 } */
+
+/* termianl */
+.terminal_container {
+  position: absolute;
+  width: 549px;
+  right: 0%;
+  height: calc(100% - 61px);
+}
+
+.terminal_header {
+  display: flex;
+  height: 60px;
+  padding: 0 20px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.terminal_btn_container {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.terminal_body {
+  background: #171923;
+  height: calc(100% - 61px);
+  padding: 20px;
+}
