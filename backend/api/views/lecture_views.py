@@ -1,77 +1,44 @@
-from datetime import datetime
-
-from rest_framework import status
+from django.utils import timezone
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.generics import get_object_or_404
+from rest_framework.request import Request
 from rest_framework.response import Response
 
-from api.models import Lecture, Problem, Enrollment
+from api.models import Lecture, Enrollment
 from api.serializers import (
+    LectureMetaSerializer,
     LectureSerializer,
-    OneLectureSerializer,
-    EnrolledLectureSerializer,
-    ProblemSerializer,
 )
 
 
 @api_view(["GET"])
-def get_lectures():
-    lectures = Lecture.objects.filter(deadline__gte=datetime.now())
-    serializer = LectureSerializer(lectures, many=True)
-
-    return Response(serializer.data)
+def get_lectures(request: Request):
+    lectures = Lecture.objects.filter(deadline__gte=timezone.now())
+    return Response(LectureMetaSerializer(lectures, many=True).data, 200)
 
 
 @api_view(["GET"])
-def get_lecture_by_id(request, user_id):
-    login_user_id = request.user.id  # user id
+def get_lecture_by_id(request: Request, lecture_id):
+    # 강의, 문제, 저장소, 제출 가져오기
+    lecture = get_object_or_404(
+        Lecture.objects.filter(id=lecture_id).filter(enrollment__user__id=request.user.id).prefetch_related(
+            "problem_set")
+    )
 
-    lecture = Lecture.objects.filter(id=user_id)
-    problems = Problem.objects.filter(lecture=user_id)
-    enroll = Enrollment.objects.filter(user_id=login_user_id)
-
-    serializer = OneLectureSerializer(lecture, many=True)
-    serializer2 = ProblemSerializer(problems, many=True)
-    serializer3 = EnrolledLectureSerializer(enroll, many=True)
-
-    enrolled_lectures = []
-    for i in serializer3.data:
-        enrolled_lectures.append(i["lecture_id"])
-    serializer.data[0]["problems"] = serializer2.data
-    serializer.data["Problem"] = serializer2.data
-
-    # enrollment check
-    if user_id in enrolled_lectures:
-        return Response(serializer.data)
-    else:
-        return Response("Invalid Access")
+    return Response(LectureSerializer(lecture).data, 200)
 
 
 @api_view(["POST"])
-def enroll_lecture(request, lecture_id):
-    enroll = Enrollment.objects.all()
-    lectures = Lecture.objects.filter(deadline__gte=datetime.now())
+def enroll_lecture(request: Request, lecture_id):
+    lecture = get_object_or_404(Lecture.objects.filter(id=lecture_id))
+    # 강의 마감 체크
+    if lecture.deadline < timezone.now():
+        raise PermissionDenied("강의가 마감되었습니다.")
 
-    serializer = EnrolledLectureSerializer(enroll, many=True)
-    serializer2 = LectureSerializer(lectures, many=True)
-
-    lecture_list = []
-    for i in serializer2.data:
-        lecture_list.append(i["lecture_id"])
-
-    # check valid lecture
-    if lecture_id in lecture_list:
-
-        enrolled_lectures = []
-        for i in serializer.data:
-            enrolled_lectures.append(i["lecture_id"])
-
-        # non-exist
-        if lecture_id not in enrolled_lectures:
-            serializer3 = EnrolledLectureSerializer(data=request.data)
-            if serializer3.is_valid():
-                serializer3.save()
-                return Response(status=200)
-            return Response(serializer3.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    enrollment = Enrollment.objects.filter(user__id=request.user.id)
+    if enrollment.exists():
+        return Response(status=200)
     else:
-        return Response("Invalid Lecture")
+        Enrollment.objects.create(user=request.user, lecture_id=lecture_id)
+        return Response(status=201)

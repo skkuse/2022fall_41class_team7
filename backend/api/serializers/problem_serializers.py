@@ -3,6 +3,12 @@ from rest_framework import serializers
 from api.models import Problem
 
 
+class ProblemMetaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Problem
+        fields = ("id", "name")
+
+
 class ProblemSerializer(serializers.ModelSerializer):
     testcases = serializers.SerializerMethodField()
     storages = serializers.SerializerMethodField()

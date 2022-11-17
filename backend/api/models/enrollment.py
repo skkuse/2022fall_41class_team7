@@ -11,3 +11,9 @@ class Enrollment(models.Model):
         "Lecture",
         on_delete=models.CASCADE,
     )
+
+    class Meta:
+        unique_together = ("user", "lecture")
+
+    def __str__(self):
+        return f"{self.user.student_id}_{self.lecture.name}"
