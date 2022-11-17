@@ -6,7 +6,11 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from api.models import Storage, Lecture
-from api.serializers import StorageQueryParamsSerializer, StorageSerializer, CodeSerializer
+from api.serializers import (
+    StorageQueryParamsSerializer,
+    StorageSerializer,
+    CodeSerializer,
+)
 
 
 @api_view(["GET", "POST"])
@@ -26,15 +30,21 @@ def storage(request: Request):
         raise ValidationError("저장소 번호가 올바르지 않습니다.")
 
     if request.method == "GET":
-        storage = Storage.objects.filter(user=request.user, problem_id=problem_id, order=order)
+        storage = Storage.objects.filter(
+            user=request.user, problem_id=problem_id, order=order
+        )
         return Response(StorageSerializer(get_object_or_404(storage)).data, 200)
     elif request.method == "POST":
         code_serializer = CodeSerializer(data=request.data)
         code_serializer.is_valid(raise_exception=True)
         code = code_serializer.validated_data.get("code")
 
-        storage, created = Storage.objects.update_or_create(user=request.user, problem_id=problem_id, order=order,
-                                                            defaults={"code": code})
+        storage, created = Storage.objects.update_or_create(
+            user=request.user,
+            problem_id=problem_id,
+            order=order,
+            defaults={"code": code},
+        )
 
         if created:
             return Response(StorageSerializer(storage).data, 201)

@@ -13,7 +13,8 @@ from api.serializers import (
     CodeSerializer,
     GradeResultSerializer,
     ExecuteResultSerializer,
-    GradeQueryParamsSerializer, ExecuteSerializer,
+    GradeQueryParamsSerializer,
+    ExecuteSerializer,
 )
 from server.settings.base import BASE_DIR
 

@@ -9,7 +9,7 @@ from api.views import (
     get_lectures,
     enroll_lecture,
     get_lecture_by_id,
-    storage
+    storage,
 )
 
 # api 앱 내의 url 관리
