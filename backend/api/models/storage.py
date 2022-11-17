@@ -15,3 +15,6 @@ class Storage(models.Model):
         "Problem",
         on_delete=models.CASCADE,
     )
+
+    class Meta:
+        unique_together = ("user", "problem", "order")
