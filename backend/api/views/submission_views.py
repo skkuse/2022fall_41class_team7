@@ -12,7 +12,8 @@ from api.models import Problem
 from api.serializers import (
     CodeSerializer,
     GradeResultSerializer,
-    ExecuteResultSerializer, GradeQueryParamsSerializer,
+    ExecuteResultSerializer,
+    GradeQueryParamsSerializer,
 )
 from server.settings.base import BASE_DIR
 

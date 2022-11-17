@@ -18,7 +18,7 @@ class LectureSerializer(serializers.ModelSerializer):
 
     def get_problems(self, obj):
         from api.serializers import ProblemMetaSerializer
-        
+
         return ProblemMetaSerializer(obj.problem_set.all(), many=True).data
 
 

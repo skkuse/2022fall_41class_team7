@@ -22,8 +22,9 @@ def get_lectures(request: Request):
 def get_lecture_by_id(request: Request, lecture_id):
     # 강의, 문제, 저장소, 제출 가져오기
     lecture = get_object_or_404(
-        Lecture.objects.filter(id=lecture_id).filter(enrollment__user__id=request.user.id).prefetch_related(
-            "problem_set")
+        Lecture.objects.filter(id=lecture_id)
+        .filter(enrollment__user__id=request.user.id)
+        .prefetch_related("problem_set")
     )
 
     return Response(LectureSerializer(lecture).data, 200)
