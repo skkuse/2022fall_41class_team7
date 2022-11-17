@@ -2,34 +2,26 @@ import uuid
 from os import remove
 
 from rest_framework.decorators import api_view
+from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from api.common import executor
 from api.models import Problem
 from api.serializers.problem_serializers import ProblemSerializer
-from api.serializers.storage_serializers import StorageSerializer
-from api.serializers.submission_serializers import SubmissionSerializer
 from server.settings.base import BASE_DIR
 
 
 @api_view(["GET"])
 def get_problem_by_id(request: Request, problem_id):
     # 문제, 저장소, 제출 가져오기
-    problem = (
+    problem = get_object_or_404(
         Problem.objects.filter(id=problem_id)
         .prefetch_related("storage_set")
         .prefetch_related("submission_set")
-        .get()
     )
-    storages = problem.storage_set.all()
-    submissions = problem.submission_set.all()
 
-    problem_dict = ProblemSerializer(problem).data
-    problem_dict["storages"] = StorageSerializer(storages, many=True).data
-    problem_dict["submissions"] = SubmissionSerializer(submissions, many=True).data
-
-    return Response(problem_dict, status=200)
+    return Response(ProblemSerializer(problem).data, status=200)
 
 
 @api_view(["POST"])

@@ -21,5 +21,8 @@ class Submission(models.Model):
     code = models.CharField(max_length=2000)
     created_at = models.DateTimeField()
     state = enum.EnumField(SubmissionState, default=SubmissionState.GRADING)
-    result = models.JSONField(default=dict)
-    analysis = models.JSONField(default=dict)
+    result = models.JSONField(null=True, blank=True, default=dict)
+    analysis = models.JSONField(null=True, blank=True, default=dict)
+
+    def __str__(self):
+        return f"{self.user.student_id} - {self.problem.name} - {self.created_at}"
