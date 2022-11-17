@@ -13,15 +13,17 @@ from api.serializers import (
     CodeSerializer,
     GradeResultSerializer,
     ExecuteResultSerializer,
-    GradeQueryParamsSerializer,
+    GradeQueryParamsSerializer, ExecuteSerializer,
 )
 from server.settings.base import BASE_DIR
 
 
 @api_view(["POST"])
 def execute(request: Request):
-    code = request.data.get("code")
-    inp = request.data.get("input")
+    execute_serializer = ExecuteSerializer(data=request.data)
+    execute_serializer.is_valid(raise_exception=True)
+    code = execute_serializer.validated_data.get("code")
+    user_in = execute_serializer.validated_data.get("input")
 
     file_path = BASE_DIR.joinpath("tmp", f"{uuid.uuid4()}.py")
 
@@ -33,12 +35,12 @@ def execute(request: Request):
     with open(file_path, "w") as f:
         f.write(code)
 
-    out, err = executor.run(file_path, code, inp)
+    user_out, err = executor.run(file_path, code, user_in)
 
     # remove file
     remove(file_path)
 
-    result_serializer = ExecuteResultSerializer(data={"result": out, "error": err})
+    result_serializer = ExecuteResultSerializer(data={"result": user_out, "error": err})
     result_serializer.is_valid(raise_exception=True)
 
     return Response(result_serializer.data, 200)
@@ -76,9 +78,9 @@ def grade(request: Request):
     with open(file_path, "w") as f:
         f.write(code)
 
-    out, err = executor.run(file_path, code, tc_in, timeout)
+    user_out, err = executor.run(file_path, code, tc_in, timeout)
 
-    is_passed = str(out).strip() == str(tc_out).strip()
+    is_passed = str(user_out).strip() == str(tc_out).strip()
 
     # remove file
     remove(file_path)
@@ -89,7 +91,7 @@ def grade(request: Request):
             "is_hidden": is_hidden,
             "input": tc_in,
             "output": tc_out,
-            "result": out,
+            "result": user_out,
             "error": err,
         }
     )

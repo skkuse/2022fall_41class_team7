@@ -9,6 +9,7 @@ from api.views import (
     get_lectures,
     enroll_lecture,
     get_lecture_by_id,
+    storage
 )
 
 # api 앱 내의 url 관리
@@ -23,4 +24,5 @@ urlpatterns = [
     path("lectures/<int:lecture_id>/", get_lecture_by_id),
     path("execute/", execute),
     path("grade/", grade),
+    path("storages/", storage),
 ]
