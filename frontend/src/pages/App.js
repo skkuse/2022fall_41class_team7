@@ -1,5 +1,5 @@
 import "../styles/base.css";
-import { ChakraProvider, Box, Divider, Button } from "@chakra-ui/react";
+import { ChakraProvider, Box, Divider, Button, Flex } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Nav from "../components/Nav";
@@ -77,29 +77,17 @@ function App() {
           onChangeProblem={onChangeProblem}
         />
         <Divider borderColor="whiteAlpha.200" />
-        <Problem
-          explanation={problems[selectedProblem - 1].explanation}
-          reference={problems[selectedProblem - 1].reference}
-          testcases={problems[selectedProblem - 1].testcases}
-        />
-        <Box className="divider_container">
-          <Divider
-            orientation="vertical"
-            borderColor="whiteAlpha.200"
-            position="absolute"
-            left="611px"
+        <Box className="body_container">
+          <Problem
+            explanation={problems[selectedProblem - 1].explanation}
+            reference={problems[selectedProblem - 1].reference}
+            testcases={problems[selectedProblem - 1].testcases}
           />
+          <Divider orientation="vertical" borderColor="whiteAlpha.200" />
+          <CodeEditor />
+          <Divider orientation="vertical" borderColor="whiteAlpha.200" />
+          <Terminal />
         </Box>
-        <CodeEditor />
-        <Box className="divider_container">
-          <Divider
-            orientation="vertical"
-            left="1370px"
-            position="absolute"
-            borderColor="whiteAlpha.200"
-          />
-        </Box>
-        <Terminal />
       </Box>
     </ChakraProvider>
   );
