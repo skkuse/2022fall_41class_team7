@@ -2,7 +2,7 @@
   background-color: #1a202c;
   color: #ffffff;
   width: 100%;
-  min-width: 1050px;
+  min-width: 1500px;
   height: 100vh;
   font-family: "work-sans";
 }
@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  min-width: 1050px;
+  min-width: 1500px;
 }
 
 .nav_left {
@@ -74,7 +74,7 @@
 /* Problem */
 .problem_section {
   /*position: absolute;*/
-  min-width: 350px;
+  min-width: 500px;
   flex: 1;
 
   /*height: calc(100% - 61px);*/
@@ -184,7 +184,7 @@
   /*right: 0%;*/
   flex: 1;
   /*height: calc(100% - 61px);*/
-  min-width: 350px;
+  min-width: 500px;
 }
 
 .terminal_header {

@@ -4,13 +4,13 @@
   /*width: 758px;*/
   /*left: 612px;*/
   flex: 1;
-  min-width: 350px;
+  min-width: 500px;
   /*height: calc(100% - 61px);*/
   background: #1a202c;
 }
 .header {
   display: flex;
-  min-width: 350px;
+  min-width: 500px;
   justify-content: space-between;
   height: 60px;
   padding: 0 20px;
