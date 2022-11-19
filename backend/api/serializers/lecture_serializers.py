@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api.common import EpochDateTimeField
 from api.models import Lecture, Enrollment
 
 
@@ -11,6 +12,7 @@ class LectureMetaSerializer(serializers.ModelSerializer):
 
 class LectureSerializer(serializers.ModelSerializer):
     problems = serializers.SerializerMethodField()
+    deadline = EpochDateTimeField()
 
     class Meta:
         model = Lecture

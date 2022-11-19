@@ -1,10 +1,13 @@
 from django.core.validators import MinValueValidator
 from rest_framework import serializers
 
+from api.common import EpochDateTimeField
 from api.models import Submission
 
 
 class SubmissionSerializer(serializers.ModelSerializer):
+    created_at = EpochDateTimeField()
+
     class Meta:
         model = Submission
         fields = "__all__"

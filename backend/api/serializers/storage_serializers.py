@@ -1,9 +1,12 @@
 from rest_framework import serializers
 
+from api.common import EpochDateTimeField
 from api.models import Storage
 
 
 class StorageMetaSerializer(serializers.ModelSerializer):
+    updated_at = EpochDateTimeField()
+
     class Meta:
         model = Storage
         fields = ("id", "order", "updated_at")
