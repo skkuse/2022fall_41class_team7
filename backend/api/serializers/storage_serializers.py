@@ -20,6 +20,8 @@ class StorageMetaSerializer(serializers.ModelSerializer):
 
 
 class StorageSerializer(serializers.ModelSerializer):
+    updated_at = EpochDateTimeField()
+
     class Meta:
         model = Storage
         fields = ("id", "code", "updated_at")
