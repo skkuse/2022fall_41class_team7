@@ -81,7 +81,7 @@ function Nav({ className, deadline, userName, problems, onChangeProblem }) {
                 onChange={onChangeProblemNav}
                 value={selected}
               >
-                {problems.map((p) => (
+                {problems?.map((p) => (
                   <option key={p.id} value={p.id} className="lecture_option">
                     {p.name}
                   </option>
