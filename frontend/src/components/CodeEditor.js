@@ -8,6 +8,7 @@ import {
   CircularProgressLabel,
   Box,
   Divider,
+  useToast
 } from "@chakra-ui/react";
 import { SearchIcon, DownloadIcon, CopyIcon, RepeatClockIcon } from "@chakra-ui/icons";
 import Editor from "@monaco-editor/react";
@@ -19,6 +20,7 @@ const progress = {
 
 function CodeEditor() {
   const editorRef = useRef(null);
+  const toast = useToast();
   const [value, setValue] = useState("hello");
 
   const inputFile = () => {
@@ -32,10 +34,22 @@ function CodeEditor() {
       editorRef.current.setValue(code);
     };
     fileReader.readAsText(file);
+    toast({
+      title: "코드를 불러왔습니다.",
+      position: "bottom-right",
+      isClosable: true,
+      duration: 1000,
+    });
   };
 
   const resetValue = () => {
     editorRef.current.setValue(value);
+    toast({
+      title: "코드가 초기화 되었습니다.",
+      position: "bottom-right",
+      isClosable: true,
+      duration: 1000,
+    });
   };
 
   const handleEditorDidMount = (editor, monaco) => {
@@ -44,8 +58,21 @@ function CodeEditor() {
 
   const copyValue = () => {
     navigator.clipboard.writeText(editorRef.current?.getValue());
-    // 클립보드 복사 후 toast 출력
-    // console.log(editorRef.current?.getValue());
+    toast({
+      title: "코드가 클립보드에 복사되었습니다.",
+      position: "bottom-right",
+      isClosable: true,
+      duration: 1000,
+    });
+  };
+
+  const saveValue = () => {
+    toast({
+      title: "코드를 저장했습니다.",
+      position: "bottom-right",
+      isClosable: true,
+      duration: 1000,
+    });
   };
 
   return (
@@ -88,6 +115,7 @@ function CodeEditor() {
             background="#718096"
             className="iconBtn"
             aria-label="Download"
+            onClick={saveValue}
             icon={<DownloadIcon />}
           />
         </Box>
