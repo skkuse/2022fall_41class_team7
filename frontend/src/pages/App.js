@@ -1,4 +1,5 @@
 import "../styles/base.css";
+import "../styles/hover.css";
 import { ChakraProvider, Box, Divider, Button, Flex } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import axios from "axios";

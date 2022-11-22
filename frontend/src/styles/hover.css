@@ -1,0 +1,41 @@
+body {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.terminal_btn_container button:nth-child(1):hover {
+  background-color: #4c5767 !important;
+}
+
+.terminal_btn_container button:active,
+.nav_right .button_test_end:active,
+.testcase_content .button_validation:active,
+.header-item .iconBtn:active,
+.header-item .saveBtn:active {
+  position: relative;
+  top: 1px;
+}
+
+.terminal_btn_container button:nth-child(2):hover {
+  background-color: #4c5767 !important;
+}
+
+.terminal_btn_container button:nth-child(3):hover {
+  background-color: #1d4e7c !important;
+}
+
+.nav_right .button_test_end:hover {
+  background-color: #b41818 !important;
+}
+
+.testcase_content .button_validation:hover {
+  background-color: #956d1d !important;
+}
+
+.header-item .iconBtn:hover {
+  background-color: #363e49 !important;
+}
+
+.header-item .saveBtn:hover {
+  background-color: #215e3e !important;
+}
