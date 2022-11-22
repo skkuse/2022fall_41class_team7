@@ -8,7 +8,7 @@ import {
   CircularProgressLabel,
   Box,
   Divider,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import { SearchIcon, DownloadIcon, CopyIcon, RepeatClockIcon } from "@chakra-ui/icons";
 import Editor from "@monaco-editor/react";
