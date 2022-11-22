@@ -1,6 +1,16 @@
 from django.urls import path
 
-from .views import *
+from api.views import (
+    login,
+    logout,
+    execute,
+    get_problem_by_id,
+    grade,
+    get_lectures,
+    enroll_lecture,
+    get_lecture_by_id,
+    storage,
+)
 
 # api 앱 내의 url 관리
 # 추후 server의 urls에 연결
@@ -8,11 +18,11 @@ from .views import *
 urlpatterns = [
     path("login/", login),
     path("logout/", logout),
-    path("classes/", getClasses),
-    path("classes/<int:id>/enroll/", enrollClasses),
-    path("classes/<int:id>/", getIdClasses),
-    path("problems/", problemAPI),
-    path("problems/<id>/", problemAPI),
+    path("problems/<int:problem_id>/", get_problem_by_id),
+    path("lectures/", get_lectures),
+    path("lectures/<int:lecture_id>/enroll/", enroll_lecture),
+    path("lectures/<int:lecture_id>/", get_lecture_by_id),
     path("execute/", execute),
-    path("problems/<int:problem_id>/grade/<int:testcase_num>/", grade),
+    path("grade/", grade),
+    path("storages/", storage),
 ]

@@ -92,7 +92,7 @@ function CodeEditor() {
           />
         </Box>
         <Box className="header-item">
-          <Select className="select" placeholder="Select option" size="sm" width="250px">
+          <Select className="select" placeholder="Select option" size="sm">
             <option value="option1">Option 1</option>
             <option value="option2">Option 2</option>
             <option value="option3">Option 3</option>
