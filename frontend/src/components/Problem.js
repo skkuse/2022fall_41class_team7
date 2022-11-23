@@ -1,10 +1,10 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, toCSSObject } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import Testcase from "./Testcase";
 
 function Problem({ explanation, reference, testcases }) {
-  const testcasesNotHidden = testcases.filter((tc) => tc.is_hidden === false);
+  // const testcasesNotHidden = testcases.filter((tc) => tc.is_hidden === false);
 
   return (
     <Box className="problem_section">
@@ -20,7 +20,7 @@ function Problem({ explanation, reference, testcases }) {
         <Box className="testcase_section">
           <Box className="explanation_head_text">테스트케이스</Box>
           <Box className="testcase_container">
-            {testcasesNotHidden.map((tc, index) => (
+            {testcases?.map((tc, index) => (
               <Testcase title={`테스트케이스 ${index + 1}`} input={tc.input} output={tc.output} />
             ))}
           </Box>

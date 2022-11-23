@@ -2,7 +2,7 @@
   background-color: #1a202c;
   color: #ffffff;
   width: 100%;
-  min-width: 1500px;
+  min-width: 1502px;
   height: 100vh;
   font-family: "work-sans";
 }
@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  min-width: 1500px;
+  min-width: 1502px;
 }
 
 .nav_left {
@@ -112,7 +112,7 @@
   font-weight: 400;
   padding-top: 14px;
   white-space: pre-line;
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
 }
 /* TestCase */
 .testcase_section {
