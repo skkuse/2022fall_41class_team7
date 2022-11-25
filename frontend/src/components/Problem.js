@@ -35,8 +35,8 @@ Problem.propTypes = {
   reference: PropTypes.string.isRequired,
   testcases: PropTypes.arrayOf(
     PropTypes.shape({
-      input: PropTypes.string.isRequired,
-      output: PropTypes.string.isRequired,
+      input: PropTypes.string,
+      output: PropTypes.string,
       is_hidden: PropTypes.bool.isRequired,
     })
   ).isRequired,
