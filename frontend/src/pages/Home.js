@@ -1,8 +1,9 @@
-import { useDisclosure, ChakraProvider, Box, Text, Image, Button, Input } from "@chakra-ui/react";
+import { ChakraProvider, Box, Text, Image, Button, Input } from "@chakra-ui/react";
 import { useState } from "react";
 import "../styles/home.css";
 import axios from "axios";
 import logo from "../assets/images/logo.png";
+import SelectLecture from "../components/modals/SelectLecture";
 
 function Home() {
   const [id, setId] = useState("");
@@ -10,7 +11,6 @@ function Home() {
   const [isFailed, setIsFailed] = useState(false);
   const [isFailed2, setIsFailed2] = useState(false);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const onChangeId = (event) => {
     setId(event.target.value);
