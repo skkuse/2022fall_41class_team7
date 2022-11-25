@@ -6,6 +6,7 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import PropTypes from "prop-types";
 import RunCode from "./modals/RunCode";
 
 const progress = {
@@ -13,7 +14,7 @@ const progress = {
   height: "32px",
 };
 
-function Terminal() {
+function Terminal({ submissionCapacity, submissionNum }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -35,8 +36,14 @@ function Terminal() {
           <Button size="sm" backgroundColor="blue.500">
             제출
           </Button>
-          <CircularProgress value={33} size="32px" style={progress}>
-            <CircularProgressLabel>1/3</CircularProgressLabel>
+          <CircularProgress
+            value={(submissionNum / submissionCapacity) * 100}
+            size="32px"
+            style={progress}
+          >
+            <CircularProgressLabel>
+              {submissionNum}/{submissionCapacity}
+            </CircularProgressLabel>
           </CircularProgress>
         </Box>
       </Box>
@@ -48,5 +55,10 @@ function Terminal() {
     </Box>
   );
 }
+
+Terminal.propTypes = {
+  submissionCapacity: PropTypes.number.isRequired,
+  submissionNum: PropTypes.number.isRequired,
+};
 
 export default Terminal;
