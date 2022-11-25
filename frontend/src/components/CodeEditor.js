@@ -1,5 +1,6 @@
 import "../styles/editor.css";
-import React, { useState, useRef } from "react";
+import PropTypes from "prop-types";
+import React, { useState, useRef, useEffect } from "react";
 import {
   IconButton,
   Button,
@@ -18,10 +19,10 @@ const progress = {
   height: "32px",
 };
 
-function CodeEditor() {
+function CodeEditor({ storageCapacity, storages, skeletonCode }) {
   const editorRef = useRef(null);
   const toast = useToast();
-  const [value, setValue] = useState("hello");
+  const [value, setValue] = useState(skeletonCode);
 
   const inputFile = () => {
     document.getElementById("hiddenFileInput").click();
@@ -75,6 +76,34 @@ function CodeEditor() {
     });
   };
 
+  const getUpdatedTime = (updatedAt) => {
+    const updatedime = new Date(updatedAt);
+    const year = updatedime.getFullYear();
+    const month = updatedime.getMonth() + 1;
+    const date = updatedime.getDate();
+    const hours = updatedime.getHours();
+    const minutes = updatedime.getMinutes();
+    const seconds = updatedime.getSeconds();
+    const dateToString = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+    return dateToString;
+  };
+
+  const [selected, setSelected] = useState(1);
+  const [storageNum, setStorageNum] = useState(0);
+
+  const onChangeStorage = (event) => {
+    setSelected(event.target.value);
+  };
+
+  const getStorageNum = () => {
+    const nonEmptyStorage = storages?.filter((s) => s.id != null);
+    setStorageNum(nonEmptyStorage.length);
+  };
+
+  useEffect(() => {
+    getStorageNum();
+  }, []);
+
   return (
     <Box className="container">
       <Box className="header">
@@ -120,16 +149,31 @@ function CodeEditor() {
           />
         </Box>
         <Box className="header-item">
-          <Select className="select" placeholder="Select option" size="sm">
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
+          <Select
+            className="select"
+            size="sm"
+            value={selected}
+            color="white"
+            onChange={onChangeStorage}
+          >
+            {storages?.map((s, index) => (
+              <option value={s.id} key={s.id}>
+                {`${index + 1}. `}
+                {s.id ? `${getUpdatedTime(storages[index].updated_at)}` : ""}
+              </option>
+            ))}
           </Select>
           <Button className="saveBtn" size="sm" width="50px" backgroundColor="#38A169">
             저장
           </Button>
-          <CircularProgress value={33} size="32px" style={progress}>
-            <CircularProgressLabel>1/3</CircularProgressLabel>
+          <CircularProgress
+            value={(storageNum / storageCapacity) * 100}
+            size="32px"
+            style={progress}
+          >
+            <CircularProgressLabel>
+              {storageNum}/{storageCapacity}
+            </CircularProgressLabel>
           </CircularProgress>
         </Box>
       </Box>
@@ -144,4 +188,16 @@ function CodeEditor() {
     </Box>
   );
 }
+
+CodeEditor.propTypes = {
+  storageCapacity: PropTypes.number.isRequired,
+  storages: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      updated_at: PropTypes.number,
+    })
+  ).isRequired,
+  skeletonCode: PropTypes.string.isRequired,
+};
+
 export default CodeEditor;
