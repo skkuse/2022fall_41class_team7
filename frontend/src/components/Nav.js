@@ -34,9 +34,9 @@ function Nav({ className, deadline, userName, problems, onChangeProblem }) {
 
   function UnixTimestamp() {
     const currentTime = Math.floor(new Date().getTime() / 1000);
-    const remainTime = deadline - currentTime;
+    const remainTime = deadline ? deadline - currentTime : 0;
     const date = new Date(remainTime * 1000);
-    const day = date.getDate();
+    const day = Math.floor(remainTime / 60 / 60 / 24);
     const hour = date.getHours();
     const minute = date.getMinutes();
     const second = date.getSeconds();
