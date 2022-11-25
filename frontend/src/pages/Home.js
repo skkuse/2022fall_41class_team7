@@ -38,7 +38,6 @@ function Home() {
         } else if (response.status === 404) {
           setIsFailed(true);
           setIsFailed2(true);
-          onOpen();
         }
       })
       .catch((error) => setIsFailed(true));
