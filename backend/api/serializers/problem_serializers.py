@@ -29,9 +29,12 @@ class ProblemSerializer(serializers.ModelSerializer):
 
     def get_testcases(self, obj):
         return [
-            {"input": tc["input"], "output": tc["output"]}
+            {
+                "is_hidden": tc["is_hidden"],
+                "input": None if tc["is_hidden"] else tc["input"],
+                "output": None if tc["is_hidden"] else tc["output"]
+            }
             for tc in obj.testcases
-            if not tc["is_hidden"]
         ]
 
     def get_storages(self, obj):
