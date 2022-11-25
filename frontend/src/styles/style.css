@@ -59,10 +59,11 @@
 .deadline_input {
   background-color: #171923;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  width: 160px;
+  width: 176px;
   height: 32px;
   font-size: 14px;
   padding: 6px 12px;
+  text-align: center;
 }
 .button_test_end {
   height: 32px;
