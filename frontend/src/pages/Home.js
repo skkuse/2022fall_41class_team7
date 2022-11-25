@@ -1,23 +1,15 @@
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Image,
-  Button,
-  Input,
-  SelectField,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { useDisclosure, ChakraProvider, Box, Text, Image, Button, Input } from "@chakra-ui/react";
 import { useState } from "react";
 import "../styles/home.css";
 import axios from "axios";
 import logo from "../assets/images/logo.png";
-import SelectLecture from "../components/modals/SelectLecture";
 
 function Home() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [isFailed, setIsFailed] = useState(false);
+  const [isFailed2, setIsFailed2] = useState(false);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const onChangeId = (event) => {
@@ -42,6 +34,10 @@ function Home() {
         if (response.status === 200) {
           // console.log("성공");
           setIsFailed(false);
+          setIsFailed2(false);
+        } else if (response.status === 404) {
+          setIsFailed(true);
+          setIsFailed2(true);
           onOpen();
         }
       })
@@ -71,9 +67,9 @@ function Home() {
               value={password}
               onChange={onChangePassword}
             />
-            {isFailed ? (
+            {isFailed && password === "" ? (
               <Text className="msg" name="loginPwdMsg">
-                비밀번호를 입력하세요. or 비밀번호가 옳지 않습니다.
+                비밀번호를 입력하세요.
               </Text>
             ) : null}
           </Box>
@@ -81,9 +77,13 @@ function Home() {
             <Button className="btn_login" onClick={login}>
               로그인
             </Button>
+            {isFailed2 ? (
+              <Text className="msg" name="loginPwdMsg">
+                아이디나 비밀번호가 올바르지 않습니다.
+              </Text>
+            ) : null}
           </Box>
         </Box>
-        <SelectLecture isOpen={isOpen} onClose={onClose} />
       </Box>
     </ChakraProvider>
   );
