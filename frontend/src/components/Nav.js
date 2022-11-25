@@ -9,6 +9,7 @@ import {
   Input,
   Text,
   Avatar,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import "../styles/style.css";
@@ -16,14 +17,15 @@ import { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import logo from "../assets/images/service_logo.svg";
 import setting from "../assets/images/setting.svg";
+import Logout from "./modals/Logout";
 
 function Nav({ className, deadline, userName, problems, onChangeProblem }) {
   // const [problemName, setProblemName] = useState("week 1 : 피보나치 수");
   // const [currentTime, setCurrentTime] = useState();
-
   const [selected, setSelected] = useState(1);
   const interval = useRef(null);
   const [remainText, setRemainText] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const onChangeProblemNav = (event) => {
     // onChangeProblem();
@@ -61,6 +63,7 @@ function Nav({ className, deadline, userName, problems, onChangeProblem }) {
             alt="service logo"
             boxSize="32px"
             borderRadius="6px"
+            onClick={() => onOpen()}
           />
         </Box>
         <Box>
@@ -115,6 +118,7 @@ function Nav({ className, deadline, userName, problems, onChangeProblem }) {
           <Image src={setting} alt="setting" />
         </Box>
       </Box>
+      <Logout isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 }
