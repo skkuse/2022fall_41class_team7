@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import PropTypes from "prop-types";
 import {
   Modal,
@@ -14,6 +15,23 @@ import {
 function SelectLecture({ isOpen, onClose }) {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
+  const [lecture, setLecture] = useState([]);
+
+  useEffect(() => {
+    const getLectures = async () => {
+      try {
+        const response = await axios.get("/api/lectures/", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        setLecture(response.data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getLectures();
+  }, []);
 
   return (
     <Modal
@@ -28,9 +46,11 @@ function SelectLecture({ isOpen, onClose }) {
         <ModalBody pb={6}>
           <FormControl>
             <Select placeholder="강의 선택">
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+              {lecture?.map((lec) => (
+                <option key={lec.id} value={lec.id}>
+                  {lec.name}
+                </option>
+              ))}
             </Select>
           </FormControl>
         </ModalBody>
