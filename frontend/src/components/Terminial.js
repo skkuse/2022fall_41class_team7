@@ -1,4 +1,11 @@
-import { Box, Button, CircularProgress, CircularProgressLabel, Text, useDisclosure } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  CircularProgressLabel,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import RunCode from "./modals/RunCode";
 
 const progress = {
@@ -37,10 +44,7 @@ function Terminal() {
         <Text fontSize={14}>22:24:08 {">>"} 프로세스가 시작되었습니다.</Text>
         <Text fontSize={14}>22:24:09 {">>"} 처리중...</Text>
       </Box>
-      <RunCode
-        isOpen={isOpen}
-        onClose={onClose}
-      />
+      <RunCode isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 }

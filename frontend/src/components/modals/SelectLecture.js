@@ -8,7 +8,7 @@ import {
   ModalBody,
   Select,
   FormControl,
-  Button
+  Button,
 } from "@chakra-ui/react";
 
 function SelectLecture({ isOpen, onClose }) {
@@ -18,12 +18,11 @@ function SelectLecture({ isOpen, onClose }) {
   return (
     <Modal
       initialFocusRef={initialRef}
-        // finalFocusRef={finalRef}
+      // finalFocusRef={finalRef}
       isOpen={isOpen}
       onClose={onClose}
       isCentered
     >
-      console.log(isOpen)
       <ModalOverlay />
       <ModalContent>
         <ModalBody pb={6}>

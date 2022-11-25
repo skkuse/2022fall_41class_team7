@@ -8,7 +8,7 @@ import {
   ModalBody,
   Input,
   FormControl,
-  Button
+  Button,
 } from "@chakra-ui/react";
 
 function RunCode({ isOpen, onClose }) {
@@ -18,7 +18,7 @@ function RunCode({ isOpen, onClose }) {
   return (
     <Modal
       initialFocusRef={initialRef}
-        // finalFocusRef={finalRef}
+      // finalFocusRef={finalRef}
       isOpen={isOpen}
       onClose={onClose}
       isCentered

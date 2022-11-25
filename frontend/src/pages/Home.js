@@ -1,4 +1,11 @@
-import { ChakraProvider, Box, Text, Image, Button, Input, SelectField,
+import {
+  ChakraProvider,
+  Box,
+  Text,
+  Image,
+  Button,
+  Input,
+  SelectField,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
@@ -76,10 +83,7 @@ function Home() {
             </Button>
           </Box>
         </Box>
-        <SelectLecture
-          isOpen={isOpen}
-          onClose={onClose}
-        />
+        <SelectLecture isOpen={isOpen} onClose={onClose} />
       </Box>
     </ChakraProvider>
   );
