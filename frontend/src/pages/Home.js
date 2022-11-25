@@ -11,7 +11,6 @@ function Home() {
   const [isFailed, setIsFailed] = useState(false);
   const [isFailed2, setIsFailed2] = useState(false);
 
-
   const onChangeId = (event) => {
     setId(event.target.value);
   };
