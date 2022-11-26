@@ -215,3 +215,15 @@
   display: flex;
   height: calc(100% - 62px);
 }
+
+@media screen and (min-width:1500px) {
+  body {
+    overflow-x: hidden;
+  }
+}
+
+@media screen and (min-height:800px){
+  body {
+    overflow-y: hidden;
+  }
+}
