@@ -37,7 +37,7 @@ function App() {
       },
     });
     setLecture(response.data);
-    getProblem(response.data.problems[0].id);
+    // getProblem(response.data.problems[0].id);
   };
 
   // 임시 로그인 함수
@@ -57,6 +57,12 @@ function App() {
     login();
     getLecture();
   }, []);
+
+  useEffect(() => {
+    if (Object.keys(lecture).length !== 0) {
+      getProblem(lecture.problems[0].id);
+    }
+  }, [lecture]);
 
   const onChangeProblem = (problemId) => {
     getProblem(problemId);

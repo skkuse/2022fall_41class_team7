@@ -11,7 +11,7 @@ function Problem({ explanation, reference, testcases }) {
       <Box className="probelm_container">
         <Box className="explanation_container">
           <Text className="explanation_head_text">문제설명</Text>
-          <Text className="explanation_body_text">{explanation}</Text>
+          <Text className="explanation_body_text">{explanation.replace(/\\n/g, "\n")}</Text>
         </Box>
         <Box className="reference_container">
           <Text className="explanation_head_text">참조 / 제약 사항</Text>
