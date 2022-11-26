@@ -104,10 +104,11 @@ function Nav({ className, deadline, userName, problems, onChangeProblem }) {
           border="1px"
           borderColor="whiteAlpha.200"
           color="white"
-          width="160px"
+          width="176px"
           height="32px"
           fontSize="14px"
           padding="6px 12px"
+          textAlign="center"
           value={remainText}
           readOnly
         />
