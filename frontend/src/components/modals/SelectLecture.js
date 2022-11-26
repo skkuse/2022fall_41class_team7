@@ -1,18 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalFooter,
-  ModalBody,
-  Select,
-  FormControl,
-  Button,
-} from "@chakra-ui/react";
-import App from "../../pages/App";
+import { Modal, ModalOverlay, ModalContent, ModalFooter, ModalBody, Select, FormControl, Button } from "@chakra-ui/react";
+import axios from "../../utils/axios";
 
 function SelectLecture({ isOpen, onClose }) {
   const initialRef = React.useRef(null);
@@ -22,11 +12,7 @@ function SelectLecture({ isOpen, onClose }) {
   useEffect(() => {
     const getLectures = async () => {
       try {
-        const response = await axios.get("/api/lectures/", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await axios.get("lectures/", {});
         setLecture(response.data);
       } catch (e) {
         // console.log(e);

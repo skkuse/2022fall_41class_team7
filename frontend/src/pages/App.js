@@ -2,17 +2,13 @@ import "../styles/base.css";
 import "../styles/hover.css";
 import { ChakraProvider, Box, Divider, Button, Flex } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../utils/axios";
 import Nav from "../components/Nav";
 import Problem from "../components/Problem";
 import CodeEditor from "../components/CodeEditor";
 import Terminal from "../components/Terminial";
 
 function App() {
-  axios.defaults.withCredentials = true;
-  axios.defaults.xsrfCookieName = "csrftoken";
-  axios.defaults.xsrfHeaderName = "X-CSRFToken";
-
   const selectedLecture = 1;
   const [problem, setProblem] = useState({});
   const [lecture, setLecture] = useState({});
@@ -21,36 +17,20 @@ function App() {
   const userName = "홍길동"; // 로그인 정보 필요
 
   const getProblem = async (problemId) => {
-    const response = await axios.get(`/api/problems/${problemId}/`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axios.get(`problems/${problemId}/`, {});
     setProblem(response.data);
     setLoading(false);
   };
 
   const getLecture = async () => {
-    const response = await axios.get(`/api/lectures/${selectedLecture}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axios.get(`lectures/${selectedLecture}/`, {});
     setLecture(response.data);
     // getProblem(response.data.problems[0].id);
   };
 
   // 임시 로그인 함수
   const login = () => {
-    axios.defaults.withCredentials = true;
-    axios.defaults.xsrfCookieName = "csrftoken";
-    axios.defaults.xsrfHeaderName = "X-CSRFToken";
-
-    axios.post(
-      "/api/login/",
-      { student_id: 2016314786, password: "rlaghwls" },
-      { headers: { "Content-Type": "application/json" } }
-    );
+    axios.post("login/", { student_id: 1234, password: "12345" });
   };
 
   useEffect(() => {
