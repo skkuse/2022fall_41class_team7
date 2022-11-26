@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import {
   Modal,
   ModalOverlay,
@@ -10,6 +11,7 @@ import {
   FormControl,
   Button,
 } from "@chakra-ui/react";
+import App from "../../pages/App";
 
 function SelectLecture({ isOpen, onClose }) {
   const initialRef = React.useRef(null);
@@ -37,9 +39,12 @@ function SelectLecture({ isOpen, onClose }) {
 
         <ModalFooter>
           <Button onClick={onClose}>취소</Button>
-          <Button colorScheme="blue" mr={3}>
-            시험 응시하기
-          </Button>
+          {/* link param 임의로 지정해놨으니 강의 선택하면 해당 id 전달하기 */}
+          <Link to="test/1">
+            <Button colorScheme="blue" mr={3}>
+              시험 응시하기
+            </Button>
+          </Link>
         </ModalFooter>
       </ModalContent>
     </Modal>
