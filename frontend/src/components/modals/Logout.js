@@ -23,10 +23,9 @@ function Logout({ isOpen, onClose }) {
 
   const logout = () => {
     axios
-      .get(
-        "/api/logout/",
-        { headers: { "Content-Type": "application/json", authentification: "X-CSRFToken" } }
-      )
+      .get("/api/logout/", {
+        headers: { "Content-Type": "application/json", authentification: "X-CSRFToken" },
+      })
       .then((response) => {
         if (response.status === 200) {
           setIsFailed(false);
@@ -46,12 +45,18 @@ function Logout({ isOpen, onClose }) {
       <ModalOverlay />
       <ModalContent backgroundColor="#1A202C" width="370px" height="170px">
         <ModalBody pb={6} color="white" textAlign="center">
-          <Text fontSize="20px" marginTop="10px">홈페이지로 이동하겠습니까?</Text>
-          <Text fontSize="16px" marginTop="5px">계정은 로그아웃됩니다</Text>
+          <Text fontSize="20px" marginTop="10px">
+            홈페이지로 이동하겠습니까?
+          </Text>
+          <Text fontSize="16px" marginTop="5px">
+            계정은 로그아웃됩니다
+          </Text>
         </ModalBody>
 
         <ModalFooter>
-          <Button onClick={onClose} marginRight="10px">취소</Button>
+          <Button onClick={onClose} marginRight="10px">
+            취소
+          </Button>
           <Link to="/">
             <Button colorScheme="blue" mr={3} onClick={logout}>
               로그아웃
