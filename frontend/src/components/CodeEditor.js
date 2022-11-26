@@ -75,7 +75,7 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
       duration: 1000,
     });
   };
-  
+
   const onChangeEditor = () => {
     document.getElementById("hiddenCodeValue").value = editorRef.current?.getValue();
   };
@@ -190,9 +190,8 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
         onMount={handleEditorDidMount}
         onChange={onChangeEditor}
       />
-      
-      <input type="hidden" id="hiddenCodeValue" value={value} />
 
+      <input type="hidden" id="hiddenCodeValue" value={value} />
     </Box>
   );
 }
