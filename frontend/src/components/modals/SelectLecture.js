@@ -43,7 +43,7 @@ function SelectLecture({ isOpen, onClose }) {
           // console.log("성공"); app 페이지로 연결
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => null);
   };
 
   return (
