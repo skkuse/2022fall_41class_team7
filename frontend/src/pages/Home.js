@@ -1,4 +1,4 @@
-import { ChakraProvider, Box, Text, Image, Button, Input } from "@chakra-ui/react";
+import { ChakraProvider, Box, Text, Image, Button, Input, useDisclosure } from "@chakra-ui/react";
 import { useState } from "react";
 import "../styles/home.css";
 import axios from "axios";
@@ -10,6 +10,7 @@ function Home() {
   const [password, setPassword] = useState("");
   const [isFailed, setIsFailed] = useState(false);
   const [isFailed2, setIsFailed2] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const onChangeId = (event) => {
     setId(event.target.value);
@@ -34,6 +35,7 @@ function Home() {
           // console.log("성공");
           setIsFailed(false);
           setIsFailed2(false);
+          onOpen();
         } else if (response.status === 404) {
           setIsFailed(true);
           setIsFailed2(true);
@@ -82,6 +84,7 @@ function Home() {
             ) : null}
           </Box>
         </Box>
+        <SelectLecture isOpen={isOpen} onClose={onClose} />
       </Box>
     </ChakraProvider>
   );
