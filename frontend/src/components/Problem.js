@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Testcase from "./Testcase";
 
 function Problem({ explanation, reference, testcases }) {
-  // const testcasesNotHidden = testcases.filter((tc) => tc.is_hidden === false);
+  const testcasesNotHidden = testcases?.filter((tc) => tc.is_hidden === false);
 
   return (
     <Box className="problem_section">
@@ -20,7 +20,7 @@ function Problem({ explanation, reference, testcases }) {
         <Box className="testcase_section">
           <Box className="explanation_head_text">테스트케이스</Box>
           <Box className="testcase_container">
-            {testcases?.map((tc, index) => (
+            {testcasesNotHidden?.map((tc, index) => (
               <Testcase title={`테스트케이스 ${index + 1}`} input={tc.input} output={tc.output} />
             ))}
           </Box>
@@ -35,8 +35,8 @@ Problem.propTypes = {
   reference: PropTypes.string.isRequired,
   testcases: PropTypes.arrayOf(
     PropTypes.shape({
-      input: PropTypes.string.isRequired,
-      output: PropTypes.string.isRequired,
+      input: PropTypes.string,
+      output: PropTypes.string,
       is_hidden: PropTypes.bool.isRequired,
     })
   ).isRequired,

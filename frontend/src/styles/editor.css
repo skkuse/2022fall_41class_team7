@@ -37,6 +37,10 @@
   background: #171923;
   color: #ffffff;
 }
+
+.select option {
+  color: black;
+}
 /* .saveBtn {
     width: 50px;
     height: 32px;

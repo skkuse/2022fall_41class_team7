@@ -19,7 +19,7 @@ import logo from "../assets/images/service_logo.svg";
 import setting from "../assets/images/setting.svg";
 import Logout from "./modals/Logout";
 
-function Nav({ className, deadline, userName, problems, onChangeProblem }) {
+function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
   // const [problemName, setProblemName] = useState("week 1 : 피보나치 수");
   // const [currentTime, setCurrentTime] = useState();
   const [selected, setSelected] = useState(1);
@@ -36,9 +36,9 @@ function Nav({ className, deadline, userName, problems, onChangeProblem }) {
 
   function UnixTimestamp() {
     const currentTime = Math.floor(new Date().getTime() / 1000);
-    const remainTime = deadline - currentTime;
+    const remainTime = deadline ? deadline - currentTime : 0;
     const date = new Date(remainTime * 1000);
-    const day = date.getDate();
+    const day = Math.floor(remainTime / 60 / 60 / 24);
     const hour = date.getHours();
     const minute = date.getMinutes();
     const second = date.getSeconds();
@@ -72,7 +72,7 @@ function Nav({ className, deadline, userName, problems, onChangeProblem }) {
             separator={<ChevronRightIcon color="white" display="flex" alignItems="center" />}
           >
             <BreadcrumbItem>
-              <Text className="lecture_name">{className}</Text>
+              <Text className="lecture_name">{lectureName}</Text>
             </BreadcrumbItem>
             <BreadcrumbLink href="#">
               <Select
@@ -125,13 +125,13 @@ function Nav({ className, deadline, userName, problems, onChangeProblem }) {
 }
 
 Nav.propTypes = {
-  className: PropTypes.string.isRequired,
+  lectureName: PropTypes.string.isRequired,
   deadline: PropTypes.number.isRequired,
   userName: PropTypes.string.isRequired,
   problems: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
-      class_id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
     })
   ).isRequired,
   onChangeProblem: PropTypes.func.isRequired,

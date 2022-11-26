@@ -16,33 +16,45 @@ function App() {
   const selectedLecture = 1;
   const [problem, setProblem] = useState({});
   const [lecture, setLecture] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  const userName = "홍길동";
+  const userName = "홍길동"; // 로그인 정보 필요
 
-  const getProblem = (problemId) => {
-    axios
-      .get(`/api/problems/${problemId}/`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        setProblem(response.data);
-      });
+  const getProblem = async (problemId) => {
+    const response = await axios.get(`/api/problems/${problemId}/`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    setProblem(response.data);
+    setLoading(false);
   };
 
-  const getLecture = () => {
-    axios
-      .get(`/api/lectures/${selectedLecture}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => setLecture(response.data))
-      .then(() => getProblem(1));
+  const getLecture = async () => {
+    const response = await axios.get(`/api/lectures/${selectedLecture}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    setLecture(response.data);
+    getProblem(response.data.problems[0].id);
+  };
+
+  // 임시 로그인 함수
+  const login = () => {
+    axios.defaults.withCredentials = true;
+    axios.defaults.xsrfCookieName = "csrftoken";
+    axios.defaults.xsrfHeaderName = "X-CSRFToken";
+
+    axios.post(
+      "/api/login/",
+      { student_id: 2019315516, password: "rladidtjs" },
+      { headers: { "Content-Type": "application/json" } }
+    );
   };
 
   useEffect(() => {
+    login();
     getLecture();
   }, []);
 
@@ -50,14 +62,14 @@ function App() {
     getProblem(problemId);
   };
 
-  return (
+  return loading ? null : (
     <ChakraProvider>
       <Box className="bg">
         <Nav
-          className={lecture.name}
-          deadline={lecture.deadline}
+          lectureName={lecture?.name}
+          deadline={lecture?.deadline}
           userName={userName}
-          problems={lecture.problems}
+          problems={lecture?.problems}
           onChangeProblem={onChangeProblem}
         />
         <Divider borderColor="whiteAlpha.200" />
@@ -68,9 +80,16 @@ function App() {
             testcases={problem?.testcases}
           />
           <Divider orientation="vertical" borderColor="whiteAlpha.200" />
-          <CodeEditor />
+          <CodeEditor
+            storageCapacity={lecture?.storage_capacity}
+            storages={problem?.storages}
+            skeletonCode={problem?.skeleton_code}
+          />
           <Divider orientation="vertical" borderColor="whiteAlpha.200" />
-          <Terminal />
+          <Terminal
+            submissionCapacity={lecture?.submission_capacity}
+            submissionNum={problem?.submissions.length}
+          />
         </Box>
       </Box>
     </ChakraProvider>

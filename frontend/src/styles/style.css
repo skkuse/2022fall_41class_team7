@@ -84,16 +84,19 @@
   overflow: auto;
 }
 
-.problem_section::-webkit-scrollbar {
+.problem_section::-webkit-scrollbar,
+.terminal_body::-webkit-scrollbar {
   width: 3px;
 }
 
-.problem_section::-webkit-scrollbar-thumb {
+.problem_section::-webkit-scrollbar-thumb,
+.terminal_body::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: black;
 }
 
-.problem_section::-webkit-scrollbar-track {
+.problem_section::-webkit-scrollbar-track,
+.terminal_body::-webkit-scrollbar-track {
   border-radius: 10px;
   background-color: #1a202c;
 }
@@ -205,6 +208,7 @@
   background: #171923;
   height: calc(100% - 61px);
   padding: 20px;
+  overflow: auto;
 }
 
 .body_container {
