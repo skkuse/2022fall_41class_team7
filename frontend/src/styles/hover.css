@@ -1,8 +1,3 @@
-body {
-  overflow-x: hidden;
-  overflow-y: hidden;
-}
-
 .terminal_btn_container button:nth-child(1):hover {
   background-color: #4c5767 !important;
 }
