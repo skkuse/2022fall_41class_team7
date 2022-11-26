@@ -1,7 +1,7 @@
 import { ChakraProvider, Box, Text, Image, Button, Input, useDisclosure } from "@chakra-ui/react";
 import { useState } from "react";
 import "../styles/home.css";
-import axios from "axios";
+import axios from "../utils/axios";
 import logo from "../assets/images/logo.png";
 import SelectLecture from "../components/modals/SelectLecture";
 
@@ -20,16 +20,8 @@ function Home() {
   };
 
   const login = () => {
-    axios.defaults.withCredentials = true;
-    axios.defaults.xsrfCookieName = "csrftoken";
-    axios.defaults.xsrfHeaderName = "X-CSRFToken";
-
     axios
-      .post(
-        "/api/login/",
-        { student_id: id, password },
-        { headers: { "Content-Type": "application/json" } }
-      )
+      .post("login/", { student_id: id, password })
       .then((response) => {
         if (response.status === 200) {
           // console.log("성공");
