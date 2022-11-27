@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-
+import { Link } from "react-router-dom";
 import {
   Modal,
   ModalOverlay,
@@ -72,9 +72,11 @@ function SelectLecture({ isOpen, onClose }) {
         <ModalFooter>
           <Button onClick={onClose}>취소</Button>
           {/* link param 임의로 지정해놨으니 강의 선택하면 해당 id 전달하기 */}
-          <Button colorScheme="blue" mr={3} onClick={enrollLecture}>
-            시험 응시하기
-          </Button>
+          <Link to="test/1">
+            <Button colorScheme="blue" mr={3} onClick={enrollLecture}>
+              시험 응시하기
+            </Button>
+          </Link>
         </ModalFooter>
       </ModalContent>
     </Modal>
