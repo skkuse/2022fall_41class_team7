@@ -15,7 +15,7 @@ from api.serializers import (
 
 @api_view(["GET", "POST"])
 def storage(request: Request):
-    storage_serializer = StorageQueryParamsSerializer(data=request.query_params)
+    storage_serializer = StorageQueryParamsSerializer(data=request.data)
     storage_serializer.is_valid(raise_exception=True)
     problem_id = storage_serializer.validated_data.get("problem_id")
     order = storage_serializer.validated_data.get("order")

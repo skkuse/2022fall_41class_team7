@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { SearchIcon, DownloadIcon, CopyIcon, RepeatClockIcon } from "@chakra-ui/icons";
 import Editor from "@monaco-editor/react";
+import axios from "../utils/axios";
 
 const progress = {
   width: "32px",
@@ -23,6 +24,8 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
   const editorRef = useRef(null);
   const toast = useToast();
   const [value, setValue] = useState(skeletonCode);
+  const [selected, setSelected] = useState(1);
+  const [storageNum, setStorageNum] = useState(0);
 
   const inputFile = () => {
     document.getElementById("hiddenFileInput").click();
@@ -36,7 +39,7 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
     };
     fileReader.readAsText(file);
     toast({
-      title: "코드를 불러왔습니다.",
+      title: "파일로부터 코드를 불러옵니다.",
       position: "bottom-right",
       isClosable: true,
       duration: 1000,
@@ -67,17 +70,35 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
     });
   };
 
-  const saveValue = () => {
+  const getStorage = () => {
+    axios
+      .get("/storages/", { problem_id: 1, order: selected })
+      .then((response) => {
+        editorRef.current.setValue(response);
+        // console.log("코드불러오기");
+      })
+      .catch((error) => null);
     toast({
-      title: "코드를 저장했습니다.",
+      title: "저장된 코드를 불러옵니다.",
       position: "bottom-right",
       isClosable: true,
       duration: 1000,
     });
   };
 
-  const onChangeEditor = () => {
-    document.getElementById("hiddenCodeValue").value = editorRef.current?.getValue();
+  const saveStorage = () => {
+    axios
+      .post("/storages/", { problem_id: 1, order: selected, code: editorRef.current?.getValue() })
+      .then((response) => {
+        // console.log("코드저장");
+      })
+      .catch((error) => null);
+    toast({
+      title: "코드를 저장합니다.",
+      position: "bottom-right",
+      isClosable: true,
+      duration: 1000,
+    });
   };
 
   const getUpdatedTime = (updatedAt) => {
@@ -91,9 +112,6 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
     const dateToString = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
     return dateToString;
   };
-
-  const [selected, setSelected] = useState(1);
-  const [storageNum, setStorageNum] = useState(0);
 
   const onChangeStorage = (event) => {
     setSelected(event.target.value);
@@ -148,7 +166,7 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
             background="#718096"
             className="iconBtn"
             aria-label="Download"
-            onClick={saveValue}
+            onClick={getStorage}
             icon={<DownloadIcon />}
           />
         </Box>
@@ -167,7 +185,7 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
               </option>
             ))}
           </Select>
-          <Button className="saveBtn" size="sm" width="50px" backgroundColor="#38A169">
+          <Button onClick={saveStorage} className="saveBtn" size="sm" width="50px" backgroundColor="#38A169">
             저장
           </Button>
           <CircularProgress
@@ -188,10 +206,7 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
         defaultValue={value}
         theme="vs-dark"
         onMount={handleEditorDidMount}
-        onChange={onChangeEditor}
       />
-
-      <input type="hidden" id="hiddenCodeValue" value={value} />
     </Box>
   );
 }
