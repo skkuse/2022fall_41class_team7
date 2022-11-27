@@ -76,6 +76,10 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
     });
   };
 
+  const onChangeEditor = () => {
+    document.getElementById("hiddenCodeValue").value = editorRef.current?.getValue();
+  };
+
   const getUpdatedTime = (updatedAt) => {
     const updatedime = new Date(updatedAt);
     const year = updatedime.getFullYear();
@@ -184,7 +188,10 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
         defaultValue={value}
         theme="vs-dark"
         onMount={handleEditorDidMount}
+        onChange={onChangeEditor}
       />
+
+      <input type="hidden" id="hiddenCodeValue" value={value} />
     </Box>
   );
 }

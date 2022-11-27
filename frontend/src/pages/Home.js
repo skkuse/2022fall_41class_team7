@@ -28,12 +28,13 @@ function Home() {
           setIsFailed(false);
           setIsFailed2(false);
           onOpen();
-        } else if (response.status === 404) {
-          setIsFailed(true);
-          setIsFailed2(true);
         }
       })
-      .catch((error) => setIsFailed(true));
+      .catch((error) => {
+        // console.log("실패");
+        setIsFailed(true);
+        setIsFailed2(true);
+      });
   };
 
   return (
