@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-
 import {
   Modal,
   ModalOverlay,
@@ -11,14 +10,15 @@ import {
   FormControl,
   Button,
 } from "@chakra-ui/react";
-import App from "../../pages/App";
 import axios from "../../utils/axios";
+import { useNavigate } from "react-router-dom";
 
 function SelectLecture({ isOpen, onClose }) {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
   const [lecture, setLecture] = useState([]);
   const [lecID, setSelected] = useState("");
+  const navigate = useNavigate();
 
   const handleSelect = (e) => {
     setSelected(e.target.value);
@@ -41,7 +41,7 @@ function SelectLecture({ isOpen, onClose }) {
       .post(`/lectures/${lecID}/enroll/`)
       .then((response) => {
         if (response.status === 200) {
-          // console.log("성공"); app 페이지로 연결
+          navigate(`/test/${lecID}`);
         }
       })
       .catch((error) => null);
