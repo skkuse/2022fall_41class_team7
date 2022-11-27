@@ -72,7 +72,7 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
 
   const getStorage = () => {
     axios
-      .get("/storages/", { problem_id: 1, order: selected })
+      .get("/storages/", { params: { problem_id: 1, order: selected } })
       .then((response) => {
         editorRef.current.setValue(response);
         // console.log("코드불러오기");
@@ -88,7 +88,7 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
 
   const saveStorage = () => {
     axios
-      .post("/storages/", { problem_id: 1, order: selected, code: editorRef.current?.getValue() })
+      .post("/storages/", { code: editorRef.current?.getValue() }, { params: { problem_id: 1, order: selected } })
       .then((response) => {
         // console.log("코드저장");
       })
