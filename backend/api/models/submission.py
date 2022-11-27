@@ -25,4 +25,4 @@ class Submission(models.Model):
     analysis = models.JSONField(null=True, blank=True, default=dict)
 
     def __str__(self):
-        return f"{self.user.student_id}_{self.problem.name}_{self.created_at}"
+        return f"{self.id}: {self.user.student_id}_{self.problem.name}_{self.created_at}"

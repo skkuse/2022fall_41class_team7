@@ -20,4 +20,4 @@ class Storage(models.Model):
         unique_together = ("user", "problem", "order")
 
     def __str__(self):
-        return f"{self.user.student_id}_{self.problem.name}_{self.order}"
+        return f"{self.id}: {self.user.student_id}_{self.problem.name}_{self.order}"
