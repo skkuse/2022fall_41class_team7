@@ -9,12 +9,12 @@ import CodeEditor from "../components/CodeEditor";
 import Terminal from "../components/Terminial";
 
 function App() {
-  const selectedLecture = 1;
+  const selectedLecture = 1; // 이부분 링크주소에서 변수값 가져와야함
   const [problem, setProblem] = useState({});
   const [lecture, setLecture] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const userName = "홍길동"; // 로그인 정보 필요
+  const userName = "홍길동"; // 로그인 유저 이름 가져와야함
 
   const getProblem = async (problemId) => {
     const response = await axios.get(`problems/${problemId}/`, {});
@@ -28,13 +28,7 @@ function App() {
     // getProblem(response.data.problems[0].id);
   };
 
-  // 임시 로그인 함수
-  const login = () => {
-    axios.post("login/", { student_id: 1234, password: "12345" });
-  };
-
   useEffect(() => {
-    login();
     getLecture();
   }, []);
 
