@@ -1,28 +1,30 @@
 import "../styles/editor.css";
 import PropTypes from "prop-types";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import {
-  IconButton,
+  Box,
   Button,
-  Select,
   CircularProgress,
   CircularProgressLabel,
-  Box,
   Divider,
+  IconButton,
+  Select,
   useToast,
 } from "@chakra-ui/react";
-import { SearchIcon, DownloadIcon, CopyIcon, RepeatClockIcon } from "@chakra-ui/icons";
+import { CopyIcon, DownloadIcon, RepeatClockIcon, SearchIcon } from "@chakra-ui/icons";
 import Editor from "@monaco-editor/react";
+import axios from "../utils/axios";
 
 const progress = {
   width: "32px",
   height: "32px",
 };
 
-function CodeEditor({ storageCapacity, storages, skeletonCode }) {
+function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
   const editorRef = useRef(null);
+  const selectRef = useRef(null);
   const toast = useToast();
-  const [value, setValue] = useState(skeletonCode);
+  const [storageNum, setStorageNum] = useState(-1);
 
   const inputFile = () => {
     document.getElementById("hiddenFileInput").click();
@@ -36,7 +38,7 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
     };
     fileReader.readAsText(file);
     toast({
-      title: "코드를 불러왔습니다.",
+      title: "파일로부터 코드를 불러옵니다.",
       position: "bottom-right",
       isClosable: true,
       duration: 1000,
@@ -44,7 +46,7 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
   };
 
   const resetValue = () => {
-    editorRef.current.setValue(value);
+    editorRef.current.setValue(skeletonCode);
     toast({
       title: "코드가 초기화 되었습니다.",
       position: "bottom-right",
@@ -53,12 +55,18 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
     });
   };
 
+  const formatEpochTime = (updatedAt) => {
+    const date = new Date(0);
+    date.setUTCSeconds(updatedAt);
+    return date.toISOString();
+  };
+
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
   };
 
   const copyValue = () => {
-    navigator.clipboard.writeText(editorRef.current?.getValue());
+    navigator.clipboard.writeText(editorRef.current.getValue());
     toast({
       title: "코드가 클립보드에 복사되었습니다.",
       position: "bottom-right",
@@ -67,46 +75,56 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
     });
   };
 
-  const saveValue = () => {
-    toast({
-      title: "코드를 저장했습니다.",
-      position: "bottom-right",
-      isClosable: true,
-      duration: 1000,
-    });
+  const saveStorage = async () => {
+    try {
+      const res = await axios.post(
+        "/storages/",
+        { code: editorRef.current.getValue() },
+        {
+          params: {
+            problem_id: problem.id,
+            order: storageNum,
+          },
+        }
+      );
+      selectRef.current.children[+storageNum + 1].text = `${+storageNum + 1}. ${formatEpochTime(
+        res.data.updated_at
+      )}`;
+      setProblem((prev) => {
+        const s = [...prev.storages];
+        s[storageNum] = { id: res.data.id, updated_at: res.data.updated_at };
+        return { ...prev, storages: s };
+      });
+
+      toast({
+        title: "코드를 저장했습니다.",
+        position: "bottom-right",
+        isClosable: true,
+        status: "success",
+        duration: 1000,
+      });
+    } catch (e) {
+      toast({
+        title: "코드를 저장에 실패했습니다.",
+        position: "bottom-right",
+        isClosable: true,
+        status: "error",
+        duration: 1000,
+      });
+    }
   };
 
-  const onChangeEditor = () => {
-    document.getElementById("hiddenCodeValue").value = editorRef.current?.getValue();
+  const onChangeStorage = async (event) => {
+    setStorageNum(event.target.value);
+    try {
+      const res = await axios.get("/storages/", {
+        params: { problem_id: problem.id, order: event.target.value },
+      });
+      editorRef.current.setValue(res.data.code);
+    } catch (e) {
+      editorRef.current.setValue("");
+    }
   };
-
-  const getUpdatedTime = (updatedAt) => {
-    const updatedime = new Date(updatedAt);
-    const year = updatedime.getFullYear();
-    const month = updatedime.getMonth() + 1;
-    const date = updatedime.getDate();
-    const hours = updatedime.getHours();
-    const minutes = updatedime.getMinutes();
-    const seconds = updatedime.getSeconds();
-    const dateToString = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
-    return dateToString;
-  };
-
-  const [selected, setSelected] = useState(1);
-  const [storageNum, setStorageNum] = useState(0);
-
-  const onChangeStorage = (event) => {
-    setSelected(event.target.value);
-  };
-
-  const getStorageNum = () => {
-    const nonEmptyStorage = storages?.filter((s) => s.id != null);
-    setStorageNum(nonEmptyStorage.length);
-  };
-
-  useEffect(() => {
-    getStorageNum();
-  }, []);
 
   return (
     <Box className="container">
@@ -148,7 +166,6 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
             background="#718096"
             className="iconBtn"
             aria-label="Download"
-            onClick={saveValue}
             icon={<DownloadIcon />}
           />
         </Box>
@@ -156,27 +173,32 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
           <Select
             className="select"
             size="sm"
-            value={selected}
-            color="white"
+            placeholder="저장소 선택"
             onChange={onChangeStorage}
+            ref={selectRef}
           >
-            {storages?.map((s, index) => (
-              <option value={s.id} key={s.id}>
-                {`${index + 1}. `}
-                {s.id ? `${getUpdatedTime(storages[index].updated_at)}` : ""}
+            {problem.storages.map((s, index) => (
+              <option value={index} key={s.id}>
+                {index + 1}. {s.id && formatEpochTime(problem.storages[index].updated_at)}
               </option>
             ))}
           </Select>
-          <Button className="saveBtn" size="sm" width="50px" backgroundColor="#38A169">
+          <Button
+            onClick={saveStorage}
+            className="saveBtn"
+            size="sm"
+            width="50px"
+            backgroundColor="#38A169"
+          >
             저장
           </Button>
           <CircularProgress
-            value={(storageNum / storageCapacity) * 100}
+            value={(problem.storages.filter((s) => s.id).length / storageCapacity) * 100}
             size="32px"
             style={progress}
           >
             <CircularProgressLabel>
-              {storageNum}/{storageCapacity}
+              {problem.storages.filter((s) => s.id).length}/{storageCapacity}
             </CircularProgressLabel>
           </CircularProgress>
         </Box>
@@ -185,25 +207,26 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
       <Editor
         height="calc(100% - 61px)"
         defaultLanguage="python"
-        defaultValue={value}
+        defaultValue={skeletonCode}
         theme="vs-dark"
         onMount={handleEditorDidMount}
-        onChange={onChangeEditor}
       />
-
-      <input type="hidden" id="hiddenCodeValue" value={value} />
     </Box>
   );
 }
 
 CodeEditor.propTypes = {
   storageCapacity: PropTypes.number.isRequired,
-  storages: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      updated_at: PropTypes.number,
-    })
-  ).isRequired,
+  problem: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    storages: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+        updated_at: PropTypes.number,
+      })
+    ).isRequired,
+  }).isRequired,
+  setProblem: PropTypes.func.isRequired,
   skeletonCode: PropTypes.string.isRequired,
 };
 
