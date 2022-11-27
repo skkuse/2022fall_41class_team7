@@ -5,12 +5,12 @@ from api.common import EpochDateTimeField
 from api.models import Submission
 
 
-class SubmissionSerializer(serializers.ModelSerializer):
+class SubmitSerializer(serializers.ModelSerializer):
     created_at = EpochDateTimeField()
 
     class Meta:
         model = Submission
-        fields = "__all__"
+        fields = ["id", "created_at", "state"]
 
 
 class CodeSerializer(serializers.Serializer):
@@ -44,3 +44,7 @@ class GradeResultSerializer(ExecuteResultSerializer):
 class GradeQueryParamsSerializer(serializers.Serializer):
     problem_id = serializers.IntegerField(validators=[MinValueValidator(1)])
     testcase = serializers.IntegerField(validators=[MinValueValidator(1)])
+
+
+class SubmitQueryParamsSerializer(serializers.Serializer):
+    problem_id = serializers.IntegerField(validators=[MinValueValidator(1)])

@@ -19,7 +19,7 @@ class Submission(models.Model):
         on_delete=models.CASCADE,
     )
     code = models.CharField(max_length=2000)
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
     state = enum.EnumField(SubmissionState, default=SubmissionState.GRADING)
     result = models.JSONField(null=True, blank=True, default=dict)
     analysis = models.JSONField(null=True, blank=True, default=dict)
