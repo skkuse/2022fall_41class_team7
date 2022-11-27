@@ -1,6 +1,6 @@
 import "../styles/editor.css";
-import PropTypes, { number } from "prop-types";
-import React, { useEffect, useRef, useState } from "react";
+import PropTypes from "prop-types";
+import React, { useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -8,7 +8,7 @@ import {
   CircularProgressLabel,
   Divider,
   IconButton,
-  Select, usePrevious,
+  Select,
   useToast,
 } from "@chakra-ui/react";
 import { CopyIcon, DownloadIcon, RepeatClockIcon, SearchIcon } from "@chakra-ui/icons";
@@ -77,13 +77,19 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
 
   const saveStorage = async () => {
     try {
-      const res = await axios.post("/storages/", { code: editorRef.current.getValue() }, {
-        params: {
-          problem_id: problem.id,
-          order: storageNum
+      const res = await axios.post(
+        "/storages/",
+        { code: editorRef.current.getValue() },
+        {
+          params: {
+            problem_id: problem.id,
+            order: storageNum,
+          },
         }
-      });
-      selectRef.current.children[+storageNum + 1].text = `${+storageNum + 1}. ${formatEpochTime(res.data.updated_at)}`;
+      );
+      selectRef.current.children[+storageNum + 1].text = `${+storageNum + 1}. ${formatEpochTime(
+        res.data.updated_at
+      )}`;
       setProblem((prev) => {
         const s = [...prev.storages];
         s[storageNum] = { id: res.data.id, updated_at: res.data.updated_at };
@@ -111,7 +117,9 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
   const onChangeStorage = async (event) => {
     setStorageNum(event.target.value);
     try {
-      const res = await axios.get("/storages/", { params: { problem_id: problem.id, order: event.target.value } });
+      const res = await axios.get("/storages/", {
+        params: { problem_id: problem.id, order: event.target.value },
+      });
       editorRef.current.setValue(res.data.code);
     } catch (e) {
       editorRef.current.setValue("");
