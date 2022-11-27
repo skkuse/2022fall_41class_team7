@@ -37,7 +37,7 @@ def enroll_lecture(request: Request, lecture_id):
     if lecture.deadline < timezone.now():
         raise PermissionDenied("강의가 마감되었습니다.")
 
-    enrollment = Enrollment.objects.filter(user__id=request.user.id)
+    enrollment = Enrollment.objects.filter(user__id=request.user.id, lecture_id=lecture_id)
     if enrollment.exists():
         return Response(status=200)
     else:
