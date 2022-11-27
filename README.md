@@ -1,4 +1,4 @@
-<h1 align="center">프로그래서머스쿠 Programmerskku</h1>
+<h1 align="center">프로그래머스쿠 Programmerskku</h1>
 <p align="center">
   <img src="https://user-images.githubusercontent.com/25472942/202457567-6859b4d3-5504-41f4-9ac3-0bfc53911e42.png" width="300px" alt="logo"/>
 </p>
