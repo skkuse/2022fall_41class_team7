@@ -7,19 +7,21 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from api.common import executor, file_interceptor
+from api.common import executor, file_interceptor, grade_submission
 from api.models import Problem, Submission
 from api.serializers import (
     CodeSerializer,
     GradeResultSerializer,
     ExecuteResultSerializer,
     GradeQueryParamsSerializer,
-    ExecuteSerializer, SubmitQueryParamsSerializer, SubmitSerializer,
+    ExecuteSerializer,
+    SubmitQueryParamsSerializer,
+    SubmitSerializer,
 )
 
 
 @api_view(["POST"])
-@file_interceptor
+@file_interceptor()
 def execute(request: Request, file: TextIO):
     execute_serializer = ExecuteSerializer(data=request.data)
     execute_serializer.is_valid(raise_exception=True)
@@ -30,7 +32,7 @@ def execute(request: Request, file: TextIO):
     file.write(code)
     file.close()
 
-    user_out, err = executor.run(file.name, code, user_in)
+    user_out, err = executor.run(file.name, user_in)
 
     result_serializer = ExecuteResultSerializer(data={"result": user_out, "error": err})
     result_serializer.is_valid(raise_exception=True)
@@ -65,7 +67,7 @@ def grade(request: Request, file: TextIO):
     file.write(code)
     file.close()
 
-    user_out, err = executor.run(file.name, code, tc_in, timeout)
+    user_out, err = executor.run(file.name, tc_in, timeout)
 
     is_passed = str(user_out).strip() == str(tc_out).strip()
 
@@ -85,8 +87,7 @@ def grade(request: Request, file: TextIO):
 
 
 @api_view(["POST"])
-@file_interceptor
-def submit(request: Request, file: TextIO):
+def submit(request: Request):
     query_params_serializer = SubmitQueryParamsSerializer(data=request.query_params)
     query_params_serializer.is_valid(raise_exception=True)
     problem_id = query_params_serializer.validated_data.get("problem_id")
@@ -108,18 +109,13 @@ def submit(request: Request, file: TextIO):
     if len(submissions) >= problem.lecture.submission_capacity:
         raise ValidationError("제출 횟수가 초과되었습니다.")
 
-    # write code to file
-    file.write(code)
-    file.close()
-
     # create submission
     submission = Submission.objects.create(
-        problem=problem,
-        user=request.user,
-        code=code
+        problem=problem, user=request.user, code=code
     )
 
     # send submitted signal
+    grade_submission.delay(submission.id)
 
     return Response(SubmitSerializer(submission).data, 201)
 
