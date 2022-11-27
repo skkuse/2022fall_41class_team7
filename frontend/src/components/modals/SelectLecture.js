@@ -10,8 +10,8 @@ import {
   FormControl,
   Button,
 } from "@chakra-ui/react";
-import axios from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
+import axios from "../../utils/axios";
 
 function SelectLecture({ isOpen, onClose }) {
   const initialRef = React.useRef(null);
