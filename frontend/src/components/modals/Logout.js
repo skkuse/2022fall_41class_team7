@@ -19,7 +19,7 @@ function Logout({ isOpen, onClose }) {
 
   const logout = () => {
     axios
-      .get("logout/", { authentification: "X-CSRFToken" })
+      .get("logout/", {})
       .then((response) => {
         if (response.status === 200) {
           setIsFailed(false);
