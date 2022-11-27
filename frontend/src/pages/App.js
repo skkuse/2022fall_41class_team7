@@ -68,7 +68,8 @@ function App() {
           <Divider orientation="vertical" borderColor="whiteAlpha.200" />
           <CodeEditor
             storageCapacity={lecture?.storage_capacity}
-            storages={problem?.storages}
+            problem={problem}
+            setProblem={setProblem}
             skeletonCode={problem?.skeleton_code}
           />
           <Divider orientation="vertical" borderColor="whiteAlpha.200" />
