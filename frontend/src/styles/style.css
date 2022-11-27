@@ -216,6 +216,33 @@
   height: calc(100% - 62px);
 }
 
+
+.returnCode_modal {
+  width: 323px !important; 
+  height: 136px;
+}
+
+.returnCode_body {
+  width: 323px !important; 
+  height: 136px;
+  background: #1A202C !important;
+}
+
+.returnCode_container {
+  padding: 24px 24px 12px 24px !important;
+}
+
+.returnCode_footer {
+  padding: 12px 24px 24px 24px !important;
+}
+
+.returnCode_footer button {
+  height: 32px;
+  width: 51.5px;
+  margin-left: 12px;
+  margin-right: 0px;
+}
+
 @media screen and (min-width: 1500px) {
   body {
     overflow-x: hidden;
