@@ -185,7 +185,13 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
               </option>
             ))}
           </Select>
-          <Button onClick={saveStorage} className="saveBtn" size="sm" width="50px" backgroundColor="#38A169">
+          <Button
+            onClick={saveStorage}
+            className="saveBtn"
+            size="sm"
+            width="50px"
+            backgroundColor="#38A169"
+          >
             저장
           </Button>
           <CircularProgress

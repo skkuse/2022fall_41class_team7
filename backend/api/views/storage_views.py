@@ -12,7 +12,6 @@ from api.serializers import (
     CodeSerializer,
 )
 
-
 @api_view(["GET", "POST"])
 def storage(request: Request):
     storage_serializer = StorageQueryParamsSerializer(data=request.data)
