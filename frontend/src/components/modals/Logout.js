@@ -10,22 +10,16 @@ import {
   Button,
   Text,
 } from "@chakra-ui/react";
-import axios from "axios";
+import axios from "../../utils/axios";
 
 function Logout({ isOpen, onClose }) {
-  axios.defaults.withCredentials = true;
-  axios.defaults.xsrfCookieName = "csrftoken";
-  axios.defaults.xsrfHeaderName = "X-CSRFToken";
-
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
   const [isFailed, setIsFailed] = useState(false);
 
   const logout = () => {
     axios
-      .get("/api/logout/", {
-        headers: { "Content-Type": "application/json", authentification: "X-CSRFToken" },
-      })
+      .get("logout/", { authentification: "X-CSRFToken" })
       .then((response) => {
         if (response.status === 200) {
           setIsFailed(false);
