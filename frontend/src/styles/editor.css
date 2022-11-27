@@ -41,6 +41,10 @@
 .select option {
   color: black;
 }
+
+.logo_img {
+    cursor: pointer;
+}
 /* .saveBtn {
     width: 50px;
     height: 32px;
