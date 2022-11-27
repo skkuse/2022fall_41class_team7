@@ -88,7 +88,11 @@ function CodeEditor({ storageCapacity, storages, skeletonCode }) {
 
   const saveStorage = () => {
     axios
-      .post("/storages/", { code: editorRef.current?.getValue() }, { params: { problem_id: 1, order: selected } })
+      .post(
+        "/storages/",
+        { code: editorRef.current?.getValue() },
+        { params: { problem_id: 1, order: selected } }
+      )
       .then((response) => {
         // console.log("코드저장");
       })
