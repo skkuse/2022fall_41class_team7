@@ -53,10 +53,6 @@ function RunCode({ isOpen, onClose }) {
   };
 
   const onExecute = () => {
-    axios.defaults.withCredentials = true;
-    axios.defaults.xsrfCookieName = "csrftoken";
-    axios.defaults.xsrfHeaderName = "X-CSRFToken";
-
     if (!checkParam()) return;
 
     setTerminal("실행 시작", "yellow");
@@ -91,7 +87,7 @@ function RunCode({ isOpen, onClose }) {
       <ModalContent className="returnCode_body">
         <ModalBody pb={6} className="returnCode_container">
           <FormControl>
-            <Input placeholder="파라미터" onChange={onChangeInput} />
+            <Input placeholder="파라미터" onChange={onChangeInput} color="white" />
           </FormControl>
         </ModalBody>
 
