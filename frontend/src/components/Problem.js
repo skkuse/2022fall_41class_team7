@@ -21,7 +21,7 @@ function Problem({ explanation, reference, testcases }) {
           <Box className="explanation_head_text">테스트케이스</Box>
           <Box className="testcase_container">
             {testcasesNotHidden?.map((tc, index) => (
-              <Testcase title={`테스트케이스 ${index + 1}`} input={tc.input} output={tc.output} />
+              <Testcase key={tc.index} title={`테스트케이스 ${index + 1}`} input={tc.input} output={tc.output} />
             ))}
           </Box>
         </Box>
