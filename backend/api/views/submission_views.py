@@ -17,6 +17,7 @@ from api.serializers import (
     ExecuteSerializer,
     SubmitQueryParamsSerializer,
     SubmitSerializer,
+    SubmissionSerializer,
 )
 
 
@@ -69,7 +70,7 @@ def grade(request: Request, file: TextIO):
 
     user_out, err = executor.run(file.name, tc_in, timeout)
 
-    is_passed = str(user_out).strip() == str(tc_out).strip()
+    is_passed = str(user_out) == str(tc_out)
 
     response_serializer = GradeResultSerializer(
         data={
@@ -114,13 +115,18 @@ def submit(request: Request):
         problem=problem, user=request.user, code=code
     )
 
-    # send submitted signal
+    # send grade signal
     grade_submission.delay(submission.id)
 
     return Response(SubmitSerializer(submission).data, 201)
 
 
 @api_view(["GET"])
-@file_interceptor
-def get_submission_by_id(request: Request, file: TextIO):
-    pass
+def get_submission_by_id(request: Request, submission_id: int):
+    submission = get_object_or_404(
+        Submission.objects.filter(id=submission_id)
+        .select_related("problem")
+        .select_related("user")
+    )
+
+    return Response(SubmissionSerializer(submission).data, status=200)

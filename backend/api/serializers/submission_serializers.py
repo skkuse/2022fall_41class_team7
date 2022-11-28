@@ -3,6 +3,15 @@ from rest_framework import serializers
 
 from api.common import EpochDateTimeField
 from api.models import Submission
+from api.serializers import ProblemSerializer
+
+
+class SubmissionSerializer(serializers.ModelSerializer):
+    problem = ProblemSerializer(read_only=True)
+
+    class Meta:
+        model = Submission
+        fields = "__all__"
 
 
 class SubmitSerializer(serializers.ModelSerializer):

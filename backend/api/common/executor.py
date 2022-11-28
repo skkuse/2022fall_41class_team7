@@ -20,6 +20,6 @@ def run(
         return None, "Timeout"
 
     return (
-        result.stdout if result.stdout else None,
+        result.stdout.strip() if result.stdout else None,
         result.stderr.splitlines()[-1] if result.stderr else None,
     )
