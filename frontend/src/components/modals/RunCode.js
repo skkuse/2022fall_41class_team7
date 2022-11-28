@@ -58,16 +58,12 @@ function RunCode({ isOpen, onClose }) {
     setTerminal("실행 시작", "yellow");
 
     axios
-      .post(
-        "execute/",
-        { input: getInput(), code: getCode() },        
-      )
+      .post("execute/", { input: getInput(), code: getCode() })
       .then((response) => {
         if (response.status === 200) {
           if (response.data.result != null) {
             setTerminal("실행 성공", "yellow");
             setTerminal(response.data.result);
-
           } else if (response.data.error != null) {
             setTerminal("실행 실패", "yellow");
             setTerminal(response.data.error);
@@ -80,7 +76,13 @@ function RunCode({ isOpen, onClose }) {
   };
 
   return (
-    <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} isCentered className="returnCode_modal">
+    <Modal
+      initialFocusRef={initialRef}
+      isOpen={isOpen}
+      onClose={onClose}
+      isCentered
+      id="returnCode"
+    >
       <ModalOverlay />
       <ModalContent className="returnCode_body">
         <ModalBody pb={6} className="returnCode_container">

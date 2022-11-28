@@ -2,7 +2,9 @@ from rest_framework import serializers
 
 
 class EpochDateTimeField(serializers.DateTimeField):
-    def __init__(self, format=None, input_formats=None, default_timezone=None, **kwargs):
+    def __init__(
+        self, format=None, input_formats=None, default_timezone=None, **kwargs
+    ):
         kwargs["required"] = kwargs.get("required", False)
         super().__init__(format, input_formats, default_timezone, **kwargs)
 
