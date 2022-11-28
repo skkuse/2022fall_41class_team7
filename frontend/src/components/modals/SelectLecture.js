@@ -61,7 +61,7 @@ function SelectLecture({ isOpen, onClose }) {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader />
+        <ModalHeader>강의 선택</ModalHeader>
         <ModalBody pb={6}>
           <FormControl>
             <Select onChange={handleSelect} value={lecID}>
