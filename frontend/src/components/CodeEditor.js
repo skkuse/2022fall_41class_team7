@@ -126,6 +126,10 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
     }
   };
 
+  const onChangeEditor = () => {
+    document.getElementById("hiddenCodeValue").value = editorRef.current.getValue();
+  };
+
   return (
     <Box className="container">
       <Box className="header">
@@ -210,7 +214,10 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
         defaultValue={skeletonCode}
         theme="vs-dark"
         onMount={handleEditorDidMount}
+        onChange={onChangeEditor}
       />
+
+      <input type="hidden" id="hiddenCodeValue" value="" />
     </Box>
   );
 }
