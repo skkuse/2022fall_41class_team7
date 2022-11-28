@@ -1,4 +1,16 @@
-import { ChakraProvider, Box, Text, Image, Button, Input, useDisclosure } from "@chakra-ui/react";
+import {
+  ChakraProvider,
+  Box,
+  Text,
+  Image,
+  Button,
+  Input,
+  useDisclosure,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  FormHelperText,
+} from "@chakra-ui/react";
 import { useState } from "react";
 import "../styles/home.css";
 import axios from "../utils/axios";
@@ -37,6 +49,19 @@ function Home() {
       });
   };
 
+  const isErrorId = id === "" && isFailed;
+  const isErrorPassword = password === "" && isFailed;
+
+  function validateName(value) {
+    let error;
+    if (!value) {
+      error = "Name is required";
+    } else if (value.toLowerCase() !== "naruto") {
+      error = "Jeez! You're not a fan 😱";
+    }
+    return error;
+  }
+
   return (
     <ChakraProvider>
       <Box className="body">
@@ -44,30 +69,39 @@ function Home() {
           <Image className="icon" src={logo} />
           <Box className="title">프로그래머스쿠</Box>
           <Box className="login-pan">
-            <Text>아이디</Text>
-            <Input type="text" placeholder="입력" name="loginId" value={id} onChange={onChangeId} />
-            {isFailed && id === "" ? (
-              <Text className="msg" name="loginIdMsg">
-                아이디를 입력하세요.
-              </Text>
-            ) : null}
-
-            <Text>비밀번호</Text>
-            <Input
-              type="password"
-              placeholder="입력"
-              name="loginPwd"
-              value={password}
-              onChange={onChangePassword}
-            />
-            {isFailed && password === "" ? (
-              <Text className="msg" name="loginPwdMsg">
-                비밀번호를 입력하세요.
-              </Text>
-            ) : null}
+            <FormControl height="100px" isInvalid={isErrorId}>
+              <FormLabel>아이디</FormLabel>
+              <Input
+                type="text"
+                placeholder="입력"
+                name="loginId"
+                value={id}
+                onChange={onChangeId}
+              />
+              {isErrorId ? (
+                <FormErrorMessage>아이디를 입력하세요.</FormErrorMessage>
+              ) : (
+                <FormHelperText />
+              )}
+            </FormControl>
+            <FormControl height="100px" isInvalid={isErrorPassword}>
+              <FormLabel>비밀번호</FormLabel>
+              <Input
+                type="password"
+                placeholder="입력"
+                name="loginPwd"
+                value={password}
+                onChange={onChangePassword}
+              />
+              {isErrorPassword ? (
+                <FormErrorMessage>비밀번호를 입력하세요.</FormErrorMessage>
+              ) : (
+                <FormHelperText />
+              )}
+            </FormControl>
           </Box>
           <Box className="btn-pan">
-            <Button className="btn_login" onClick={login}>
+            <Button className="btn_login" onClick={login} type="submit">
               로그인
             </Button>
             {isFailed2 ? (
