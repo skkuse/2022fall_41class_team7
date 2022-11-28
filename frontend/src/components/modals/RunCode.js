@@ -63,7 +63,7 @@ function RunCode({ isOpen, onClose }) {
         if (response.status === 200) {
           if (response.data.result != null) {
             setTerminal("실행 성공", "yellow");
-            setTerminal(response.data.result.replace(/(?:\r\n|\r|\n)/g, '<br />'));
+            setTerminal(response.data.result.replace(/(?:\r\n|\r|\n)/g, "<br />"));
           } else if (response.data.error != null) {
             setTerminal("실행 실패", "yellow");
             setTerminal(response.data.error);

@@ -126,7 +126,6 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
     }
   };
 
-  //hiddenCodeValue는 execute 관련 코드니 삭제 하지 말아주세요
   const onChangeEditor = () => {
     document.getElementById("hiddenCodeValue").value = editorRef.current.getValue();
   };
@@ -218,7 +217,6 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
         onChange={onChangeEditor}
       />
 
-      {/*hiddenCodeValue는 execute 관련 코드니 삭제 하지 말아주세요*/}
       <input type="hidden" id="hiddenCodeValue" value="" />
     </Box>
   );
