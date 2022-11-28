@@ -87,7 +87,7 @@ function RunCode({ isOpen, onClose }) {
       <ModalContent className="returnCode_body">
         <ModalBody pb={6} className="returnCode_container">
           <FormControl>
-            <Input placeholder="파라미터" onChange={onChangeInput} color="white"/>
+            <Input placeholder="파라미터" onChange={onChangeInput} color="white" />
           </FormControl>
         </ModalBody>
 
