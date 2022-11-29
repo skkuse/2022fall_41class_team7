@@ -28,16 +28,27 @@ function SelectLecture({ isOpen, onClose }) {
   };
 
   useEffect(() => {
-    const getLectures = async () => {
-      try {
-        const response = await axios.get("/lectures/");
-        setLecture(response.data);
-      } catch (e) {
-        // console.log(e);
-      }
-    };
-    getLectures();
-  }, []);
+    if (isOpen) {
+      const getLectures = async () => {
+        try {
+          const response = await axios.get("/lectures/");
+          setLecture(response.data);
+        } catch (e) {
+          // console.log(e);
+        }
+      };
+      getLectures();
+    }
+  }, [isOpen]);
+
+  const getLectures = async () => {
+    try {
+      const response = await axios.get("/lectures/");
+      setLecture(response.data);
+    } catch (e) {
+      // console.log(e);
+    }
+  };
 
   const enrollLecture = () => {
     axios

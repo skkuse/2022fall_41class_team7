@@ -52,16 +52,6 @@ function Home() {
   const isErrorId = id === "" && isFailed;
   const isErrorPassword = password === "" && isFailed;
 
-  function validateName(value) {
-    let error;
-    if (!value) {
-      error = "Name is required";
-    } else if (value.toLowerCase() !== "naruto") {
-      error = "Jeez! You're not a fan 😱";
-    }
-    return error;
-  }
-
   return (
     <ChakraProvider>
       <Box className="body">
