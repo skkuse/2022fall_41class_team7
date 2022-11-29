@@ -8,6 +8,7 @@ import Nav from "../components/Nav";
 import Problem from "../components/Problem";
 import CodeEditor from "../components/CodeEditor";
 import Terminal from "../components/Terminial";
+import { useUserState } from "../utils/contextProvider";
 
 function App() {
   // const { selectedLecture } = useParams(); // 이부분 링크주소에서 변수값 가져와야함
@@ -15,8 +16,9 @@ function App() {
   const [problem, setProblem] = useState({});
   const [lecture, setLecture] = useState({});
   const [loading, setLoading] = useState(true);
+  const { loggedUser, loggedIn } = useUserState();
 
-  const userName = "홍길동"; // 로그인 유저 이름 가져와야함
+  const userName = loggedUser.name; // 로그인 유저 이름 가져와야함
 
   const getProblem = async (problemId) => {
     const response = await axios.get(`problems/${problemId}/`, {});
