@@ -56,6 +56,7 @@ function App() {
         <Divider borderColor="whiteAlpha.200" />
         <Box className="body_container">
           <Problem
+            problem={problem}
             explanation={problem?.explanation}
             reference={problem?.reference}
             testcases={problem?.testcases}
