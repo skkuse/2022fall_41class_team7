@@ -21,12 +21,14 @@ const progress = {
 };
 
 function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
+  const fileInput = useRef();
   const editorRef = useRef(null);
   const selectRef = useRef(null);
   const toast = useToast();
   const [storageNum, setStorageNum] = useState(-1);
 
   const inputFile = () => {
+    fileInput.current.value = "";
     document.getElementById("hiddenFileInput").click();
   };
   const handleFileInput = (event) => {
@@ -148,8 +150,9 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
             type="file"
             id="hiddenFileInput"
             accept=".py"
+            ref={fileInput}
             onChange={handleFileInput}
-            style={{ display: "none" }}
+            hidden
           />
           <IconButton
             size="32px"
