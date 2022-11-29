@@ -22,12 +22,16 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases }) {
   const toast = useToast();
 
   async function getGrade2(testcasesID) {
-    return axios.post("grade/", { code: getCode() }, {
-      params: {
-        problem_id: problem.id,
-        testcase: testcasesID,
-      },
-    });
+    return axios.post(
+      "grade/",
+      { code: getCode() },
+      {
+        params: {
+          problem_id: problem.id,
+          testcase: testcasesID,
+        },
+      }
+    );
   }
 
   const getTotalGrade = async () => {
@@ -45,7 +49,9 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases }) {
     }
 
     toast({
-      title: `맞은 갯수 : ${score} 개 / 총 문제수 : ${testcases.length} 개 = > ${(score * 100) / (testcases.length)}점`,
+      title: `맞은 갯수 : ${score} 개 / 총 문제수 : ${testcases.length} 개 = > ${
+        (score * 100) / testcases.length
+      }점`,
       isClosable: true,
       duration: 3000,
     });
