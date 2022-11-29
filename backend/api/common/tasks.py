@@ -61,4 +61,8 @@ def analyze_submission(submission_id: int, file: TextIO):
     submission.state = SubmissionState.ANALYZING
     submission.save()
 
+    # write code to file
+    file.write(submission.code)
+    file.close()
+
     # TODO: analyze result
