@@ -2,6 +2,7 @@ import "../styles/base.css";
 import "../styles/hover.css";
 import { ChakraProvider, Box, Divider, Button, Flex } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import axios from "../utils/axios";
 import Nav from "../components/Nav";
 import Problem from "../components/Problem";
@@ -9,7 +10,8 @@ import CodeEditor from "../components/CodeEditor";
 import Terminal from "../components/Terminial";
 
 function App() {
-  const selectedLecture = 1; // 이부분 링크주소에서 변수값 가져와야함
+  // const { selectedLecture } = useParams(); // 이부분 링크주소에서 변수값 가져와야함
+  const { id } = useParams();
   const [problem, setProblem] = useState({});
   const [lecture, setLecture] = useState({});
   const [loading, setLoading] = useState(true);
@@ -23,7 +25,7 @@ function App() {
   };
 
   const getLecture = async () => {
-    const response = await axios.get(`lectures/${selectedLecture}/`, {});
+    const response = await axios.get(`lectures/${id}/`, {});
     setLecture(response.data);
     // getProblem(response.data.problems[0].id);
   };
