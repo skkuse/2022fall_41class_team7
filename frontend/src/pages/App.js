@@ -2,6 +2,7 @@ import "../styles/base.css";
 import "../styles/hover.css";
 import { ChakraProvider, Box, Divider, Button, Flex } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import axios from "../utils/axios";
 import Nav from "../components/Nav";
 import Problem from "../components/Problem";
@@ -9,12 +10,13 @@ import CodeEditor from "../components/CodeEditor";
 import Terminal from "../components/Terminial";
 
 function App() {
-  const selectedLecture = 1;
+  // const { selectedLecture } = useParams(); // 이부분 링크주소에서 변수값 가져와야함
+  const { id } = useParams();
   const [problem, setProblem] = useState({});
   const [lecture, setLecture] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const userName = "홍길동"; // 로그인 정보 필요
+  const userName = "홍길동"; // 로그인 유저 이름 가져와야함
 
   const getProblem = async (problemId) => {
     const response = await axios.get(`problems/${problemId}/`, {});
@@ -23,18 +25,12 @@ function App() {
   };
 
   const getLecture = async () => {
-    const response = await axios.get(`lectures/${selectedLecture}/`, {});
+    const response = await axios.get(`lectures/${id}/`, {});
     setLecture(response.data);
     // getProblem(response.data.problems[0].id);
   };
 
-  // 임시 로그인 함수
-  const login = () => {
-    axios.post("login/", { student_id: 1234, password: "12345" });
-  };
-
   useEffect(() => {
-    login();
     getLecture();
   }, []);
 
@@ -68,7 +64,8 @@ function App() {
           <Divider orientation="vertical" borderColor="whiteAlpha.200" />
           <CodeEditor
             storageCapacity={lecture?.storage_capacity}
-            storages={problem?.storages}
+            problem={problem}
+            setProblem={setProblem}
             skeletonCode={problem?.skeleton_code}
           />
           <Divider orientation="vertical" borderColor="whiteAlpha.200" />

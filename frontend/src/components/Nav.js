@@ -63,7 +63,7 @@ function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
             alt="service logo"
             boxSize="32px"
             borderRadius="6px"
-            onClick={() => onOpen()}
+            onClick={onOpen}
           />
         </Box>
         <Box>

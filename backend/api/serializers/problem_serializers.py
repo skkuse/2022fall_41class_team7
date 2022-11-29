@@ -32,7 +32,7 @@ class ProblemSerializer(serializers.ModelSerializer):
             {
                 "is_hidden": tc["is_hidden"],
                 "input": None if tc["is_hidden"] else tc["input"],
-                "output": None if tc["is_hidden"] else tc["output"]
+                "output": None if tc["is_hidden"] else tc["output"],
             }
             for tc in obj.testcases
         ]

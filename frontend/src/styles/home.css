@@ -105,3 +105,7 @@
   border-radius: 6px;
   margin: 0px auto;
 }
+
+select option[value=""][disabled] {
+  display: none;
+}

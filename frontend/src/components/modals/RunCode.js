@@ -12,7 +12,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-import axios from "axios";
+import axios from "../../utils/axios";
 
 function RunCode({ isOpen, onClose }) {
   const initialRef = React.useRef(null);
@@ -53,27 +53,21 @@ function RunCode({ isOpen, onClose }) {
   };
 
   const onExecute = () => {
-    axios.defaults.withCredentials = true;
-    axios.defaults.xsrfCookieName = "csrftoken";
-    axios.defaults.xsrfHeaderName = "X-CSRFToken";
-
     if (!checkParam()) return;
 
     setTerminal("실행 시작", "yellow");
 
     axios
-      .post(
-        "/api/execute/",
-        { input: getInput(), code: getCode() },
-        { headers: { "Content-Type": "application/json" } }
-      )
+      .post("execute/", { input: getInput(), code: getCode() })
       .then((response) => {
-        if (response.result != null) {
-          setTerminal("실행 성공", "yellow");
-          setTerminal(response.result);
-        } else if (response.error != null) {
-          setTerminal("실행 실패", "yellow");
-          setTerminal(response.error);
+        if (response.status === 200) {
+          if (response.data.result != null) {
+            setTerminal("실행 성공", "yellow");
+            setTerminal(response.data.result.replace(/(?:\r\n|\r|\n)/g, "<br />"));
+          } else if (response.data.error != null) {
+            setTerminal("실행 실패", "yellow");
+            setTerminal(response.data.error);
+          }
         }
       })
       .catch((error) => setTerminal("API 호출 실패", "yellow"));
@@ -82,16 +76,22 @@ function RunCode({ isOpen, onClose }) {
   };
 
   return (
-    <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal
+      initialFocusRef={initialRef}
+      isOpen={isOpen}
+      onClose={onClose}
+      isCentered
+      id="returnCode"
+    >
       <ModalOverlay />
-      <ModalContent>
-        <ModalBody pb={6}>
+      <ModalContent className="returnCode_body">
+        <ModalBody pb={6} className="returnCode_container">
           <FormControl>
-            <Input placeholder="파라미터" onChange={onChangeInput} />
+            <Input placeholder="파라미터" onChange={onChangeInput} color="white" />
           </FormControl>
         </ModalBody>
 
-        <ModalFooter>
+        <ModalFooter className="returnCode_footer">
           <Button onClick={onClose}>취소</Button>
           <Button colorScheme="blue" mr={3} onClick={onExecute}>
             실행
