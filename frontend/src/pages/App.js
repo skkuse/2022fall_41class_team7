@@ -10,7 +10,6 @@ import CodeEditor from "../components/CodeEditor";
 import Terminal from "../components/Terminial";
 
 function App() {
-  // const { selectedLecture } = useParams(); // 이부분 링크주소에서 변수값 가져와야함
   const { id } = useParams();
   const [problem, setProblem] = useState({});
   const [lecture, setLecture] = useState({});
@@ -72,6 +71,8 @@ function App() {
           <Terminal
             submissionCapacity={lecture?.submission_capacity}
             submissionNum={problem?.submissions.length}
+            problem={problem}
+            testcases={problem?.testcases}
           />
         </Box>
       </Box>
