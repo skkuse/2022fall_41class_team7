@@ -69,7 +69,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
       base: "vs-dark",
       inherit: true,
       rules: [],
-      colors: { "editor.background": "#1A202C" }
+      colors: { "editor.background": "#1A202C" },
     });
   };
 
@@ -231,7 +231,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
             base: "vs-dark",
             inherit: true,
             rules: [],
-            colors: { "editor.background": "#1A202C" }
+            colors: { "editor.background": "#1A202C" },
           });
         }}
         onMount={handleEditorDidMount}
