@@ -21,12 +21,14 @@ const progress = {
 };
 
 function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
+  const fileInput = useRef();
   const editorRef = useRef(null);
   const selectRef = useRef(null);
   const toast = useToast();
   const [storageNum, setStorageNum] = useState(-1);
 
   const inputFile = () => {
+    fileInput.current.value = "";
     document.getElementById("hiddenFileInput").click();
   };
   const handleFileInput = (event) => {
@@ -63,6 +65,12 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
 
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
+    monaco.editor.defineTheme("my-theme", {
+      base: "vs-dark",
+      inherit: true,
+      rules: [],
+      colors: { "editor.background": "#1A202C" },
+    });
   };
 
   const copyValue = () => {
@@ -146,8 +154,9 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
             type="file"
             id="hiddenFileInput"
             accept=".py"
+            ref={fileInput}
             onChange={handleFileInput}
-            style={{ display: "none" }}
+            hidden
           />
           <IconButton
             size="32px"
@@ -212,7 +221,23 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
         height="calc(100% - 61px)"
         defaultLanguage="python"
         defaultValue={skeletonCode}
-        theme="vs-dark"
+        theme="my-theme"
+        options={{
+          fontFamily: "I",
+          fontSize: 14,
+          lineHeight: 18,
+          minimap: {
+            enabled: false,
+          },
+        }}
+        beforeMount={(monaco) => {
+          monaco.editor.defineTheme("my-theme", {
+            base: "vs-dark",
+            inherit: true,
+            rules: [],
+            colors: { "editor.background": "#1A202C" },
+          });
+        }}
         onMount={handleEditorDidMount}
         onChange={onChangeEditor}
       />
