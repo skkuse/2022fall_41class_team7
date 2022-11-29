@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import Testcase from "./Testcase";
 
-function Problem({ explanation, reference, testcases }) {
+function Problem({ problem, explanation, reference, testcases }) {
   const testcasesNotHidden = testcases?.filter((tc) => tc.is_hidden === false);
 
   return (
@@ -22,7 +22,8 @@ function Problem({ explanation, reference, testcases }) {
           <Box className="testcase_container">
             {testcasesNotHidden?.map((tc, index) => (
               <Testcase
-                key={tc.index}
+                problemID={problem.id}
+                number={index + 1}
                 title={`테스트케이스 ${index + 1}`}
                 input={tc.input}
                 output={tc.output}
@@ -36,6 +37,9 @@ function Problem({ explanation, reference, testcases }) {
 }
 
 Problem.propTypes = {
+  problem: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+  }).isRequired,
   explanation: PropTypes.string.isRequired,
   reference: PropTypes.string.isRequired,
   testcases: PropTypes.arrayOf(
