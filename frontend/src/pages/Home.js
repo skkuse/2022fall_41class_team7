@@ -16,6 +16,7 @@ import "../styles/home.css";
 import axios from "../utils/axios";
 import logo from "../assets/images/logo.png";
 import SelectLecture from "../components/modals/SelectLecture";
+import { useUserDispatch } from "../utils/contextProvider";
 
 function Home() {
   const [id, setId] = useState("");
@@ -23,6 +24,7 @@ function Home() {
   const [isFailed, setIsFailed] = useState(false);
   const [isFailed2, setIsFailed2] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const dispatch = useUserDispatch();
 
   const onChangeId = (event) => {
     setId(event.target.value);
@@ -40,6 +42,14 @@ function Home() {
           setIsFailed(false);
           setIsFailed2(false);
           onOpen();
+          dispatch({
+            type: "LOGIN",
+            user: {
+              name: response.data.name,
+              id: response.data.student_id,
+            },
+            loggedIn: true,
+          });
         }
       })
       .catch((error) => {

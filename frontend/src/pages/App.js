@@ -8,14 +8,16 @@ import Nav from "../components/Nav";
 import Problem from "../components/Problem";
 import CodeEditor from "../components/CodeEditor";
 import Terminal from "../components/Terminial";
+import { useUserState } from "../utils/contextProvider";
 
 function App() {
   const { id } = useParams();
   const [problem, setProblem] = useState({});
   const [lecture, setLecture] = useState({});
   const [loading, setLoading] = useState(true);
+  const { loggedUser, loggedIn } = useUserState();
 
-  const userName = "홍길동"; // 로그인 유저 이름 가져와야함
+  const userName = loggedUser.name; // 로그인 유저 이름 가져와야함
 
   const getProblem = async (problemId) => {
     const response = await axios.get(`problems/${problemId}/`, {});
