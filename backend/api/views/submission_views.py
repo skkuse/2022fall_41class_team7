@@ -42,7 +42,7 @@ def execute(request: Request, file: TextIO):
 
 
 @api_view(["POST"])
-@file_interceptor
+@file_interceptor()
 def grade(request: Request, file: TextIO):
     query_params_serializer = GradeQueryParamsSerializer(data=request.query_params)
     query_params_serializer.is_valid(raise_exception=True)
