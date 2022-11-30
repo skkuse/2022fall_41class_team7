@@ -104,7 +104,7 @@ function RunCode({ isOpen, onClose }) {
 
 RunCode.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default RunCode;
