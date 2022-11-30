@@ -65,4 +65,39 @@ def analyze_submission(submission_id: int, file: TextIO):
     file.write(submission.code)
     file.close()
 
-    # TODO: analyze result
+    # 표절 검사
+    plagiarism = analyze_plagiarism(file.name)
+
+    # 가독성 채점
+    readability = analyze_readability(file.name)
+
+    # 효율 채점
+    efficiency = analyze_efficiency(file.name)
+
+    # 코드 설명
+    explanation = analyze_explanation(file.name)
+
+    # 분석 완료 및 저장
+    submission.analysis = {"plagiarism": plagiarism, "readability": readability, "efficiency": efficiency,
+                           "explanation": explanation}
+    submission.state = SubmissionState.COMPLETE
+    submission.save()
+
+
+def analyze_plagiarism(name) -> int:
+    pass
+
+
+def analyze_readability(path: str) -> dict:
+    # relative_path = relpath(path)
+    # errors = check_paths([relative_path], parse_options(), rootdir=Path.cwd())
+    # print(errors)
+    pass
+
+
+def analyze_efficiency(path: str) -> dict:
+    pass
+
+
+def analyze_explanation(path: str) -> str:
+    pass
