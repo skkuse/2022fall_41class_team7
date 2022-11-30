@@ -6,6 +6,7 @@ from rest_framework.generics import get_object_or_404
 from api.common import file_interceptor, executor
 from api.models import Submission, SubmissionState
 
+from .analysis import *
 
 @shared_task
 @file_interceptor()
@@ -66,16 +67,22 @@ def analyze_submission(submission_id: int, file: TextIO):
     file.close()
 
     # 표절 검사
-    plagiarism = analyze_plagiarism(file.name)
+    plagiarism = execute_plagiarism (file.name)
 
     # 가독성 채점
     readability = analyze_readability(file.name)
 
     # 효율 채점
-    efficiency = analyze_efficiency(file.name)
+    temp_dic = {}
+    temp["mypy"] = execute_mypy(file.name)
+    temp["pylint"] = execute_pylint(file.name)
+    temp["eradicate"] = execute_eradicate(file.name)
+    temp["radon"] = execute_radon(file.name)
+    temp["eradicate"] = execute_eradicate(file.name)
+    efficiency = temp_dic
 
     # 코드 설명
-    explanation = analyze_explanation(file.name)
+    explanation = execute_codex(file.name)
 
     # 분석 완료 및 저장
     submission.analysis = {"plagiarism": plagiarism, "readability": readability, "efficiency": efficiency,
