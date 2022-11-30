@@ -7,13 +7,10 @@ import subprocess
 import random
 import tempfile
 import re
-
 from copydetect import CopyDetector
-
 from memory_profiler import memory_usage
 
 def execute_codex(full_filename):
-    
     with open(full_filename, "r") as f:
         example = f.read()
     
@@ -129,13 +126,13 @@ def execute_efficiency(full_filename: str):
     }
 
 def execute_plagiarism(full_filename: str):
-    DISPLAY_THRESHOLD = 0.5
-    ANTO_OPEN_FLAG = False
-    SILENT_FLAG = True
-    NUM_FILES_COMPARED_FIELD = 'num_files_compared'
-    SIMILARITY_FIELD = 'similarity_score'
-    # Make a temporary file to store the contents of the html report
-    temp_report = tempfile.NamedTemporaryFile()
+    # DISPLAY_THRESHOLD = 0.5
+    # ANTO_OPEN_FLAG = False
+    # SILENT_FLAG = True
+    # NUM_FILES_COMPARED_FIELD = 'num_files_compared'
+    # SIMILARITY_FIELD = 'similarity_score'
+
+    # temp_report = tempfile.NamedTemporaryFile()
 
     # Initialize CopyDetector
     # detector = CopyDetector(

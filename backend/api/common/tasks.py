@@ -1,11 +1,9 @@
 from typing import TextIO
-
 from celery import shared_task
 from rest_framework.generics import get_object_or_404
 
 from api.common import file_interceptor, executor
 from api.models import Submission, SubmissionState
-
 from .analysis import *
 
 @shared_task
@@ -70,16 +68,15 @@ def analyze_submission(submission_id: int, file: TextIO):
     plagiarism = execute_plagiarism (file.name)
 
     # 가독성 채점
-    readability = analyze_readability(file.name)
+    readability = {}
+    readability["mypy"] = execute_mypy(file.name)
+    readability["pylint"] = execute_pylint(file.name)
+    readability["eradicate"] = execute_eradicate(file.name)
+    readability["radon"] = execute_radon(file.name)
+    readability["eradicate"] = execute_eradicate(file.name)
 
     # 효율 채점
-    temp_dic = {}
-    temp["mypy"] = execute_mypy(file.name)
-    temp["pylint"] = execute_pylint(file.name)
-    temp["eradicate"] = execute_eradicate(file.name)
-    temp["radon"] = execute_radon(file.name)
-    temp["eradicate"] = execute_eradicate(file.name)
-    efficiency = temp_dic
+    efficiency = execute_efficiency(file.name)
 
     # 코드 설명
     explanation = execute_codex(file.name)
@@ -89,22 +86,3 @@ def analyze_submission(submission_id: int, file: TextIO):
                            "explanation": explanation}
     submission.state = SubmissionState.COMPLETE
     submission.save()
-
-
-def analyze_plagiarism(name) -> int:
-    pass
-
-
-def analyze_readability(path: str) -> dict:
-    # relative_path = relpath(path)
-    # errors = check_paths([relative_path], parse_options(), rootdir=Path.cwd())
-    # print(errors)
-    pass
-
-
-def analyze_efficiency(path: str) -> dict:
-    pass
-
-
-def analyze_explanation(path: str) -> str:
-    pass
