@@ -11,11 +11,13 @@ import {
   Text,
 } from "@chakra-ui/react";
 import axios from "../../utils/axios";
+import { useUserDispatch } from "../../utils/contextProvider";
 
 function Logout({ isOpen, onClose }) {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
   const [isFailed, setIsFailed] = useState(false);
+  const dispatch = useUserDispatch();
 
   const logout = () => {
     axios
@@ -23,6 +25,11 @@ function Logout({ isOpen, onClose }) {
       .then((response) => {
         if (response.status === 200) {
           setIsFailed(false);
+          dispatch({
+            type: "LOGOUT",
+            user: {},
+            loggedIn: false,
+          });
         }
       })
       .catch((error) => setIsFailed(true));
