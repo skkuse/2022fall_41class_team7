@@ -64,7 +64,7 @@ function Logout({ isOpen, onClose }) {
 
 Logout.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default Logout;
