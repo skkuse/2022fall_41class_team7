@@ -63,16 +63,6 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
     return date.toISOString();
   };
 
-  const handleEditorDidMount = (editor, monaco) => {
-    editorRef.current = editor;
-    monaco.editor.defineTheme("my-theme", {
-      base: "vs-dark",
-      inherit: true,
-      rules: [],
-      colors: { "editor.background": "#1A202C" },
-    });
-  };
-
   const copyValue = () => {
     navigator.clipboard.writeText(editorRef.current.getValue());
     toast({
@@ -220,7 +210,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
       <Editor
         height="calc(100% - 61px)"
         defaultLanguage="python"
-        defaultValue={skeletonCode}
+        value={skeletonCode}
         theme="my-theme"
         options={{
           fontFamily: "I",
@@ -238,10 +228,8 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
             colors: { "editor.background": "#1A202C" },
           });
         }}
-        onMount={handleEditorDidMount}
         onChange={onChangeEditor}
       />
-
       <input type="hidden" id="hiddenCodeValue" value="" />
     </Box>
   );
