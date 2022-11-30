@@ -16,6 +16,7 @@ function App() {
   const [lecture, setLecture] = useState({});
   const [loading, setLoading] = useState(true);
   const { loggedUser, loggedIn } = useUserState();
+  const [diff, setDiff] = useState(false);
 
   const userName = loggedUser.name; // 로그인 유저 이름 가져와야함
 
@@ -45,6 +46,14 @@ function App() {
     getProblem(problemId);
   };
 
+  const openDiff = () => {
+    setDiff(true);
+  };
+
+  const closeDiff = () => {
+    setDiff(false);
+  };
+
   return loading ? null : (
     <ChakraProvider>
       <Box className="bg">
@@ -69,6 +78,8 @@ function App() {
             problem={problem}
             setProblem={setProblem}
             skeletonCode={problem?.skeleton_code}
+            closeDiff={closeDiff}
+            diff={diff}
           />
           <Divider orientation="vertical" borderColor="whiteAlpha.200" />
           <Terminal
@@ -76,6 +87,7 @@ function App() {
             submissionNum={problem?.submissions.length}
             problem={problem}
             testcases={problem?.testcases}
+            openDiff={openDiff}
           />
         </Box>
       </Box>
