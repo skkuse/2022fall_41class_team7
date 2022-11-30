@@ -5,7 +5,7 @@ MAX_TIMEOUT = 10.0
 
 
 def run(
-    file_path: str, code: str, inp: str, timeout: float = MAX_TIMEOUT
+    file_path: str, inp: str, timeout: float = MAX_TIMEOUT
 ) -> Union[Tuple[str, None], Tuple[None, str]]:
     # execute code
     try:
@@ -20,6 +20,6 @@ def run(
         return None, "Timeout"
 
     return (
-        result.stdout if result.stdout else None,
+        result.stdout.strip() if result.stdout else None,
         result.stderr.splitlines()[-1] if result.stderr else None,
     )
