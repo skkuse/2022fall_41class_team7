@@ -38,7 +38,6 @@ function Home() {
       .post("login/", { student_id: id, password })
       .then((response) => {
         if (response.status === 200) {
-          // console.log("성공");
           setIsFailed(false);
           setIsFailed2(false);
           onOpen();
@@ -53,7 +52,6 @@ function Home() {
         }
       })
       .catch((error) => {
-        // console.log("실패");
         setIsFailed(true);
         setIsFailed2(true);
       });
