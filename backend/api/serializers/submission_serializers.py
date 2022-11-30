@@ -24,7 +24,7 @@ class SubmitSerializer(serializers.ModelSerializer):
 
 
 class CodeSerializer(serializers.Serializer):
-    code = serializers.CharField()
+    code = serializers.CharField(trim_whitespace=False)
 
 
 class ExecuteSerializer(CodeSerializer):
@@ -34,6 +34,7 @@ class ExecuteSerializer(CodeSerializer):
 class ExecuteResultSerializer(serializers.Serializer):
     result = serializers.CharField(allow_null=True)
     error = serializers.CharField(allow_null=True)
+    error_line = serializers.IntegerField(allow_null=True)
 
 
 class GradeResultSerializer(ExecuteResultSerializer):

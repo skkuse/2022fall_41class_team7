@@ -33,9 +33,9 @@ def execute(request: Request, file: TextIO):
     file.write(code)
     file.close()
 
-    user_out, err = executor.run(file.name, user_in)
+    user_out, err, err_line_num = executor.run(file.name, user_in)
 
-    result_serializer = ExecuteResultSerializer(data={"result": user_out, "error": err})
+    result_serializer = ExecuteResultSerializer(data={"result": user_out, "error": err, "error_line": err_line_num})
     result_serializer.is_valid(raise_exception=True)
 
     return Response(result_serializer.data, 200)
@@ -68,7 +68,7 @@ def grade(request: Request, file: TextIO):
     file.write(code)
     file.close()
 
-    user_out, err = executor.run(file.name, tc_in, timeout)
+    user_out, err, err_line_num = executor.run(file.name, tc_in, timeout)
 
     is_passed = str(user_out) == str(tc_out)
 
@@ -80,6 +80,7 @@ def grade(request: Request, file: TextIO):
             "output": tc_out,
             "result": user_out,
             "error": err,
+            "error_line": err_line_num,
         }
     )
     response_serializer.is_valid(raise_exception=True)
