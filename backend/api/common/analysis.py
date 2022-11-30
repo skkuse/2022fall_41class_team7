@@ -6,37 +6,38 @@ import json
 import subprocess
 import random
 import tempfile
-import re
 from copydetect import CopyDetector
 from memory_profiler import memory_usage
+
 
 def execute_codex(full_filename):
     with open(full_filename, "r") as f:
         example = f.read()
-    
+
     My_OpenAI_key = "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"
     openai.api_key = My_OpenAI_key
-    
+
     response = Completion.create(
         model="code-davinci-002",
-        prompt= example + "\"\"\"\nHere's what the above class is doing:\n1.",
+        prompt= example + "\"\"\"\"\nHere's what the above class is doing:\n1.",
         temperature=0.2,
         max_tokens=64,
         top_p=1.0,
         frequency_penalty=0.0,
         presence_penalty=0.0,
-        stop=["\"\"\""]
+        stop=["\"\"\"\""]
     )
 
     answer = response.choices[0].text.strip()
     return answer
 
+
 def execute_pylint(full_filename: str):
-    terminal_command = f'pylint {full_filename}'
+    terminal_command = f"pylint {full_filename}"
     stream = os.popen(terminal_command)
     output = stream.read()
 
-    error = float(re.findall(r'\d+.\d+', output.split('\n')[-3])[0])
+    error = float(re.findall(r"\d+.\d+", output.split("\n")[-3])[0])
         
     result = int(20 - error)
     if result < 0:
@@ -58,12 +59,12 @@ def execute_pycodestyle(full_filename: str):
 
 
 def execute_mypy(full_filename: str):
-    terminal_command = f'mypy {full_filename}'
+    terminal_command = f"mypy {full_filename}"
     stream = os.popen(terminal_command)
     output = stream.read()
-    output_last = output.split('\n')[-2]
-    if output_last.split(' ')[0] == "Found":
-        error = int(re.findall(r'\d+', output_last)[0])
+    output_last = output.split("\n")[-2]
+    if output_last.split(" ")[0] == "Found":
+        error = int(re.findall(r"\d+", output_last)[0])
     else:
         error = 0
     result = 20 - error
@@ -71,25 +72,26 @@ def execute_mypy(full_filename: str):
         return [0, output]
     else:
         return [result, output]
-    
-    
+
+
 def execute_eradicate(full_filename: str):
-    terminal_command = f'eradicate {full_filename}'
+    terminal_command = f"eradicate {full_filename}"
     stream = os.popen(terminal_command)
     output = stream.read()
-    error = len(output.split('\n')) - 1
+    error = len(output.split("\n")) - 1
     
     result = 20 - error
     if result < 0:
         return [0, output]
     else:
         return [result, output]
-    
+
+
 def execute_radon(full_filename: str):
-    terminal_command = f'radon {full_filename}'
+    terminal_command = f"radon {full_filename}"
     stream = os.popen(terminal_command)
     output = stream.read()
-    error = len(output.split('\n')) - 1
+    error = len(output.split("\n")) - 1
     
     result = 20 - error
     if result < 0:
