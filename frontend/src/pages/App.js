@@ -1,6 +1,6 @@
 import "../styles/base.css";
 import "../styles/hover.css";
-import { ChakraProvider, Box, Divider, Button, Flex } from "@chakra-ui/react";
+import { ChakraProvider, Box, Divider } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../utils/axios";
@@ -28,7 +28,6 @@ function App() {
   const getLecture = async () => {
     const response = await axios.get(`lectures/${id}/`, {});
     setLecture(response.data);
-    // getProblem(response.data.problems[0].id);
   };
 
   useEffect(() => {

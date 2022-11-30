@@ -15,7 +15,6 @@ import { useUserDispatch } from "../../utils/contextProvider";
 
 function Logout({ isOpen, onClose }) {
   const initialRef = React.useRef(null);
-  const finalRef = React.useRef(null);
   const [isFailed, setIsFailed] = useState(false);
   const dispatch = useUserDispatch();
 
@@ -36,13 +35,7 @@ function Logout({ isOpen, onClose }) {
   };
 
   return (
-    <Modal
-      initialFocusRef={initialRef}
-      // finalFocusRef={finalRef}
-      isOpen={isOpen}
-      onClose={onClose}
-      isCentered
-    >
+    <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent backgroundColor="#1A202C" width="370px" height="170px">
         <ModalBody pb={6} color="white" textAlign="center">
