@@ -35,7 +35,9 @@ def execute(request: Request, file: TextIO):
 
     user_out, err, err_line_num = executor.run(file.name, user_in)
 
-    result_serializer = ExecuteResultSerializer(data={"result": user_out, "error": err, "error_line": err_line_num})
+    result_serializer = ExecuteResultSerializer(
+        data={"result": user_out, "error": err, "error_line": err_line_num}
+    )
     result_serializer.is_valid(raise_exception=True)
 
     return Response(result_serializer.data, 200)

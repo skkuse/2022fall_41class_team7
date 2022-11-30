@@ -78,8 +78,12 @@ def analyze_submission(submission_id: int, file: TextIO):
     explanation = analyze_explanation(file.name)
 
     # 분석 완료 및 저장
-    submission.analysis = {"plagiarism": plagiarism, "readability": readability, "efficiency": efficiency,
-                           "explanation": explanation}
+    submission.analysis = {
+        "plagiarism": plagiarism,
+        "readability": readability,
+        "efficiency": efficiency,
+        "explanation": explanation,
+    }
     submission.state = SubmissionState.COMPLETE
     submission.save()
 

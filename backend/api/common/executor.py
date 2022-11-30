@@ -5,7 +5,7 @@ MAX_TIMEOUT = 10.0
 
 
 def run(
-        file_path: str, inp: str, timeout: float = MAX_TIMEOUT
+    file_path: str, inp: str, timeout: float = MAX_TIMEOUT
 ) -> Union[Tuple[str, None, None], Tuple[None, str, int or None]]:
     # 최대 timeout = MAX_TIMEOUT
     if timeout is None or timeout > MAX_TIMEOUT:
