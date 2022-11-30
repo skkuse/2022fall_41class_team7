@@ -35,23 +35,21 @@ def execute_pylint(full_filename: str):
     terminal_command = f'pylint {full_filename}'
     stream = os.popen(terminal_command)
     output = stream.read()
-    try:
-        error = float(re.findall(r'\d+.\d+', output.split('\n')[-3])[0])
-    except:
-        error = 0
+
+    error = float(re.findall(r'\d+.\d+', output.split('\n')[-3])[0])
         
     result = int(20 - error)
     if result < 0:
         return [0, output]
     else:
-        return [result,output]
+        return [result, output]
 
 
 def execute_pycodestyle(full_filename: str):
     terminal_command = f'pycodestyle --count {full_filename}'
     stream = os.popen(terminal_command)
     output = stream.read()
-    error = len(output.split('\n')) - 1
+    error = len(output.split("\n")) - 1
     result = 20 - error
     if result < 0:
         return [0, output]
@@ -101,29 +99,30 @@ def execute_radon(full_filename: str):
 
 
 def execute_efficiency(full_filename: str):
-    process = subprocess.run(
-        ['multimetric', f'{full_filename}'],
-        stdout=subprocess.PIPE,
-        universal_newlines=True
-    )
+    # process = subprocess.run(
+    #     ['multimetric', f'{full_filename}'],
+    #     stdout=subprocess.PIPE,
+    #     universal_newlines=True
+    # )
 
-    output = process.stdout
-    output_json = json.loads(output)
+    # output = process.stdout
+    # output_json = json.loads(output)
 
-    sloc_score = output_json['overall']['loc']
-    cf_complexity_score = output_json['overall']['cyclomatic_complexity']
-    r_words_score = output_json['overall']['halstead_difficulty']
+    # sloc_score = output_json['overall']['loc']
+    # cf_complexity_score = output_json['overall']['cyclomatic_complexity']
+    # r_words_score = output_json['overall']['halstead_difficulty']
     
-    program = subprocess.Popen(["python", full_filename])
-    mem_usage = memory_usage(proc=program, timeout=1)
-    df_complexity_score = round(max(mem_usage), 2)
+    # program = subprocess.Popen(["python", full_filename])
+    # mem_usage = memory_usage(proc=program, timeout=1)
+    # df_complexity_score = round(max(mem_usage), 2)
 
     return {
-        'loc': random.randrange(15,25),
-        'halstead': random.randrange(15,25),
-        'data_flow': random.randrange(15,25),
-        'control_flow': random.randrange(15,25)
+        "loc": random.randrange(15, 25),
+        "halstead": random.randrange(15, 25),
+        "data_flow": random.randrange(15, 25),
+        "control_flow": random.randrange(15, 25)
     }
+
 
 def execute_plagiarism(full_filename: str):
     # DISPLAY_THRESHOLD = 0.5
@@ -147,17 +146,17 @@ def execute_plagiarism(full_filename: str):
     # detector.run()
     # detector.generate_html_report()
 
-#     # BeautifulSoup HTML Parsing
-#     with open(f'{temp_report.name}.html', 'r') as fp:
-#         soup = BeautifulSoup(fp, "html.parser")
-#     soup.get_text()
+    # # BeautifulSoup HTML Parsing
+    # with open(f'{temp_report.name}.html', 'r') as fp:
+    #     soup = BeautifulSoup(fp, "html.parser")
+    # soup.get_text()
 
-#     # Get the number of files compared (int)
-#     num_of_files_string = soup.find("p").find_next("p").contents[2].strip()
-#     num_files = int(''.join(filter(str.isdigit, num_of_files_string)))
+    # # Get the number of files compared (int)
+    # num_of_files_string = soup.find("p").find_next("p").contents[2].strip()
+    # num_files = int(''.join(filter(str.isdigit, num_of_files_string)))
 
-#     # Get the similarity score (float)
-#     similarity_string = soup.find("p").find_next("p").contents[4].strip()
-#     sim_score = [float(s) for s in re.findall(r'\d+\.\d+', similarity_string)]
+    # # Get the similarity score (float)
+    # similarity_string = soup.find("p").find_next("p").contents[4].strip()
+    # sim_score = [float(s) for s in re.findall(r'\d+\.\d+', similarity_string)]
 
-    return random.randrange(30,45)
+    return random.randrange(30, 45)

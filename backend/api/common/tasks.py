@@ -6,6 +6,7 @@ from api.common import file_interceptor, executor
 from api.models import Submission, SubmissionState
 from .analysis import *
 
+
 @shared_task
 @file_interceptor()
 def grade_submission(submission_id: int, file: TextIO):
@@ -65,7 +66,7 @@ def analyze_submission(submission_id: int, file: TextIO):
     file.close()
 
     # 표절 검사
-    plagiarism = execute_plagiarism (file.name)
+    plagiarism = execute_plagiarism(file.name)
 
     # 가독성 채점
     readability = {}
