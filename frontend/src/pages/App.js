@@ -17,7 +17,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const { loggedUser, loggedIn } = useUserState();
 
-  const userName = loggedUser.name; // 로그인 유저 이름 가져와야함
+  const userName = loggedUser.name;
 
   const getProblem = async (problemId) => {
     const response = await axios.get(`problems/${problemId}/`, {});
@@ -51,7 +51,7 @@ function App() {
         <Nav
           lectureName={lecture?.name}
           deadline={lecture?.deadline}
-          userName={userName}
+          userName={loggedIn ? userName : ""}
           problems={lecture?.problems}
           onChangeProblem={onChangeProblem}
         />
