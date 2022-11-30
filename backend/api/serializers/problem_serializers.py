@@ -3,13 +3,19 @@ from rest_framework import serializers
 from api.models import Problem
 
 
+class ProblemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Problem
+        fields = "__all__"
+
+
 class ProblemMetaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Problem
         fields = ("id", "name")
 
 
-class ProblemSerializer(serializers.ModelSerializer):
+class ProblemResponseSerializer(serializers.ModelSerializer):
     testcases = serializers.SerializerMethodField()
     storages = serializers.SerializerMethodField()
     submissions = serializers.SerializerMethodField()

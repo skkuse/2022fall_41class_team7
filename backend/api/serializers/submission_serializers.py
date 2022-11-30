@@ -7,6 +7,7 @@ from api.serializers import ProblemSerializer
 
 
 class SubmissionSerializer(serializers.ModelSerializer):
+    created_at = EpochDateTimeField()
     problem = ProblemSerializer(read_only=True)
 
     class Meta:

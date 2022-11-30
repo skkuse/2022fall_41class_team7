@@ -108,7 +108,7 @@ def submit(request: Request):
 
     # 제출 횟수 체크
     if len(submissions) >= problem.lecture.submission_capacity:
-        raise ValidationError("제출 횟수가 초과되었습니다.")
+        raise PermissionDenied("제출 횟수가 초과되었습니다.")
 
     # create submission
     submission = Submission.objects.create(
@@ -128,5 +128,11 @@ def get_submission_by_id(request: Request, submission_id: int):
         .select_related("problem")
         .select_related("user")
     )
+
+    if submission.problem.lecture.deadline > timezone.now():
+        raise PermissionDenied("강의가 마감되지 않았습니다.")
+
+    if submission.user != request.user:
+        raise PermissionDenied("다른 사용자의 제출물입니다.")
 
     return Response(SubmissionSerializer(submission).data, status=200)
