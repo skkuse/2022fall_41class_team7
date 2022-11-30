@@ -19,13 +19,13 @@ def execute_codex(full_filename):
 
     response = Completion.create(
         model="code-davinci-002",
-        prompt= example + "\'\'\'\'\nHere's what the above class is doing:\n1.",
+        prompt= example + "ennd\nHere's what the above class is doing:\n1.",
         temperature=0.2,
         max_tokens=64,
         top_p=1.0,
         frequency_penalty=0.0,
         presence_penalty=0.0,
-        stop=["\'\'\'\'"]
+        stop=["ennd"]
     )
 
     answer = response.choices[0].text.strip()
