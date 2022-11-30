@@ -27,6 +27,9 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
   const toast = useToast();
   const [storageNum, setStorageNum] = useState(-1);
 
+  const handleEditorDidMount = (editor, monaco) => {
+    editorRef.current = editor;
+  };
   const inputFile = () => {
     fileInput.current.value = "";
     document.getElementById("hiddenFileInput").click();
@@ -228,6 +231,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
             colors: { "editor.background": "#1A202C" },
           });
         }}
+        onMount={handleEditorDidMount}
         onChange={onChangeEditor}
       />
       <input type="hidden" id="hiddenCodeValue" value="" />
