@@ -186,10 +186,13 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
           <Select
             className="select"
             size="sm"
-            placeholder="저장소 선택"
             onChange={onChangeStorage}
             ref={selectRef}
+            defaultValue="DEFAULT"
           >
+            <option value="DEFAULT" disabled hidden>
+              저장소 선택
+            </option>
             {problem.storages.map((s, index) => (
               <option value={index} key={s.id}>
                 {index + 1}. {s.id && formatEpochTime(problem.storages[index].updated_at)}
