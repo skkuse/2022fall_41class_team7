@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Modal,
   ModalOverlay,
@@ -16,7 +16,6 @@ import axios from "../../utils/axios";
 
 function SelectLecture({ isOpen, onClose }) {
   const initialRef = React.useRef(null);
-  const finalRef = React.useRef(null);
   const [lecture, setLecture] = useState([]);
   const [lecID, setSelected] = useState("");
   const navigate = useNavigate();
@@ -41,35 +40,19 @@ function SelectLecture({ isOpen, onClose }) {
     }
   }, [isOpen]);
 
-  const getLectures = async () => {
-    try {
-      const response = await axios.get("/lectures/");
-      setLecture(response.data);
-    } catch (e) {
-      // console.log(e);
-    }
-  };
-
   const enrollLecture = () => {
     axios
       .post(`/lectures/${lecID}/enroll/`)
       .then((response) => {
         if (response.status === 200 || response.status === 201) {
           navigate(`/test/${lecID}`);
-          // console.log(response.status);
         }
       })
       .catch((error) => null);
   };
 
   return (
-    <Modal
-      initialFocusRef={initialRef}
-      // finalFocusRef={finalRef}
-      isOpen={isOpen}
-      onClose={onClose}
-      isCentered
-    >
+    <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>강의 선택</ModalHeader>
@@ -92,12 +75,9 @@ function SelectLecture({ isOpen, onClose }) {
           <Button onClick={onClose} mr={3}>
             취소
           </Button>
-          {/* link param 임의로 지정해놨으니 강의 선택하면 해당 id 전달하기 */}
-          {/* <Link to="test/1"> */}
           <Button colorScheme="blue" mr={3} onClick={enrollLecture} isDisabled={!isSelected}>
             시험 응시하기
           </Button>
-          {/* </Link> */}
         </ModalFooter>
       </ModalContent>
     </Modal>
