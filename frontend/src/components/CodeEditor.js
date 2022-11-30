@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { CopyIcon, DownloadIcon, RepeatClockIcon, SearchIcon } from "@chakra-ui/icons";
 import Editor from "@monaco-editor/react";
+import FileSaver from "file-saver";
 import axios from "../utils/axios";
 
 const progress = {
@@ -70,6 +71,20 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
     navigator.clipboard.writeText(editorRef.current.getValue());
     toast({
       title: "코드가 클립보드에 복사되었습니다.",
+      position: "bottom-right",
+      isClosable: true,
+      duration: 1000,
+    });
+  };
+
+  const downloadValue = () => {
+    const codeValue = editorRef.current.getValue();
+    const blob = new Blob([codeValue], {
+      type: "text/python",
+    });
+    FileSaver.saveAs(blob, `${problem.name}.py`);
+    toast({
+      title: `코드가 ${problem.name}.py로 다운로드되었습니다.`,
       position: "bottom-right",
       isClosable: true,
       duration: 1000,
@@ -172,6 +187,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
             background="#718096"
             className="iconBtn"
             aria-label="Download"
+            onClick={downloadValue}
             icon={<DownloadIcon />}
           />
         </Box>
@@ -243,6 +259,7 @@ CodeEditor.propTypes = {
   storageCapacity: PropTypes.number.isRequired,
   problem: PropTypes.shape({
     id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
     storages: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number,
