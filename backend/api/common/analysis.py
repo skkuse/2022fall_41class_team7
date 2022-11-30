@@ -19,13 +19,13 @@ def execute_codex(full_filename):
 
     response = Completion.create(
         model="code-davinci-002",
-        prompt= example + "\"\"\"\"\nHere's what the above class is doing:\n1.",
+        prompt= example + "\'\'\'\'\nHere's what the above class is doing:\n1.",
         temperature=0.2,
         max_tokens=64,
         top_p=1.0,
         frequency_penalty=0.0,
         presence_penalty=0.0,
-        stop=["\"\"\"\""]
+        stop=["\'\'\'\'"]
     )
 
     answer = response.choices[0].text.strip()
@@ -38,7 +38,7 @@ def execute_pylint(full_filename: str):
     output = stream.read()
 
     error = float(re.findall(r"\d+.\d+", output.split("\n")[-3])[0])
-        
+
     result = int(20 - error)
     if result < 0:
         return [0, output]
@@ -47,7 +47,7 @@ def execute_pylint(full_filename: str):
 
 
 def execute_pycodestyle(full_filename: str):
-    terminal_command = f'pycodestyle --count {full_filename}'
+    terminal_command = f"pycodestyle --count {full_filename}"
     stream = os.popen(terminal_command)
     output = stream.read()
     error = len(output.split("\n")) - 1
@@ -79,7 +79,7 @@ def execute_eradicate(full_filename: str):
     stream = os.popen(terminal_command)
     output = stream.read()
     error = len(output.split("\n")) - 1
-    
+
     result = 20 - error
     if result < 0:
         return [0, output]
@@ -92,7 +92,7 @@ def execute_radon(full_filename: str):
     stream = os.popen(terminal_command)
     output = stream.read()
     error = len(output.split("\n")) - 1
-    
+
     result = 20 - error
     if result < 0:
         return [0, output]
@@ -113,7 +113,6 @@ def execute_efficiency(full_filename: str):
     # sloc_score = output_json['overall']['loc']
     # cf_complexity_score = output_json['overall']['cyclomatic_complexity']
     # r_words_score = output_json['overall']['halstead_difficulty']
-    
     # program = subprocess.Popen(["python", full_filename])
     # mem_usage = memory_usage(proc=program, timeout=1)
     # df_complexity_score = round(max(mem_usage), 2)
