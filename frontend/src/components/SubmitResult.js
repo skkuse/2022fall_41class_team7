@@ -2,19 +2,21 @@ import "../styles/hover.css";
 import "../styles/submit.css";
 import {
   Box,
-  Divider,
   Accordion,
   AccordionItem,
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
-  calc,
 } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
-import { ResponsivePie } from "@nivo/pie";
-import MyResponsivePie from "./PieGraph";
+import Graph from "./Graph";
+import SubmitTab from "./SubmitTab";
+import DummySubmissions from "../dummyFiles/DummySubmissions.json";
 
 function Submit() {
+  const { plagiarism } = DummySubmissions.analysis;
+  const { explanation } = DummySubmissions.analysis;
+  const relatedContent = DummySubmissions.problem.related_content;
+
   return (
     <Box className="submit_container">
       <Accordion className="submit_accordion">
@@ -24,6 +26,9 @@ function Submit() {
               <Box flex="1" textAlign="left">
                 제출 결과
               </Box>
+              <Box flex="1" textAlign="right" paddingRight="10px" color="red.400">
+                표절율: {plagiarism}%
+              </Box>
               <AccordionIcon />
             </AccordionButton>
           </h2>
@@ -32,8 +37,17 @@ function Submit() {
             backgroundColor="white"
             color="black"
             height="calc(100vh - 61px*4 - 3px)"
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
           >
-            그래프
+            <Box height="40%" width="100%">
+              <Graph />
+            </Box>
+            <Box height="60%" width="100%">
+              <SubmitTab />
+            </Box>
           </AccordionPanel>
         </AccordionItem>
 
@@ -52,7 +66,7 @@ function Submit() {
             color="black"
             height="calc(100vh - 61px*4 - 3px)"
           >
-            코드 설명 내용
+            {explanation}
           </AccordionPanel>
         </AccordionItem>
         <AccordionItem>
@@ -70,7 +84,7 @@ function Submit() {
             color="black"
             height="calc(100vh - 61px*4 - 3px)"
           >
-            관련 자료 내용
+            {relatedContent}
           </AccordionPanel>
         </AccordionItem>
       </Accordion>

@@ -22,7 +22,7 @@ const progress = {
   height: "32px",
 };
 
-function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, closeDiff }) {
+function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeDiff, isOpenDiff }) {
   const fileInput = useRef();
   const editorRef = useRef(null);
   const selectRef = useRef(null);
@@ -258,7 +258,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, 
         onChange={onChangeEditor}
       />
       <input type="hidden" id="hiddenCodeValue" value="" />
-      {diff ? (
+      {isOpenDiff ? (
         <CodeDiffWindow
           original={editorRef.current.getValue()}
           modified="#answer code" // 나중에 정답 코드 넣어야 함
@@ -283,8 +283,8 @@ CodeEditor.propTypes = {
   }).isRequired,
   setProblem: PropTypes.func.isRequired,
   skeletonCode: PropTypes.string.isRequired,
-  diff: PropTypes.bool.isRequired,
   closeDiff: PropTypes.func.isRequired,
+  isOpenDiff: PropTypes.bool.isRequired,
 };
 
 export default CodeEditor;
