@@ -15,7 +15,38 @@ import DummySubmissions from "../dummyFiles/DummySubmissions.json";
 function Submit() {
   const { plagiarism } = DummySubmissions.analysis;
   const { explanation } = DummySubmissions.analysis;
+  const results = DummySubmissions.result;
+  const { efficiency } = DummySubmissions.analysis;
+  const { readability } = DummySubmissions.analysis;
   const relatedContent = DummySubmissions.problem.related_content;
+  const readabilityNames = ["mypy", "pylint", "eradicate", "radon", "pycodestyle"];
+  const efficiencyNames = ["loc", "halstead", "data_flow", "control_flow"];
+
+  const getEfficiencyScore = () => {
+    let score = 0;
+    for (let i = 0; i < 4; i += 1) {
+      score += efficiency[efficiencyNames[i]];
+    }
+    return score;
+  };
+
+  const getReadabilityScore = () => {
+    let score = 0;
+    for (let i = 0; i < 5; i += 1) {
+      score += readability[readabilityNames[i]][0];
+    }
+    return score;
+  };
+
+  const getScore = () => {
+    let score = 0;
+    for (let i = 0; i < results.length; i += 1) {
+      if (results[i].is_passed) {
+        score += 1;
+      }
+    }
+    return (score * 100) / results.length;
+  };
 
   return (
     <Box className="submit_container">
@@ -43,7 +74,11 @@ function Submit() {
             alignItems="center"
           >
             <Box height="40%" width="100%">
-              <Graph />
+              <Graph
+                efficiencyScore={getEfficiencyScore()}
+                readabilityScore={getReadabilityScore()}
+                score={getScore()}
+              />
             </Box>
             <Box height="60%" width="100%">
               <SubmitTab />

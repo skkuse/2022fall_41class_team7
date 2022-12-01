@@ -1,11 +1,32 @@
 import { ResponsivePie } from "@nivo/pie";
-import data from "../dummyFiles/DummyGraphData.json";
+import PropTypes from "prop-types";
 
 const theme = {
   fontSize: "14px",
 };
 
-function Graph() {
+function Graph({ efficiencyScore, readabilityScore, score }) {
+  const data = [
+    {
+      id: "efficiency",
+      label: "efficiency",
+      value: efficiencyScore,
+      color: "hsl(50, 100%, 65%)",
+    },
+    {
+      id: "readability",
+      label: "readability",
+      value: readabilityScore,
+      color: "hsl(196, 100%, 60%)",
+    },
+    {
+      id: "score",
+      label: "score",
+      value: score,
+      color: "hsl(90, 57%, 65%)",
+    },
+  ];
+
   return (
     <ResponsivePie
       theme={theme}
@@ -33,5 +54,11 @@ function Graph() {
     />
   );
 }
+
+Graph.propTypes = {
+  efficiencyScore: PropTypes.number.isRequired,
+  readabilityScore: PropTypes.number.isRequired,
+  score: PropTypes.number.isRequired,
+};
 
 export default Graph;

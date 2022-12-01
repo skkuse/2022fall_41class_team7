@@ -52,7 +52,7 @@
     "readability": {
       "mypy": [20, "1.error reason \n 2. error reson \n 3. ~~"],
       "pylint": [20, "1.error reason \n 2. error reson \n 3. ~~"],
-      "eradicate": [21, "1.error reason \n 2. error reson \n 3. ~~"],
+      "eradicate": [20, "1.error reason \n 2. error reson \n 3. ~~"],
       "radon": [20, "1.error reason \n 2. error reson \n 3. ~~"],
       "pycodestyle": [20, "1.error reason \n 2. error reson \n 3. ~~"]
     },
