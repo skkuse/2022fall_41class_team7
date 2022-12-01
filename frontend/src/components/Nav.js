@@ -20,18 +20,14 @@ import setting from "../assets/images/setting.svg";
 import Logout from "./modals/Logout";
 
 function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
-  // const [problemName, setProblemName] = useState("week 1 : 피보나치 수");
-  // const [currentTime, setCurrentTime] = useState();
   const [selected, setSelected] = useState(1);
   const interval = useRef(null);
   const [remainText, setRemainText] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const onChangeProblemNav = (event) => {
-    // onChangeProblem();
     setSelected(event.target.value);
     onChangeProblem(event.target.value);
-    // console.log(event.target.value);
   };
 
   function UnixTimestamp() {

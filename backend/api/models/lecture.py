@@ -9,4 +9,4 @@ class Lecture(models.Model):
     storage_capacity = models.IntegerField()
 
     def __str__(self):
-        return self.name
+        return f"{self.id}: {self.name}"

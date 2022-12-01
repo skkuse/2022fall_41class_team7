@@ -1,6 +1,6 @@
 import "../styles/base.css";
 import "../styles/hover.css";
-import { ChakraProvider, Box, Divider, Button, Flex } from "@chakra-ui/react";
+import { ChakraProvider, Box, Divider } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../utils/axios";
@@ -18,7 +18,7 @@ function App() {
   const { loggedUser, loggedIn } = useUserState();
   const [diff, setDiff] = useState(false);
 
-  const userName = loggedUser.name; // 로그인 유저 이름 가져와야함
+  const userName = loggedUser.name;
 
   const getProblem = async (problemId) => {
     const response = await axios.get(`problems/${problemId}/`, {});
@@ -29,7 +29,6 @@ function App() {
   const getLecture = async () => {
     const response = await axios.get(`lectures/${id}/`, {});
     setLecture(response.data);
-    // getProblem(response.data.problems[0].id);
   };
 
   useEffect(() => {
@@ -60,7 +59,7 @@ function App() {
         <Nav
           lectureName={lecture?.name}
           deadline={lecture?.deadline}
-          userName={userName}
+          userName={loggedIn ? userName : ""}
           problems={lecture?.problems}
           onChangeProblem={onChangeProblem}
         />

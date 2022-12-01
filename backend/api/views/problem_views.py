@@ -4,7 +4,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from api.models import Problem
-from api.serializers import ProblemSerializer
+from api.serializers import ProblemResponseSerializer
 
 
 @api_view(["GET"])
@@ -16,4 +16,4 @@ def get_problem_by_id(request: Request, problem_id):
         .prefetch_related("submission_set")
     )
 
-    return Response(ProblemSerializer(problem).data, status=200)
+    return Response(ProblemResponseSerializer(problem).data, status=200)

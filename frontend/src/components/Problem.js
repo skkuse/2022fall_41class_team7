@@ -1,6 +1,5 @@
-import { Box, Text, toCSSObject } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
 import Testcase from "./Testcase";
 
 function Problem({ problem, explanation, reference, testcases }) {

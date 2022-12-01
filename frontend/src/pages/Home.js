@@ -10,6 +10,7 @@ import {
   FormLabel,
   FormErrorMessage,
   FormHelperText,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import "../styles/home.css";
@@ -25,6 +26,7 @@ function Home() {
   const [isFailed2, setIsFailed2] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useUserDispatch();
+  const toast = useToast();
 
   const onChangeId = (event) => {
     setId(event.target.value);
@@ -33,30 +35,33 @@ function Home() {
     setPassword(event.target.value);
   };
 
-  const login = () => {
-    axios
-      .post("login/", { student_id: id, password })
-      .then((response) => {
-        if (response.status === 200) {
-          // console.log("성공");
-          setIsFailed(false);
-          setIsFailed2(false);
-          onOpen();
-          dispatch({
-            type: "LOGIN",
-            user: {
-              name: response.data.name,
-              id: response.data.student_id,
-            },
-            loggedIn: true,
-          });
-        }
-      })
-      .catch((error) => {
-        // console.log("실패");
-        setIsFailed(true);
-        setIsFailed2(true);
+  const login = async () => {
+    try {
+      const res = await axios.post("login/", { student_id: id, password });
+
+      if (res.status === 200) {
+        setIsFailed(false);
+        setIsFailed2(false);
+        onOpen();
+        dispatch({
+          type: "LOGIN",
+          user: {
+            name: res.data.name,
+            id: res.data.student_id,
+          },
+          loggedIn: true,
+        });
+      }
+    } catch (err) {
+      setIsFailed(true);
+      toast({
+        title: "아이디나 비밀번호가 올바르지 않습니다.",
+        position: "bottom-right",
+        status: "error",
+        isClosable: true,
+        duration: 2000,
       });
+    }
   };
 
   const isErrorId = id === "" && isFailed;
@@ -101,14 +106,9 @@ function Home() {
             </FormControl>
           </Box>
           <Box className="btn-pan">
-            <Button className="btn_login" onClick={login} type="submit">
+            <Button colorScheme="blue" className="btn_login" onClick={login} type="submit">
               로그인
             </Button>
-            {isFailed2 ? (
-              <Text className="msg" name="loginPwdMsg">
-                아이디나 비밀번호가 올바르지 않습니다.
-              </Text>
-            ) : null}
           </Box>
         </Box>
         <SelectLecture isOpen={isOpen} onClose={onClose} />

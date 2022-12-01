@@ -20,17 +20,34 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
   const { isOpen, onOpen, onClose } = useDisclosure();
   const getCode = () => document.getElementById("hiddenCodeValue").value;
   const toast = useToast();
+
+
+  const dt = new Date();
+  const hh = dt.getHours();
+  const mm = dt.getMinutes();
+  const ss = dt.getSeconds();
+  const tm = `${hh < 10 ? `0${hh}` : hh}:${mm < 10 ? `0${mm}` : mm}:${ss < 10 ? `0${ss}` : ss}`;
+
+
   async function getGrade2(testcasesID) {
-    return axios.post(
-      "grade/",
-      { code: getCode() },
-      {
-        params: {
-          problem_id: problem.id,
-          testcase: testcasesID,
-        },
-      }
-    );
+    return axios
+      .post(
+        "grade/",
+        { code: getCode() },
+        {
+          params: {
+            problem_id: problem.id,
+            testcase: testcasesID,
+          },
+        }
+      )
+      .catch((error) => {
+        toast({
+          title: "채점 실패",
+          isClosable: true,
+          duration: 3000,
+        });
+      });
   }
 
   const terminal = document.getElementById("terminal_body");
@@ -132,9 +149,9 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
         </Box>
       </Box>
       <Box className="terminal_body" id="terminal_body">
-        <Text fontSize={14}>22:24:08 {">>"} 프로세스가 시작되었습니다.</Text>
-        <Text fontSize={14}>22:24:09 {">>"} 처리중...</Text>
-        {}
+        <Text fontSize={14}>
+          {tm} {">>"} 출력 대기중입니다.
+        </Text>
       </Box>
       <RunCode isOpen={isOpen} onClose={onClose} />
     </Box>

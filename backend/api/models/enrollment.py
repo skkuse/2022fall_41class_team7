@@ -16,4 +16,4 @@ class Enrollment(models.Model):
         unique_together = ("user", "lecture")
 
     def __str__(self):
-        return f"{self.user.student_id}_{self.lecture.name}"
+        return f"{self.id}: {self.user.student_id}_{self.lecture.name}"
