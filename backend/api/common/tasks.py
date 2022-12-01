@@ -1,4 +1,5 @@
 from typing import TextIO
+
 from celery import shared_task
 from rest_framework.generics import get_object_or_404
 
@@ -31,7 +32,7 @@ def grade_submission(submission_id: int, file: TextIO):
 
         user_out, err = executor.run(file.name, tc_in, timeout)
 
-        is_passed = str(user_out) == str(tc_out)
+        is_passed = str(user_out.strip()) == str(tc_out.strip())
         result.append(
             {
                 "input": tc_in,
