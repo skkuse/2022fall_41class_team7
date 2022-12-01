@@ -123,6 +123,12 @@ def submit(request: Request):
     )
     submissions = Submission.objects.filter(problem=problem, user=request.user).all()
 
+    # 강의 마감기한 초과시 종료
+    if problem.lecture.deadline < timezone.now() and enrollment.is_ended is False:
+        enrollment.is_ended = True
+        enrollment.save()
+        raise PermissionDenied("강의가 마감되었습니다.")
+
     # 강의 마감 체크
     if problem.lecture.deadline < timezone.now() or enrollment.is_ended is True:
         raise PermissionDenied("강의가 마감되었습니다.")
@@ -135,6 +141,11 @@ def submit(request: Request):
     submission = Submission.objects.create(
         problem=problem, user=request.user, code=code
     )
+
+    # 제출 최대 횟수 충족시 종료
+    if len(submissions) == problem.lecture.submission_capacity:
+        enrollment.is_ended = True
+        enrollment.save()
 
     # send grade signal
     grade_submission.delay(submission.id)
