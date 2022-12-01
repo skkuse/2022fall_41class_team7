@@ -1,3 +1,4 @@
+import "../../styles/base.css";
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
@@ -54,11 +55,16 @@ function SelectLecture({ isOpen, onClose }) {
   return (
     <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>강의 선택</ModalHeader>
-        <ModalBody pb={6}>
+      <ModalContent backgroundColor="#1A202C">
+        <ModalHeader color="white">강의 선택</ModalHeader>
+        <ModalBody color="white" pb={6}>
           <FormControl>
-            <Select onChange={handleSelect} value={lecID}>
+            <Select
+              bg="gray.900"
+              borderColor="whiteAlpha.200"
+              onChange={handleSelect}
+              value={lecID}
+            >
               <option value="" disabled defaultValue>
                 강의 선택
               </option>

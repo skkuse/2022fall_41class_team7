@@ -106,7 +106,7 @@ function Home() {
             </FormControl>
           </Box>
           <Box className="btn-pan">
-            <Button className="btn_login" onClick={login} type="submit">
+            <Button colorScheme="blue" className="btn_login" onClick={login} type="submit">
               로그인
             </Button>
           </Box>

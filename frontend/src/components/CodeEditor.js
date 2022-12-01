@@ -186,6 +186,8 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
           <Select
             className="select"
             size="sm"
+            bg="gray.900"
+            borderColor="whiteAlpha.200"
             placeholder="저장소 선택"
             onChange={onChangeStorage}
             ref={selectRef}
