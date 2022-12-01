@@ -39,11 +39,13 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases }) {
           },
         }
       )
-      .catch((error) => toast({
-        title: "채점 실패",
-        isClosable: true,
-        duration: 3000,
-      }));
+      .catch((error) => {
+        toast({
+          title: "채점 실패",
+          isClosable: true,
+          duration: 3000,
+        });
+      });
   }
 
   const getTotalGrade = async () => {
