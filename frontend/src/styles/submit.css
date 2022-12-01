@@ -1,0 +1,10 @@
+.submit_container {
+  flex: 1;
+  min-width: 500px;
+  z-index: 1;
+}
+
+.submit_accordion {
+  border-top-width: 0;
+  border-color: rgba(255, 255, 255, 0.08);
+}

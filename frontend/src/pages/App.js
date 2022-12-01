@@ -9,6 +9,7 @@ import Problem from "../components/Problem";
 import CodeEditor from "../components/CodeEditor";
 import Terminal from "../components/Terminial";
 import { useUserState } from "../utils/contextProvider";
+import Submit from "../components/Submit";
 
 function App() {
   const { id } = useParams();
@@ -81,13 +82,17 @@ function App() {
             diff={diff}
           />
           <Divider orientation="vertical" borderColor="whiteAlpha.200" />
-          <Terminal
-            submissionCapacity={lecture?.submission_capacity}
-            submissionNum={problem?.submissions.length}
-            problem={problem}
-            testcases={problem?.testcases}
-            openDiff={openDiff}
-          />
+          {!diff ? (
+            <Terminal
+              submissionCapacity={lecture?.submission_capacity}
+              submissionNum={problem?.submissions.length}
+              problem={problem}
+              testcases={problem?.testcases}
+              openDiff={openDiff}
+            />
+          ) : (
+            <Submit />
+          )}
         </Box>
       </Box>
     </ChakraProvider>

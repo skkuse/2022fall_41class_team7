@@ -23,7 +23,7 @@ function CodeDiffWindow({ original, modified, closeDiff }) {
         <Box className="diff_body">
           <Button
             backgroundColor="gray.900"
-            height="calc(100% - 61px)"
+            height="100%"
             borderRadius="0"
             onClick={widthChange}
             className="diffButton"
@@ -47,7 +47,7 @@ function CodeDiffWindow({ original, modified, closeDiff }) {
         <Box className="diff_body">
           <Button
             background="gray.900"
-            height="calc(100% - 61px)"
+            height="100%"
             borderRadius="0"
             onClick={widthChange}
             className="diffButton"

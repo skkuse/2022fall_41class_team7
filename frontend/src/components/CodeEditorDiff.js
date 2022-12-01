@@ -5,7 +5,7 @@ import { DiffEditor } from "@monaco-editor/react";
 function CodeEditorDiff({ original, modified }) {
   return (
     <DiffEditor
-      height="calc(100% - 61px)"
+      height="100%"
       original={original}
       modified={modified}
       language="python"
