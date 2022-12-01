@@ -145,7 +145,7 @@ def execute_efficiency(full_filename: str, answer_filename: str):
     # halstead_difficulty
     if (r_words_score1 <= r_words_score2):
         r_words_score_result = 25
-    else: 
+    else:
         r_words_score_result = 24
         diffdiff = r_words_score1 - r_words_score2
         while (r_words_score_result > 0 and diffdiff > 0):
@@ -155,7 +155,7 @@ def execute_efficiency(full_filename: str, answer_filename: str):
     # dataflow complexity
     if (df_complexity_score1 <= df_complexity_score2):
         df_complexity_score_result = 25
-    else: 
+    else:
         df_complexity_score_result = 24
         memmax_copy = df_complexity_score1
         while (memmax_copy > df_complexity_score2 and df_complexity_score_result > 0):
@@ -165,7 +165,7 @@ def execute_efficiency(full_filename: str, answer_filename: str):
     # cyclomatic complexity
     if (cf_complexity_score1 <= cf_complexity_score2):
         cf_complexity_score_result = 25
-    else: 
+    else:
         cf_complexity_score_result = 24
         cycompdiff = cf_complexity_score1 - cf_complexity_score2
         while (cf_complexity_score_result > 0 and cycompdiff > 0):
