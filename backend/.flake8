@@ -10,6 +10,7 @@ ignore =
     F401,
     F403,
     F405,
+    W503,
 
 max-line-length = 200
 inline-quotes = double

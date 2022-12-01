@@ -19,13 +19,13 @@ def execute_codex(full_filename):
 
     response = Completion.create(
         model="code-davinci-002",
-        prompt=example + "\'\'\'\'\n Here's what the above class is doing \n",
+        prompt=example + "''''\n Here's what the above class is doing \n",
         temperature=0.2,
         max_tokens=64,
         top_p=1.0,
         frequency_penalty=0.0,
         presence_penalty=0.0,
-        stop=["\'\'\'\'"]
+        stop=["''''"],
     )
 
     answer = response.choices[0].text.strip()
@@ -121,7 +121,7 @@ def execute_efficiency(full_filename: str):
         "loc": random.randrange(15, 25),
         "halstead": random.randrange(15, 25),
         "data_flow": random.randrange(15, 25),
-        "control_flow": random.randrange(15, 25)
+        "control_flow": random.randrange(15, 25),
     }
 
 

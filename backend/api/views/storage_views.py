@@ -21,8 +21,8 @@ def storage(request: Request):
     order = storage_serializer.validated_data.get("order")
 
     lecture = get_object_or_404(Lecture.objects.filter(problem__id=problem_id))
-    enrollment = get_object_or_404(Enrollment.objects.filter(
-        user__id=request.user.id, lecture_id=lecture.id)
+    enrollment = get_object_or_404(
+        Enrollment.objects.filter(user__id=request.user.id, lecture_id=lecture.id)
     )
 
     # 강의 마감 체크

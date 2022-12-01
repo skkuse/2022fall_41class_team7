@@ -8,7 +8,8 @@ from rest_framework.response import Response
 from api.models import Lecture, Enrollment
 from api.serializers import (
     LectureMetaSerializer,
-    LectureSerializer, EnrollmentSerializer,
+    LectureSerializer,
+    EnrollmentSerializer,
 )
 
 
@@ -26,8 +27,8 @@ def get_lecture_by_id(request: Request, lecture_id):
         .filter(enrollment__user__id=request.user.id)
         .prefetch_related("problem_set")
     )
-    enrollment = get_object_or_404(Enrollment.objects.filter(
-        user__id=request.user.id, lecture_id=lecture.id)
+    enrollment = get_object_or_404(
+        Enrollment.objects.filter(user__id=request.user.id, lecture_id=lecture.id)
     )
 
     res = LectureSerializer(lecture).data
@@ -56,8 +57,8 @@ def enroll_lecture(request: Request, lecture_id):
 @api_view(["POST"])
 def end_lecture(request: Request, lecture_id):
     lecture = get_object_or_404(Lecture.objects.filter(id=lecture_id))
-    enrollment = get_object_or_404(Enrollment.objects.filter(
-        user__id=request.user.id, lecture_id=lecture_id)
+    enrollment = get_object_or_404(
+        Enrollment.objects.filter(user__id=request.user.id, lecture_id=lecture_id)
     )
 
     # 강의 마감 체크

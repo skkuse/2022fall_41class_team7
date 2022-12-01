@@ -56,8 +56,10 @@ def grade(request: Request, file: TextIO):
     code = code_serializer.validated_data.get("code")
 
     problem = get_object_or_404(Problem.objects.filter(id=problem_id))
-    enrollment = get_object_or_404(Enrollment.objects.filter(
-        user__id=request.user.id, lecture_id=problem.lecture.id)
+    enrollment = get_object_or_404(
+        Enrollment.objects.filter(
+            user__id=request.user.id, lecture_id=problem.lecture.id
+        )
     )
 
     # 강의 마감 체크
@@ -114,8 +116,10 @@ def submit(request: Request):
 
     # get problem & enrollment & submissions
     problem = get_object_or_404(Problem.objects.filter(id=problem_id))
-    enrollment = get_object_or_404(Enrollment.objects.filter(
-        user__id=request.user.id, lecture_id=problem.lecture.id)
+    enrollment = get_object_or_404(
+        Enrollment.objects.filter(
+            user__id=request.user.id, lecture_id=problem.lecture.id
+        )
     )
     submissions = Submission.objects.filter(problem=problem, user=request.user).all()
 
@@ -145,11 +149,16 @@ def get_submission_by_id(request: Request, submission_id: int):
         .select_related("problem")
         .select_related("user")
     )
-    enrollment = get_object_or_404(Enrollment.objects.filter(
-        user__id=request.user.id, lecture_id=submission.problem.lecture.id)
+    enrollment = get_object_or_404(
+        Enrollment.objects.filter(
+            user__id=request.user.id, lecture_id=submission.problem.lecture.id
+        )
     )
 
-    if submission.problem.lecture.deadline > timezone.now() and enrollment.is_ended is False:
+    if (
+        submission.problem.lecture.deadline > timezone.now()
+        and enrollment.is_ended is False
+    ):
         raise PermissionDenied("강의가 마감되지 않았습니다.")
 
     if submission.user != request.user:
