@@ -11,6 +11,7 @@ urlpatterns = [
     path("problems/<int:problem_id>/", get_problem_by_id),
     path("lectures/", get_lectures),
     path("lectures/<int:lecture_id>/enroll/", enroll_lecture),
+    path("lectures/<int:lecture_id>/end/", end_lecture),
     path("lectures/<int:lecture_id>/", get_lecture_by_id),
     path("execute/", execute),
     path("grade/", grade),

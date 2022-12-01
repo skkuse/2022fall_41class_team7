@@ -8,7 +8,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from api.common import executor, file_interceptor, grade_submission
-from api.models import Problem, Submission
+from api.models import Problem, Submission, Enrollment
 from api.serializers import (
     CodeSerializer,
     GradeResultSerializer,
@@ -56,6 +56,14 @@ def grade(request: Request, file: TextIO):
     code = code_serializer.validated_data.get("code")
 
     problem = get_object_or_404(Problem.objects.filter(id=problem_id))
+    enrollment = Enrollment.objects.get(
+        user__id=request.user.id, lecture_id=problem.lecture.id
+    )
+
+    # 강의 마감 체크
+    if problem.lecture.deadline < timezone.now() or enrollment.is_ended is True:
+        raise PermissionDenied("강의가 마감되었습니다.")
+
     # testcase_num 검증
     if not 0 < testcase_num <= len(problem.testcases):
         raise ValidationError("testcase 번호가 올바르지 않습니다.")
@@ -101,12 +109,15 @@ def submit(request: Request):
     code = code_serializer.validated_data.get("code")
     print(problem_id, code)
 
-    # get problem and submissions
+    # get problem & enrollment & submissions
     problem = get_object_or_404(Problem.objects.filter(id=problem_id))
+    enrollment = Enrollment.objects.get(
+        user__id=request.user.id, lecture_id=problem.lecture.id
+    )
     submissions = Submission.objects.filter(problem=problem, user=request.user).all()
 
     # 강의 마감 체크
-    if problem.lecture.deadline < timezone.now():
+    if problem.lecture.deadline < timezone.now() or enrollment.is_ended is True:
         raise PermissionDenied("강의가 마감되었습니다.")
 
     # 제출 횟수 체크
@@ -131,8 +142,11 @@ def get_submission_by_id(request: Request, submission_id: int):
         .select_related("problem")
         .select_related("user")
     )
+    enrollment = Enrollment.objects.get(
+        user__id=request.user.id, lecture_id=submission.problem.lecture.id
+    )
 
-    if submission.problem.lecture.deadline > timezone.now():
+    if submission.problem.lecture.deadline > timezone.now() and enrollment.is_ended is False:
         raise PermissionDenied("강의가 마감되지 않았습니다.")
 
     if submission.user != request.user:

@@ -11,6 +11,7 @@ class Enrollment(models.Model):
         "Lecture",
         on_delete=models.CASCADE,
     )
+    is_ended = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ("user", "lecture")

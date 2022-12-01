@@ -14,7 +14,7 @@ from api.serializers import (
 
 @api_view(["GET"])
 def get_lectures(request: Request):
-    lectures = Lecture.objects.filter(deadline__gte=timezone.now())
+    lectures = Lecture.objects.all()
     return Response(LectureMetaSerializer(lectures, many=True).data, 200)
 
 
@@ -33,15 +33,32 @@ def get_lecture_by_id(request: Request, lecture_id):
 @api_view(["POST"])
 def enroll_lecture(request: Request, lecture_id):
     lecture = get_object_or_404(Lecture.objects.filter(id=lecture_id))
-    # 강의 마감 체크
-    if lecture.deadline < timezone.now():
-        raise PermissionDenied("강의가 마감되었습니다.")
-
     enrollment = Enrollment.objects.filter(
         user__id=request.user.id, lecture_id=lecture_id
     )
+
     if enrollment.exists():
         return Response(status=200)
     else:
-        Enrollment.objects.create(user=request.user, lecture_id=lecture_id)
+        if lecture.deadline < timezone.now():
+            raise PermissionDenied("강의가 마감되었습니다.")
+
+        Enrollment.objects.create(user=request.user, lecture_id=lecture.id)
         return Response(status=201)
+
+
+@api_view(["POST"])
+def end_lecture(request: Request, lecture_id):
+    lecture = get_object_or_404(Lecture.objects.filter(id=lecture_id))
+    enrollment = Enrollment.objects.get(
+        user__id=request.user.id, lecture_id=lecture_id
+    )
+
+    # 강의 마감 체크
+    if lecture.deadline < timezone.now() or enrollment.is_ended is True:
+        raise PermissionDenied("강의가 마감되었습니다.")
+
+    enrollment.is_ended = True
+    enrollment.save()
+
+    return Response(status=200)

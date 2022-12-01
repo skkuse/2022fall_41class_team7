@@ -5,7 +5,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from api.models import Storage, Lecture
+from api.models import Storage, Lecture, Enrollment
 from api.serializers import (
     StorageQueryParamsSerializer,
     StorageSerializer,
@@ -21,8 +21,12 @@ def storage(request: Request):
     order = storage_serializer.validated_data.get("order")
 
     lecture = get_object_or_404(Lecture.objects.filter(problem__id=problem_id))
+    enrollment = Enrollment.objects.get(
+        user__id=request.user.id, lecture_id=lecture.id
+    )
+
     # 강의 마감 체크
-    if lecture.deadline < timezone.now():
+    if lecture.deadline < timezone.now() or enrollment.is_ended is True:
         raise PermissionDenied("강의가 마감되었습니다.")
 
     # 저장소 번호 체크
