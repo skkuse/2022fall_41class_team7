@@ -12,6 +12,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { CopyIcon, DownloadIcon, RepeatClockIcon, SearchIcon } from "@chakra-ui/icons";
+import FileSaver from "file-saver";
 import Editor, { DiffEditor } from "@monaco-editor/react";
 import axios from "../utils/axios";
 import CodeDiffWindow from "./CodeDiffWindow";
@@ -28,6 +29,9 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, 
   const toast = useToast();
   const [storageNum, setStorageNum] = useState(-1);
 
+  const handleEditorDidMount = (editor, monaco) => {
+    editorRef.current = editor;
+  };
   const inputFile = () => {
     fileInput.current.value = "";
     document.getElementById("hiddenFileInput").click();
@@ -64,20 +68,24 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, 
     return date.toISOString();
   };
 
-  const handleEditorDidMount = (editor, monaco) => {
-    editorRef.current = editor;
-    monaco.editor.defineTheme("my-theme", {
-      base: "vs-dark",
-      inherit: true,
-      rules: [],
-      colors: { "editor.background": "#1A202C" },
-    });
-  };
-
   const copyValue = () => {
     navigator.clipboard.writeText(editorRef.current.getValue());
     toast({
       title: "코드가 클립보드에 복사되었습니다.",
+      position: "bottom-right",
+      isClosable: true,
+      duration: 1000,
+    });
+  };
+
+  const downloadValue = () => {
+    const codeValue = editorRef.current.getValue();
+    const blob = new Blob([codeValue], {
+      type: "text/python",
+    });
+    FileSaver.saveAs(blob, `${problem.name}.py`);
+    toast({
+      title: `코드가 ${problem.name}.py로 다운로드되었습니다.`,
       position: "bottom-right",
       isClosable: true,
       duration: 1000,
@@ -180,6 +188,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, 
             background="#718096"
             className="iconBtn"
             aria-label="Download"
+            onClick={downloadValue}
             icon={<DownloadIcon />}
           />
         </Box>
@@ -227,7 +236,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, 
       <Editor
         height="calc(100% - 61px)"
         defaultLanguage="python"
-        defaultValue={skeletonCode}
+        value={skeletonCode}
         theme="my-theme"
         options={{
           fontFamily: "I",
@@ -264,6 +273,7 @@ CodeEditor.propTypes = {
   storageCapacity: PropTypes.number.isRequired,
   problem: PropTypes.shape({
     id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
     storages: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number,
