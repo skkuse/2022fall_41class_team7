@@ -57,6 +57,7 @@ function App() {
   };
 
   const testEnd = () => {
+    // 임시로 제출 버튼 누르면 diff 열기 & 제출 결과창 나오도록
     setIsTestEnded(true);
     setIsOpenDiff(true);
   };

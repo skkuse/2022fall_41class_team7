@@ -85,7 +85,6 @@ function Submit() {
             </Box>
           </AccordionPanel>
         </AccordionItem>
-
         <AccordionItem>
           <h2>
             <AccordionButton height="60px">
