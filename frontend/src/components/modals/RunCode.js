@@ -49,6 +49,15 @@ function RunCode({ isOpen, onClose }) {
       });
       return false;
     }
+    if (getCode() === "") {
+      toast({
+        title: "실행할 코드가 존재하지 않습니다.",
+        position: "bottom-right",
+        isClosable: true,
+        duration: 1000,
+      });
+      return false;
+    }
     return true;
   };
 
