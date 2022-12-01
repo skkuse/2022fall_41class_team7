@@ -143,7 +143,7 @@ def submit(request: Request):
     )
 
     # 제출 최대 횟수 충족시 종료
-    if len(submissions) == problem.lecture.submission_capacity:
+    if len(submissions) + 1 == problem.lecture.submission_capacity:
         enrollment.is_ended = True
         enrollment.save()
 
