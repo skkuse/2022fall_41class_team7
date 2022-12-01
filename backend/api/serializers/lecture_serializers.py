@@ -10,6 +10,12 @@ class LectureMetaSerializer(serializers.ModelSerializer):
         fields = ("id", "name")
 
 
+class EnrollmentSerializer:
+    class Meta:
+        model = Enrollment
+        fields = "__all__"
+
+
 class LectureSerializer(serializers.ModelSerializer):
     problems = serializers.SerializerMethodField()
     deadline = EpochDateTimeField()
