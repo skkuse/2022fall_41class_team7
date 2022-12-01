@@ -12,16 +12,17 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { CopyIcon, DownloadIcon, RepeatClockIcon, SearchIcon } from "@chakra-ui/icons";
-import Editor from "@monaco-editor/react";
 import FileSaver from "file-saver";
+import Editor, { DiffEditor } from "@monaco-editor/react";
 import axios from "../utils/axios";
+import CodeDiffWindow from "./CodeDiffWindow";
 
 const progress = {
   width: "32px",
   height: "32px",
 };
 
-function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
+function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, closeDiff }) {
   const fileInput = useRef();
   const editorRef = useRef(null);
   const selectRef = useRef(null);
@@ -195,10 +196,16 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
           <Select
             className="select"
             size="sm"
+            bg="gray.900"
+            borderColor="whiteAlpha.200"
             placeholder="저장소 선택"
             onChange={onChangeStorage}
             ref={selectRef}
+            defaultValue="DEFAULT"
           >
+            <option value="DEFAULT" disabled hidden>
+              저장소 선택
+            </option>
             {problem.storages.map((s, index) => (
               <option value={index} key={s.id}>
                 {index + 1}. {s.id && formatEpochTime(problem.storages[index].updated_at)}
@@ -251,6 +258,13 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode }) {
         onChange={onChangeEditor}
       />
       <input type="hidden" id="hiddenCodeValue" value="" />
+      {diff ? (
+        <CodeDiffWindow
+          original={editorRef.current.getValue()}
+          modified="#answer code" // 나중에 정답 코드 넣어야 함
+          closeDiff={closeDiff}
+        />
+      ) : null}
     </Box>
   );
 }
@@ -269,6 +283,8 @@ CodeEditor.propTypes = {
   }).isRequired,
   setProblem: PropTypes.func.isRequired,
   skeletonCode: PropTypes.string.isRequired,
+  diff: PropTypes.bool.isRequired,
+  closeDiff: PropTypes.func.isRequired,
 };
 
 export default CodeEditor;

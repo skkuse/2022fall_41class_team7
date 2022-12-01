@@ -2,63 +2,61 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalFooter,
-  ModalBody,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
   Button,
-  Text,
 } from "@chakra-ui/react";
 import axios from "../../utils/axios";
+import { useUserDispatch } from "../../utils/contextProvider";
 
 function Logout({ isOpen, onClose }) {
   const initialRef = React.useRef(null);
-  const finalRef = React.useRef(null);
-  const [isFailed, setIsFailed] = useState(false);
 
-  const logout = () => {
-    axios
-      .get("logout/", {})
-      .then((response) => {
-        if (response.status === 200) {
-          setIsFailed(false);
-        }
-      })
-      .catch((error) => setIsFailed(true));
+  const dispatch = useUserDispatch();
+
+  const logout = async () => {
+    const res = await axios.get("logout/", {});
+
+    if (res.status === 200) {
+      dispatch({
+        type: "LOGOUT",
+        user: {},
+        loggedIn: false,
+      });
+    }
   };
 
   return (
-    <Modal
+    <AlertDialog
+      size="md"
       initialFocusRef={initialRef}
-      // finalFocusRef={finalRef}
       isOpen={isOpen}
       onClose={onClose}
       isCentered
     >
-      <ModalOverlay />
-      <ModalContent backgroundColor="#1A202C" width="370px" height="170px">
-        <ModalBody pb={6} color="white" textAlign="center">
-          <Text fontSize="20px" marginTop="10px">
-            홈페이지로 이동하겠습니까?
-          </Text>
-          <Text fontSize="16px" marginTop="5px">
-            계정은 로그아웃됩니다
-          </Text>
-        </ModalBody>
+      <AlertDialogOverlay />
+      <AlertDialogContent backgroundColor="#1A202C">
+        <AlertDialogHeader fontSize="lg" fontWeight="bold" color="white">
+          홈페이지로 이동하겠습니까?
+        </AlertDialogHeader>
+        <AlertDialogBody pb={6} color="white">
+          계정은 로그아웃되며 저장되지 않은 내용은 소실됩니다.
+        </AlertDialogBody>
 
-        <ModalFooter>
-          <Button onClick={onClose} marginRight="10px">
+        <AlertDialogFooter>
+          <Button onClick={onClose} marginRight="8px">
             취소
           </Button>
-          <Link to="/">
-            <Button colorScheme="blue" mr={3} onClick={logout}>
-              로그아웃
-            </Button>
-          </Link>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+          <Button as={Link} to="/" colorScheme="blue" ml={1} onClick={logout}>
+            로그아웃
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 

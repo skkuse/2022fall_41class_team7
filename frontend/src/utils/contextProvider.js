@@ -13,13 +13,13 @@ const reducer = (state, action) => {
       return {
         ...state,
         loggedUser: action.user,
-        loggedIn: true,
+        loggedIn: action.loggedIn,
       };
     case "LOGOUT":
       return {
         ...state,
-        loggedUser: {},
-        loggedIn: false,
+        loggedUser: action.user,
+        loggedIn: action.loggedIn,
       };
     default:
       return state;

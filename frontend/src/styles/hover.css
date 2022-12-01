@@ -34,3 +34,11 @@
 .header-item .saveBtn:hover {
   background-color: #215e3e !important;
 }
+
+.diffButton:hover {
+  background-color: #0f1118 !important;
+}
+
+.diff_close_button:hover {
+  background-color: #171923 !important;
+}

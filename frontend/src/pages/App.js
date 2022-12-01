@@ -1,6 +1,6 @@
 import "../styles/base.css";
 import "../styles/hover.css";
-import { ChakraProvider, Box, Divider, Button, Flex } from "@chakra-ui/react";
+import { ChakraProvider, Box, Divider } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../utils/axios";
@@ -16,8 +16,9 @@ function App() {
   const [lecture, setLecture] = useState({});
   const [loading, setLoading] = useState(true);
   const { loggedUser, loggedIn } = useUserState();
+  const [diff, setDiff] = useState(false);
 
-  const userName = loggedUser.name; // 로그인 유저 이름 가져와야함
+  const userName = loggedUser.name;
 
   const getProblem = async (problemId) => {
     const response = await axios.get(`problems/${problemId}/`, {});
@@ -28,7 +29,6 @@ function App() {
   const getLecture = async () => {
     const response = await axios.get(`lectures/${id}/`, {});
     setLecture(response.data);
-    // getProblem(response.data.problems[0].id);
   };
 
   useEffect(() => {
@@ -45,13 +45,21 @@ function App() {
     getProblem(problemId);
   };
 
+  const openDiff = () => {
+    setDiff(true);
+  };
+
+  const closeDiff = () => {
+    setDiff(false);
+  };
+
   return loading ? null : (
     <ChakraProvider>
       <Box className="bg">
         <Nav
           lectureName={lecture?.name}
           deadline={lecture?.deadline}
-          userName={userName}
+          userName={loggedIn ? userName : ""}
           problems={lecture?.problems}
           onChangeProblem={onChangeProblem}
         />
@@ -69,6 +77,8 @@ function App() {
             problem={problem}
             setProblem={setProblem}
             skeletonCode={problem?.skeleton_code}
+            closeDiff={closeDiff}
+            diff={diff}
           />
           <Divider orientation="vertical" borderColor="whiteAlpha.200" />
           <Terminal
@@ -76,6 +86,7 @@ function App() {
             submissionNum={problem?.submissions.length}
             problem={problem}
             testcases={problem?.testcases}
+            openDiff={openDiff}
           />
         </Box>
       </Box>

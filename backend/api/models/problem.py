@@ -18,4 +18,4 @@ class Problem(models.Model):
     related_content = models.CharField(max_length=2000)
 
     def __str__(self):
-        return self.name
+        return f"{self.id}: {self.name}"
