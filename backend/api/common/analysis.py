@@ -102,7 +102,7 @@ def execute_radon(full_filename: str):
 
 def execute_efficiency(full_filename: str, answer_filename: str):
     process1 = subprocess.run(
-        ["multimetric", f'{full_filename}'],
+        ["multimetric", f"{full_filename}"],
         stdout=subprocess.PIPE,
         universal_newlines=True
     )
@@ -135,40 +135,40 @@ def execute_efficiency(full_filename: str, answer_filename: str):
     df_complexity_score2 = round(max(mem_usage2), 2)
 
     loc_score = sloc_score2 - sloc_score1
-    if loc_score<0:
+    if loc_score < 0:
         loc_score_final = 25 + loc_score
-        if loc_score_final<0:
+        if loc_score_final < 0:
             loc_score_final = 0
     else:
         loc_score_final = 25
 
     # halstead_difficulty
-    if ( r_words_score1 <= r_words_score2 ):
+    if (r_words_score1 <= r_words_score2):
         r_words_score_result = 25
     else: 
         r_words_score_result = 24
         diffdiff = r_words_score1 - r_words_score2
-        while ( r_words_score_result > 0 and diffdiff > 0):
+        while (r_words_score_result > 0 and diffdiff > 0):
             r_words_score_result -= 1
             diffdiff -= 0.2 * r_words_score2
 
     # dataflow complexity
-    if ( df_complexity_score1 <= df_complexity_score2 ):
+    if (df_complexity_score1 <= df_complexity_score2):
         df_complexity_score_result = 25
     else: 
         df_complexity_score_result = 24
         memmax_copy = df_complexity_score1
-        while ( memmax_copy > df_complexity_score2 and df_complexity_score_result > 0):
+        while (memmax_copy > df_complexity_score2 and df_complexity_score_result > 0):
             df_complexity_score_result -= 1
             memmax_copy /= 2
 
     # cyclomatic complexity
-    if ( cf_complexity_score1 <= cf_complexity_score2 ):
+    if (cf_complexity_score1 <= cf_complexity_score2):
         cf_complexity_score_result = 25
     else: 
         cf_complexity_score_result = 24
         cycompdiff = cf_complexity_score1 - cf_complexity_score2
-        while ( cf_complexity_score_result > 0 and cycompdiff > 0):
+        while (cf_complexity_score_result > 0 and cycompdiff > 0):
             cf_complexity_score_result -= 1
             cycompdiff -= 1
 
