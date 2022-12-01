@@ -21,13 +21,11 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
   const getCode = () => document.getElementById("hiddenCodeValue").value;
   const toast = useToast();
 
-
   const dt = new Date();
   const hh = dt.getHours();
   const mm = dt.getMinutes();
   const ss = dt.getSeconds();
   const tm = `${hh < 10 ? `0${hh}` : hh}:${mm < 10 ? `0${mm}` : mm}:${ss < 10 ? `0${ss}` : ss}`;
-
 
   async function getGrade2(testcasesID) {
     return axios
@@ -52,12 +50,6 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
 
   const terminal = document.getElementById("terminal_body");
   const setTerminal = (msg, color) => {
-    const dt = new Date();
-    const hh = dt.getHours();
-    const mm = dt.getMinutes();
-    const ss = dt.getSeconds();
-    const tm = `${hh < 10 ? `0${hh}` : hh}:${mm < 10 ? `0${mm}` : mm}:${ss < 10 ? `0${ss}` : ss}`;
-
     const color0 = color === undefined ? "" : ` style="color:${color}"`;
     terminal.innerHTML += `<p class="chakra-text css-1kuy7z7" ${color0}">${tm} &gt;&gt; ${msg}</p>`;
   };
