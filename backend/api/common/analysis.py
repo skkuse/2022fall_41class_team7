@@ -102,7 +102,7 @@ def execute_radon(full_filename: str):
 
 def execute_efficiency(full_filename: str, answer_filename: str):
     process1 = subprocess.run(
-        ['multimetric', f'{full_filename}'],
+        ["multimetric", f'{full_filename}'],
         stdout=subprocess.PIPE,
         universal_newlines=True
     )
@@ -110,26 +110,25 @@ def execute_efficiency(full_filename: str, answer_filename: str):
     output1 = process1.stdout
     output_json1 = json.loads(output1)
 
-    sloc_score1 = output_json1['overall']['loc']
-    cf_complexity_score1 = output_json1['overall']['cyclomatic_complexity']
-    r_words_score1 = output_json1['overall']['halstead_difficulty']
+    sloc_score1 = output_json1["overall"]["loc"]
+    cf_complexity_score1 = output_json1["overall"]["cyclomatic_complexity"]
+    r_words_score1 = output_json1["overall"]["halstead_difficulty"]
 
     program1 = subprocess.Popen(["python", full_filename])
     mem_usage1 = memory_usage(proc=program1, timeout=1)
     df_complexity_score1 = round(max(mem_usage1), 2)
 
     process2 = subprocess.run(
-        ['multimetric', f'{answer_filename}'],
+        ["multimetric", f"{answer_filename}"],
         stdout=subprocess.PIPE,
         universal_newlines=True
     )
 
     output2 = process2.stdout
     output_json2 = json.loads(output2)
-
-    sloc_score2 = output_json2['overall']['loc']
-    cf_complexity_score2 = output_json2['overall']['cyclomatic_complexity']
-    r_words_score2 = output_json2['overall']['halstead_difficulty']
+    sloc_score2 = output_json2["overall"]["loc"]
+    cf_complexity_score2 = output_json2["overall"]["cyclomatic_complexity"]
+    r_words_score2 = output_json2["overall"]["halstead_difficulty"]
 
     program2 = subprocess.Popen(["python", full_filename])
     mem_usage2 = memory_usage(proc=program2, timeout=1)
