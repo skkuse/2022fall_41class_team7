@@ -9,13 +9,13 @@ function Testcase({ problemID, number, title, input, output }) {
   const [result, setResult] = useState(null);
   const [myoutput, setMyoutput] = useState(0);
   const [testcase, setTestcase] = useState(null);
-  const toast = useToast();
+  const toast = useToast({ position: "bottom-right", isClosable: true, duration: 1000 });
 
   const getCode = () => document.getElementById("hiddenCodeValue").value;
 
   const validate = async () => {
-    await axios
-      .post(
+    try {
+      const res = await axios.post(
         "grade/",
         { code: getCode() },
         {
@@ -24,26 +24,29 @@ function Testcase({ problemID, number, title, input, output }) {
             testcase: number,
           },
         }
-      )
-      .then((response) => {
-        setTestcase(response.data);
+      );
+
+      setTestcase(res.data);
+
+      if (res.data.is_passed) {
         toast({
-          title: "테스트케이스 검증을 진행합니다.",
-          position: "bottom-right",
-          isClosable: true,
+          title: "테스트케이스가 통과했습니다.",
           status: "success",
-          duration: 1000,
         });
-      })
-      .catch((error) => {
+      } else {
         toast({
-          title: "테스트케이스 검증에 실패했습니다.",
-          position: "bottom-right",
-          isClosable: true,
+          title: "테스트케이스가 실패했습니다.",
           status: "error",
-          duration: 1000,
         });
-      });
+      }
+    } catch (err) {
+      if (err.response.status === 400) {
+        toast({
+          title: "코드를 입력해주세요.",
+          status: "error",
+        });
+      }
+    }
   };
 
   const checkValidate = () => {
