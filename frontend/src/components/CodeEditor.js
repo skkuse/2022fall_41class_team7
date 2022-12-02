@@ -11,7 +11,7 @@ import {
   Select,
   useToast,
 } from "@chakra-ui/react";
-import { CopyIcon, DownloadIcon, RepeatClockIcon, SearchIcon } from "@chakra-ui/icons";
+import { CopyIcon, DownloadIcon, RepeatClockIcon, ArrowUpIcon } from "@chakra-ui/icons";
 import FileSaver from "file-saver";
 import Editor, { DiffEditor } from "@monaco-editor/react";
 import axios from "../utils/axios";
@@ -156,7 +156,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeD
             background="#718096"
             className="iconBtn"
             aria-label="Search"
-            icon={<SearchIcon />}
+            icon={<ArrowUpIcon />}
             onClick={inputFile}
           />
           <input
