@@ -106,15 +106,31 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
     });
   };
 
-  // const submit = async () => {
-  //   openDiff();
-  //   try {
-  //     const res = await axios.get("/submissions/1", { params: { submission_id: 1 } });
-  //     console.log(res.data);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  const submitTest = async () => {
+    // axios
+    //   .post(
+    //     "/submissions/",
+    //     { code: getCode() },
+    //     {
+    //       params: {
+    //         problem_id: problem.id,
+    //       },
+    //     }
+    //   )
+    //   .then((response) => {
+    toast({
+      title: `제출 성공 ( ${submissionNum} / ${submissionCapacity})`,
+      position: "bottom-right",
+      isClosable: true,
+      status: "success",
+      duration: 3000,
+    });
+    if (submissionCapacity > submissionNum) {
+      // console.log("");
+    }
+    // })
+    // .catch((err) => null);
+  };
 
   return (
     <Box className="terminal_container">
@@ -132,7 +148,7 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
           <Button onClick={getTotalGrade} size="sm" backgroundColor="gray.500">
             채점
           </Button>
-          <Button onClick={testEnd} size="sm" backgroundColor="blue.500">
+          <Button onClick={submitTest} size="sm" backgroundColor="blue.500">
             제출
           </Button>
           <CircularProgress

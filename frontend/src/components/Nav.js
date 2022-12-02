@@ -61,7 +61,6 @@ function Nav({
       // 종료 처리
       setIsTestEnded(true);
     } catch (e) {
-      console.log(e);
       toast({
         title: "종료에 실패했습니다.",
         status: "error",
@@ -81,14 +80,11 @@ function Nav({
     return () => clearInterval(interval.current);
   }, []);
 
-  useEffect(
-    () => {
-      if (isTestEnded) {
-        setRemainText("시험 종료");
-      }
-    },
-    [isTestEnded]
-  );
+  useEffect(() => {
+    if (isTestEnded) {
+      setRemainText("시험 종료");
+    }
+  }, [isTestEnded]);
 
   return (
     <Box className="nav">
@@ -137,19 +133,19 @@ function Nav({
           <Text className="profile_text">{userName}</Text>
         </Box>
         {!isTestEnded && (
-        <Input
-          className="deadline_input"
-          border="1px"
-          borderColor="whiteAlpha.200"
-          color="white"
-          width="176px"
-          height="32px"
-          fontSize="14px"
-          padding="6px 12px"
-          textAlign="center"
-          value={remainText}
-          readOnly
-        />
+          <Input
+            className="deadline_input"
+            border="1px"
+            borderColor="whiteAlpha.200"
+            color="white"
+            width="176px"
+            height="32px"
+            fontSize="14px"
+            padding="6px 12px"
+            textAlign="center"
+            value={remainText}
+            readOnly
+          />
         )}
         <Button
           className="button_test_end"

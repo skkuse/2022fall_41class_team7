@@ -251,7 +251,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeD
         onMount={handleEditorDidMount}
         onChange={onChangeEditor}
       />
-      <input type="hidden" id="hiddenCodeValue" value="" />
+      <input type="hidden" id="hiddenCodeValue" value={skeletonCode} />
       {isOpenDiff ? (
         <CodeDiffWindow
           original={editorRef.current?.getValue()}
