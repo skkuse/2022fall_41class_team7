@@ -32,7 +32,7 @@ def grade_submission(submission_id: int, file: TextIO):
 
         user_out, err, err_line = executor.run(file.name, tc_in, timeout)
 
-        is_passed = str(user_out.strip()) == str(tc_out.strip())
+        is_passed = str(user_out.strip()) == str(tc_out.strip()) if user_out else False
         result.append(
             {
                 "input": tc_in,
