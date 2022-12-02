@@ -11,7 +11,7 @@ import {
   Select,
   useToast,
 } from "@chakra-ui/react";
-import { CopyIcon, DownloadIcon, RepeatClockIcon, SearchIcon } from "@chakra-ui/icons";
+import { CopyIcon, DownloadIcon, RepeatClockIcon, ArrowUpIcon } from "@chakra-ui/icons";
 import FileSaver from "file-saver";
 import Editor, { DiffEditor } from "@monaco-editor/react";
 import axios from "../utils/axios";
@@ -22,7 +22,7 @@ const progress = {
   height: "32px",
 };
 
-function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, closeDiff }) {
+function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeDiff, isOpenDiff }) {
   const fileInput = useRef();
   const editorRef = useRef(null);
   const selectRef = useRef(null);
@@ -156,7 +156,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, 
             background="#718096"
             className="iconBtn"
             aria-label="Search"
-            icon={<SearchIcon />}
+            icon={<ArrowUpIcon />}
             onClick={inputFile}
           />
           <input
@@ -198,7 +198,6 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, 
             size="sm"
             bg="gray.900"
             borderColor="whiteAlpha.200"
-            placeholder="저장소 선택"
             onChange={onChangeStorage}
             ref={selectRef}
             defaultValue="DEFAULT"
@@ -258,7 +257,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, 
         onChange={onChangeEditor}
       />
       <input type="hidden" id="hiddenCodeValue" value={skeletonCode} />
-      {diff ? (
+      {isOpenDiff ? (
         <CodeDiffWindow
           original={editorRef.current.getValue()}
           modified="#answer code" // 나중에 정답 코드 넣어야 함
@@ -283,8 +282,8 @@ CodeEditor.propTypes = {
   }).isRequired,
   setProblem: PropTypes.func.isRequired,
   skeletonCode: PropTypes.string.isRequired,
-  diff: PropTypes.bool.isRequired,
   closeDiff: PropTypes.func.isRequired,
+  isOpenDiff: PropTypes.bool.isRequired,
 };
 
 export default CodeEditor;

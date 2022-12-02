@@ -16,7 +16,7 @@ const progress = {
   height: "32px",
 };
 
-function Terminal({ submissionCapacity, submissionNum, problem, testcases, openDiff }) {
+function Terminal({ submissionCapacity, submissionNum, problem, testcases, openDiff, testEnd }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const getCode = () => document.getElementById("hiddenCodeValue").value;
   const toast = useToast();
@@ -131,6 +131,7 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
     // })
     // .catch((err) => null);
   };
+
   return (
     <Box className="terminal_container">
       <Box className="terminal_header">
@@ -148,6 +149,7 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
             채점
           </Button>
           <Button onClick={submitTest} size="sm" backgroundColor="blue.500">
+
             제출
           </Button>
           <CircularProgress
@@ -185,6 +187,7 @@ Terminal.propTypes = {
     })
   ).isRequired,
   openDiff: PropTypes.func.isRequired,
+  testEnd: PropTypes.func.isRequired,
 };
 
 export default Terminal;
