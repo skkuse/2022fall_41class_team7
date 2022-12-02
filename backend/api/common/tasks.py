@@ -4,7 +4,7 @@ from celery import shared_task
 from rest_framework.generics import get_object_or_404
 
 from api.common import file_interceptor, executor
-from api.models import Submission, SubmissionState, Problem
+from api.models import Submission, SubmissionState
 from .analysis import *
 
 
@@ -52,14 +52,10 @@ def grade_submission(submission_id: int, file: TextIO):
 
 @shared_task
 @file_interceptor()
-def analyze_submission(submission_id: int, file: TextIO, file_answer: TextIO):
+def analyze_submission(submission_id: int, file: TextIO):
     # get submission
     submission = get_object_or_404(
         Submission.objects.filter(id=submission_id).select_related("problem")
-    )
-
-    problem = get_object_or_404(
-        Problem.objects.filter(id=submission.problem_id)
     )
 
     # change state to analyzing
@@ -69,10 +65,6 @@ def analyze_submission(submission_id: int, file: TextIO, file_answer: TextIO):
     # write code to file
     file.write(submission.code)
     file.close()
-
-    # write answercode to file
-    file_answer.write(problem.answer_code)
-    file_answer.close()
 
     # 표절 검사
     plagiarism = execute_plagiarism(file.name)
@@ -86,7 +78,7 @@ def analyze_submission(submission_id: int, file: TextIO, file_answer: TextIO):
     readability["eradicate"] = execute_eradicate(file.name)
 
     # 효율 채점
-    efficiency = execute_efficiency(file.name, file_answer.name)
+    efficiency = execute_efficiency(file.name)
 
     # 코드 설명
     explanation = execute_codex(file.name)
