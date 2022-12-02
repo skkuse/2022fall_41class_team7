@@ -126,7 +126,7 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
       duration: 3000,
     });
     if (submissionCapacity > submissionNum) {
-      console.log("");
+      // console.log("");
     }
     // })
     // .catch((err) => null);
@@ -149,7 +149,6 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
             채점
           </Button>
           <Button onClick={submitTest} size="sm" backgroundColor="blue.500">
-
             제출
           </Button>
           <CircularProgress
