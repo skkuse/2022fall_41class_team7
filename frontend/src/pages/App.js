@@ -10,6 +10,7 @@ import CodeEditor from "../components/CodeEditor";
 import Terminal from "../components/Terminial";
 import { useUserState } from "../utils/contextProvider";
 import SubmitResult from "../components/SubmitResult";
+import { epochToDate } from "../utils/dateUtil";
 
 function App() {
   const { id } = useParams();
@@ -18,7 +19,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const { loggedUser, loggedIn } = useUserState();
   const [isOpenDiff, setIsOpenDiff] = useState(false);
-  const [isBigDiff, setIsBigDiff] = useState(true);
   const [isTestEnded, setIsTestEnded] = useState(false);
 
   const userName = loggedUser.name;
@@ -32,6 +32,13 @@ function App() {
   const getLecture = async () => {
     const response = await axios.get(`lectures/${id}/`, {});
     setLecture(response.data);
+    const isEnded = response.data.enrollment.is_ended;
+    const deadline = epochToDate(response.data.deadline);
+
+    if (deadline < Date.now() || isEnded) {
+      setIsTestEnded(true);
+      setIsOpenDiff(true);
+    }
   };
 
   useEffect(() => {
@@ -43,6 +50,12 @@ function App() {
       getProblem(lecture.problems[0].id);
     }
   }, [lecture]);
+
+  useEffect(() => {
+    if (isTestEnded) {
+      setIsOpenDiff(true);
+    }
+  }, [isTestEnded]);
 
   const onChangeProblem = (problemId) => {
     getProblem(problemId);
@@ -67,10 +80,13 @@ function App() {
       <Box className="bg">
         <Nav
           lectureName={lecture?.name}
+          lectureId={lecture?.id}
           deadline={lecture?.deadline}
           userName={loggedIn ? userName : ""}
           problems={lecture?.problems}
           onChangeProblem={onChangeProblem}
+          isTestEnded={isTestEnded}
+          setIsTestEnded={setIsTestEnded}
         />
         <Divider borderColor="whiteAlpha.200" />
         <Box className="body_container">

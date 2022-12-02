@@ -16,6 +16,7 @@ import FileSaver from "file-saver";
 import Editor, { DiffEditor } from "@monaco-editor/react";
 import axios from "../utils/axios";
 import CodeDiffWindow from "./CodeDiffWindow";
+import { formatEpochTime } from "../utils/dateUtil";
 
 const progress = {
   width: "32px",
@@ -60,12 +61,6 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeD
       isClosable: true,
       duration: 1000,
     });
-  };
-
-  const formatEpochTime = (updatedAt) => {
-    const date = new Date(0);
-    date.setUTCSeconds(updatedAt);
-    return date.toISOString();
   };
 
   const copyValue = () => {
@@ -259,7 +254,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeD
       <input type="hidden" id="hiddenCodeValue" value={skeletonCode} />
       {isOpenDiff ? (
         <CodeDiffWindow
-          original={editorRef.current.getValue()}
+          original={editorRef.current?.getValue()}
           modified="#answer code" // 나중에 정답 코드 넣어야 함
           closeDiff={closeDiff}
         />
