@@ -51,6 +51,12 @@ function App() {
     }
   }, [lecture]);
 
+  useEffect(() => {
+    if (isTestEnded) {
+      setIsOpenDiff(true);
+    }
+  }, [isTestEnded]);
+
   const onChangeProblem = (problemId) => {
     getProblem(problemId);
   };
@@ -74,10 +80,13 @@ function App() {
       <Box className="bg">
         <Nav
           lectureName={lecture?.name}
+          lectureId={lecture?.id}
           deadline={lecture?.deadline}
           userName={loggedIn ? userName : ""}
           problems={lecture?.problems}
           onChangeProblem={onChangeProblem}
+          isTestEnded={isTestEnded}
+          setIsTestEnded={setIsTestEnded}
         />
         <Divider borderColor="whiteAlpha.200" />
         <Box className="body_container">

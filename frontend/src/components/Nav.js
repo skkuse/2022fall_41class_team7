@@ -10,6 +10,7 @@ import {
   Text,
   Avatar,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import "../styles/style.css";
@@ -18,12 +19,23 @@ import PropTypes from "prop-types";
 import logo from "../assets/images/service_logo.svg";
 import setting from "../assets/images/setting.svg";
 import Logout from "./modals/Logout";
+import axios from "../utils/axios";
 
-function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
+function Nav({
+  lectureName,
+  lectureId,
+  deadline,
+  userName,
+  problems,
+  onChangeProblem,
+  isTestEnded,
+  setIsTestEnded,
+}) {
   const [selected, setSelected] = useState(1);
   const interval = useRef(null);
   const [remainText, setRemainText] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast({ position: "bottom-right", isClosable: true, duration: 1000 });
 
   const onChangeProblemNav = (event) => {
     setSelected(event.target.value);
@@ -31,23 +43,52 @@ function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
   };
 
   function UnixTimestamp() {
-    const currentTime = Math.floor(new Date().getTime() / 1000);
-    const remainTime = deadline ? deadline - currentTime : 0;
-    const date = new Date(remainTime * 1000);
-    const day = Math.floor(remainTime / 60 / 60 / 24);
-    const hour = date.getHours();
-    const minute = date.getMinutes();
-    const second = date.getSeconds();
-    setRemainText(`${day}일 ${hour}시간 ${minute}분 ${second}초`);
+    if (!isTestEnded) {
+      const currentTime = Math.floor(new Date().getTime() / 1000);
+      const remainTime = deadline ? deadline - currentTime : 0;
+      const date = new Date(remainTime * 1000);
+      const day = Math.floor(remainTime / 60 / 60 / 24);
+      const hour = date.getHours();
+      const minute = date.getMinutes();
+      const second = date.getSeconds();
+      setRemainText(`${day}일 ${hour}시간 ${minute}분 ${second}초`);
+    }
   }
+
+  const endTest = async () => {
+    try {
+      await axios.post(`lectures/${lectureId}/end/`);
+      // 종료 처리
+      setIsTestEnded(true);
+    } catch (e) {
+      console.log(e);
+      toast({
+        title: "종료에 실패했습니다.",
+        status: "error",
+      });
+    }
+  };
 
   useEffect(() => {
     interval.current = setInterval(() => {
       UnixTimestamp();
     }, 1000);
 
+    if (isTestEnded) {
+      setRemainText("시험 종료");
+    }
+
     return () => clearInterval(interval.current);
   }, []);
+
+  useEffect(
+    () => {
+      if (isTestEnded) {
+        setRemainText("시험 종료");
+      }
+    },
+    [isTestEnded]
+  );
 
   return (
     <Box className="nav">
@@ -95,6 +136,7 @@ function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
           <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" size="xs" />
           <Text className="profile_text">{userName}</Text>
         </Box>
+        {!isTestEnded && (
         <Input
           className="deadline_input"
           border="1px"
@@ -108,7 +150,15 @@ function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
           value={remainText}
           readOnly
         />
-        <Button className="button_test_end" size="sm" backgroundColor="red.500" color="white">
+        )}
+        <Button
+          className="button_test_end"
+          size="sm"
+          backgroundColor="red.500"
+          color="white"
+          onClick={endTest}
+          disabled={isTestEnded}
+        >
           시험 종료
         </Button>
         <Box>
@@ -122,6 +172,7 @@ function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
 
 Nav.propTypes = {
   lectureName: PropTypes.string.isRequired,
+  lectureId: PropTypes.number.isRequired,
   deadline: PropTypes.number.isRequired,
   userName: PropTypes.string.isRequired,
   problems: PropTypes.arrayOf(
@@ -131,6 +182,8 @@ Nav.propTypes = {
     })
   ).isRequired,
   onChangeProblem: PropTypes.func.isRequired,
+  isTestEnded: PropTypes.bool.isRequired,
+  setIsTestEnded: PropTypes.func.isRequired,
 };
 
 export default Nav;
