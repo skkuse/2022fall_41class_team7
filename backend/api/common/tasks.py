@@ -30,7 +30,7 @@ def grade_submission(submission_id: int, file: TextIO):
         tc_out = testcase.get("output")
         timeout = testcase.get("timeout")
 
-        user_out, err = executor.run(file.name, tc_in, timeout)
+        user_out, err, err_line = executor.run(file.name, tc_in, timeout)
 
         is_passed = str(user_out.strip()) == str(tc_out.strip())
         result.append(
