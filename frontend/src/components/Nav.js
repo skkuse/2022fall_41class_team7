@@ -18,12 +18,22 @@ import PropTypes from "prop-types";
 import logo from "../assets/images/service_logo.svg";
 import setting from "../assets/images/setting.svg";
 import Logout from "./modals/Logout";
+import EndTest from "./modals/EndTest";
 
 function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
   const [selected, setSelected] = useState(1);
   const interval = useRef(null);
   const [remainText, setRemainText] = useState("");
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenLogoutModal,
+    onOpen: onOpenLogoutModal,
+    onClose: onCloseLogoutModal,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenEndTestModal,
+    onOpen: onOpenEndTestModal,
+    onClose: onCloseEndTestModal,
+  } = useDisclosure();
 
   const onChangeProblemNav = (event) => {
     setSelected(event.target.value);
@@ -59,7 +69,7 @@ function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
             alt="service logo"
             boxSize="32px"
             borderRadius="6px"
-            onClick={onOpen}
+            onClick={onOpenLogoutModal}
           />
         </Box>
         <Box>
@@ -108,14 +118,21 @@ function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
           value={remainText}
           readOnly
         />
-        <Button className="button_test_end" size="sm" backgroundColor="red.500" color="white">
+        <Button
+          className="button_test_end"
+          size="sm"
+          backgroundColor="red.500"
+          color="white"
+          onClick={onOpenEndTestModal}
+        >
           시험 종료
         </Button>
         <Box>
           <Image src={setting} alt="setting" />
         </Box>
       </Box>
-      <Logout isOpen={isOpen} onClose={onClose} />
+      <EndTest isOpen={isOpenEndTestModal} onClose={onCloseEndTestModal} />
+      <Logout isOpen={isOpenLogoutModal} onClose={onCloseLogoutModal} />
     </Box>
   );
 }
