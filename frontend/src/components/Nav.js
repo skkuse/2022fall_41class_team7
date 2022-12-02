@@ -19,7 +19,6 @@ import PropTypes from "prop-types";
 import logo from "../assets/images/service_logo.svg";
 import setting from "../assets/images/setting.svg";
 import Logout from "./modals/Logout";
-import EndTest from "./modals/EndTest";
 import axios from "../utils/axios";
 
 function Nav({
@@ -35,16 +34,7 @@ function Nav({
   const [selected, setSelected] = useState(1);
   const interval = useRef(null);
   const [remainText, setRemainText] = useState("");
-  const {
-    isOpen: isOpenLogoutModal,
-    onOpen: onOpenLogoutModal,
-    onClose: onCloseLogoutModal,
-  } = useDisclosure();
-  const {
-    isOpen: isOpenEndTestModal,
-    onOpen: onOpenEndTestModal,
-    onClose: onCloseEndTestModal,
-  } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast({ position: "bottom-right", isClosable: true, duration: 1000 });
 
   const onChangeProblemNav = (event) => {
@@ -110,7 +100,7 @@ function Nav({
             alt="service logo"
             boxSize="32px"
             borderRadius="6px"
-            onClick={onOpenLogoutModal}
+            onClick={onOpen}
           />
         </Box>
         <Box>
@@ -166,7 +156,8 @@ function Nav({
           size="sm"
           backgroundColor="red.500"
           color="white"
-          onClick={onOpenEndTestModal}
+          onClick={endTest}
+          disabled={isTestEnded}
         >
           시험 종료
         </Button>
@@ -174,8 +165,7 @@ function Nav({
           <Image src={setting} alt="setting" />
         </Box>
       </Box>
-      <EndTest isOpen={isOpenEndTestModal} onClose={onCloseEndTestModal} />
-      <Logout isOpen={isOpenLogoutModal} onClose={onCloseLogoutModal} />
+      <Logout isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 }
