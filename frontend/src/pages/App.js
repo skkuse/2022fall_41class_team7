@@ -10,6 +10,7 @@ import CodeEditor from "../components/CodeEditor";
 import Terminal from "../components/Terminial";
 import { useUserState } from "../utils/contextProvider";
 import SubmitResult from "../components/SubmitResult";
+import { epochToDate } from "../utils/dateUtil";
 
 function App() {
   const { id } = useParams();
@@ -18,7 +19,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const { loggedUser, loggedIn } = useUserState();
   const [isOpenDiff, setIsOpenDiff] = useState(false);
-  const [isBigDiff, setIsBigDiff] = useState(true);
   const [isTestEnded, setIsTestEnded] = useState(false);
 
   const userName = loggedUser.name;
@@ -32,6 +32,13 @@ function App() {
   const getLecture = async () => {
     const response = await axios.get(`lectures/${id}/`, {});
     setLecture(response.data);
+    const isEnded = response.data.enrollment.is_ended;
+    const deadline = epochToDate(response.data.deadline);
+
+    if (deadline < Date.now() || isEnded) {
+      setIsTestEnded(true);
+      setIsOpenDiff(true);
+    }
   };
 
   useEffect(() => {
