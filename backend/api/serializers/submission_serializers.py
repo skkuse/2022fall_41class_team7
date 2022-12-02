@@ -32,7 +32,7 @@ class ExecuteSerializer(CodeSerializer):
 
 
 class ExecuteResultSerializer(serializers.Serializer):
-    result = serializers.CharField(allow_null=True)
+    result = serializers.CharField(allow_null=True, allow_blank=True)
     error = serializers.CharField(allow_null=True)
     error_line = serializers.IntegerField(allow_null=True)
 
