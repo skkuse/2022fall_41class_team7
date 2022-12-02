@@ -9,6 +9,7 @@ import Problem from "../components/Problem";
 import CodeEditor from "../components/CodeEditor";
 import Terminal from "../components/Terminial";
 import { useUserState } from "../utils/contextProvider";
+import SubmitResult from "../components/SubmitResult";
 
 function App() {
   const { id } = useParams();
@@ -16,7 +17,9 @@ function App() {
   const [lecture, setLecture] = useState({});
   const [loading, setLoading] = useState(true);
   const { loggedUser, loggedIn } = useUserState();
-  const [diff, setDiff] = useState(false);
+  const [isOpenDiff, setIsOpenDiff] = useState(false);
+  const [isBigDiff, setIsBigDiff] = useState(true);
+  const [isTestEnded, setIsTestEnded] = useState(false);
 
   const userName = loggedUser.name;
 
@@ -46,11 +49,17 @@ function App() {
   };
 
   const openDiff = () => {
-    setDiff(true);
+    setIsOpenDiff(true);
   };
 
   const closeDiff = () => {
-    setDiff(false);
+    setIsOpenDiff(false);
+  };
+
+  const testEnd = () => {
+    // 임시로 제출 버튼 누르면 diff 열기 & 제출 결과창 나오도록
+    setIsTestEnded(true);
+    setIsOpenDiff(true);
   };
 
   return loading ? null : (
@@ -78,16 +87,21 @@ function App() {
             setProblem={setProblem}
             skeletonCode={problem?.skeleton_code}
             closeDiff={closeDiff}
-            diff={diff}
+            isOpenDiff={isOpenDiff}
           />
           <Divider orientation="vertical" borderColor="whiteAlpha.200" />
-          <Terminal
-            submissionCapacity={lecture?.submission_capacity}
-            submissionNum={problem?.submissions.length}
-            problem={problem}
-            testcases={problem?.testcases}
-            openDiff={openDiff}
-          />
+          {!isTestEnded ? (
+            <Terminal
+              submissionCapacity={lecture?.submission_capacity}
+              submissionNum={problem?.submissions.length}
+              problem={problem}
+              testcases={problem?.testcases}
+              openDiff={openDiff}
+              testEnd={testEnd}
+            />
+          ) : (
+            <SubmitResult />
+          )}
         </Box>
       </Box>
     </ChakraProvider>

@@ -1,0 +1,62 @@
+{
+  "id": 1,
+  "problem": {
+    "id": 1,
+    "name": "피보나치",
+    "explanation": "피보나치 설명",
+    "reference": "참조",
+    "testcases": [
+      {
+        "input": "0",
+        "output": "0",
+        "timeout": null,
+        "is_hidden": false
+      },
+      {
+        "input": "0",
+        "output": "0",
+        "timeout": null,
+        "is_hidden": true
+      }
+    ],
+    "skeleton_code": "hello",
+    "answer_code": "answer_code",
+    "related_content": "related content",
+    "lecture": 1
+  },
+  "code": "print(3)",
+  "created_at": 1669923406,
+  "state": 3,
+  "result": [
+    {
+      "input": "0",
+      "output": "0",
+      "user_output": "0",
+      "is_passed": true
+    },
+    {
+      "input": "0",
+      "output": "1",
+      "user_output": "0",
+      "is_passed": false
+    }
+  ],
+  "analysis": {
+    "plagiarism": 30,
+    "efficiency": {
+      "loc": 25,
+      "halstead": 25,
+      "data_flow": 25,
+      "control_flow": 25
+    },
+    "readability": {
+      "mypy": [20, "1.error reason \n 2. error reson \n 3. ~~"],
+      "pylint": [20, "1.error reason \n 2. error reson \n 3. ~~"],
+      "eradicate": [20, "1.error reason \n 2. error reson \n 3. ~~"],
+      "radon": [20, "1.error reason \n 2. error reson \n 3. ~~"],
+      "pycodestyle": [20, "1.error reason \n 2. error reson \n 3. ~~"]
+    },
+    "explanation": "~~~~~"
+  },
+  "user": 1
+}

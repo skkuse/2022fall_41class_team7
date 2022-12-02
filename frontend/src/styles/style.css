@@ -79,7 +79,7 @@
   flex: 1;
 
   /*height: calc(100% - 61px);*/
-  padding: 40px 20px;
+
   /*overflow-y: scroll;*/
   overflow: auto;
 }
@@ -106,6 +106,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 40px;
+  padding: 40px 20px;
 }
 .explanation_head_text {
   font-size: 20px;

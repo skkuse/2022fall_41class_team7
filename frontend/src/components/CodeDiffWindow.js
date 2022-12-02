@@ -2,6 +2,7 @@ import "../styles/diffeditor.css";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { Box, Button } from "@chakra-ui/react";
+import { ChevronLeftIcon, ChevronRightIcon, CloseIcon } from "@chakra-ui/icons";
 import EditorDiff from "./CodeEditorDiff";
 
 function CodeDiffWindow({ original, modified, closeDiff }) {
@@ -17,18 +18,18 @@ function CodeDiffWindow({ original, modified, closeDiff }) {
         <Box className="diff_header">
           수정 방안
           <Button className="diff_close_button" backgroundColor="gray.900" onClick={closeDiff}>
-            X
+            <CloseIcon boxSize="10px" />
           </Button>
         </Box>
         <Box className="diff_body">
           <Button
             backgroundColor="gray.900"
-            height="calc(100% - 61px)"
+            height="100%"
             borderRadius="0"
             onClick={widthChange}
             className="diffButton"
           >
-            &lt;
+            <ChevronLeftIcon boxSize="15px" />
           </Button>
           <EditorDiff original={original} modified={modified} />
         </Box>
@@ -41,18 +42,18 @@ function CodeDiffWindow({ original, modified, closeDiff }) {
         <Box className="diff_header">
           수정 방안
           <Button className="diff_close_button" backgroundColor="gray.900" onClick={closeDiff}>
-            X
+            <CloseIcon boxSize="10px" />
           </Button>
         </Box>
         <Box className="diff_body">
           <Button
             background="gray.900"
-            height="calc(100% - 61px)"
+            height="100%"
             borderRadius="0"
             onClick={widthChange}
             className="diffButton"
           >
-            &gt;
+            <ChevronRightIcon boxSize="15px" />
           </Button>
           <EditorDiff original={original} modified={modified} />
         </Box>
