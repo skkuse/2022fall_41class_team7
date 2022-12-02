@@ -100,28 +100,83 @@ def execute_radon(full_filename: str):
         return [result, output]
 
 
-def execute_efficiency(full_filename: str):
-    # process = subprocess.run(
-    #     ['multimetric', f'{full_filename}'],
-    #     stdout=subprocess.PIPE,
-    #     universal_newlines=True
-    # )
+def execute_efficiency(full_filename: str, answer_filename: str):
+    process1 = subprocess.run(
+        ["multimetric", f"{full_filename}"],
+        stdout=subprocess.PIPE,
+        universal_newlines=True
+    )
 
-    # output = process.stdout
-    # output_json = json.loads(output)
+    output1 = process1.stdout
+    output_json1 = json.loads(output1)
 
-    # sloc_score = output_json['overall']['loc']
-    # cf_complexity_score = output_json['overall']['cyclomatic_complexity']
-    # r_words_score = output_json['overall']['halstead_difficulty']
-    # program = subprocess.Popen(["python", full_filename])
-    # mem_usage = memory_usage(proc=program, timeout=1)
-    # df_complexity_score = round(max(mem_usage), 2)
+    sloc_score1 = output_json1["overall"]["loc"]
+    cf_complexity_score1 = output_json1["overall"]["cyclomatic_complexity"]
+    r_words_score1 = output_json1["overall"]["halstead_difficulty"]
+
+    program1 = subprocess.Popen(["python", full_filename])
+    mem_usage1 = memory_usage(proc=program1, timeout=1)
+    df_complexity_score1 = round(max(mem_usage1), 2)
+
+    process2 = subprocess.run(
+        ["multimetric", f"{answer_filename}"],
+        stdout=subprocess.PIPE,
+        universal_newlines=True
+    )
+
+    output2 = process2.stdout
+    output_json2 = json.loads(output2)
+    sloc_score2 = output_json2["overall"]["loc"]
+    cf_complexity_score2 = output_json2["overall"]["cyclomatic_complexity"]
+    r_words_score2 = output_json2["overall"]["halstead_difficulty"]
+
+    program2 = subprocess.Popen(["python", full_filename])
+    mem_usage2 = memory_usage(proc=program2, timeout=1)
+    df_complexity_score2 = round(max(mem_usage2), 2)
+
+    loc_score = sloc_score2 - sloc_score1
+    if loc_score < 0:
+        loc_score_final = 25 + loc_score
+        if loc_score_final < 0:
+            loc_score_final = 0
+    else:
+        loc_score_final = 25
+
+    # halstead_difficulty
+    if (r_words_score1 <= r_words_score2):
+        r_words_score_result = 25
+    else:
+        r_words_score_result = 24
+        diffdiff = r_words_score1 - r_words_score2
+        while (r_words_score_result > 0 and diffdiff > 0):
+            r_words_score_result -= 1
+            diffdiff -= 0.2 * r_words_score2
+
+    # dataflow complexity
+    if (df_complexity_score1 <= df_complexity_score2):
+        df_complexity_score_result = 25
+    else:
+        df_complexity_score_result = 24
+        memmax_copy = df_complexity_score1
+        while (memmax_copy > df_complexity_score2 and df_complexity_score_result > 0):
+            df_complexity_score_result -= 1
+            memmax_copy /= 2
+
+    # cyclomatic complexity
+    if (cf_complexity_score1 <= cf_complexity_score2):
+        cf_complexity_score_result = 25
+    else:
+        cf_complexity_score_result = 24
+        cycompdiff = cf_complexity_score1 - cf_complexity_score2
+        while (cf_complexity_score_result > 0 and cycompdiff > 0):
+            cf_complexity_score_result -= 1
+            cycompdiff -= 1
 
     return {
-        "loc": random.randrange(15, 25),
-        "halstead": random.randrange(15, 25),
-        "data_flow": random.randrange(15, 25),
-        "control_flow": random.randrange(15, 25),
+        "loc": int(loc_score_final),
+        "halstead": int(r_words_score_result),
+        "data_flow": int(df_complexity_score_result),
+        "control_flow": int(cf_complexity_score_result),
     }
 
 
