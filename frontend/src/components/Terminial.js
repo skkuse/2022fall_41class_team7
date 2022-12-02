@@ -8,6 +8,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import PropTypes from "prop-types";
+import { AxiosHeaders } from "axios";
 import RunCode from "./modals/RunCode";
 import axios from "../utils/axios";
 
@@ -107,29 +108,29 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
   };
 
   const submitTest = async () => {
-    // axios
-    //   .post(
-    //     "/submissions/",
-    //     { code: getCode() },
-    //     {
-    //       params: {
-    //         problem_id: problem.id,
-    //       },
-    //     }
-    //   )
-    //   .then((response) => {
-    toast({
-      title: `제출 성공 ( ${submissionNum} / ${submissionCapacity})`,
-      position: "bottom-right",
-      isClosable: true,
-      status: "success",
-      duration: 3000,
-    });
-    if (submissionCapacity > submissionNum) {
-      // console.log("");
-    }
-    // })
-    // .catch((err) => null);
+    axios
+      .post(
+        "/submissions/",
+        { code: getCode() },
+        {
+          params: {
+            problem_id: problem.id,
+          },
+        }
+      )
+      .then((response) => {
+        toast({
+          title: "제출 성공!",
+          position: "bottom-right",
+          isClosable: true,
+          status: "success",
+          duration: 3000,
+        });
+        // if (submissionCapacity > submissionNum) {
+        // console.log("");
+        // }
+      })
+      .catch((err) => null);
   };
 
   return (
