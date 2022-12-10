@@ -35,7 +35,9 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
     const chh = dt.getHours();
     const cmm = dt.getMinutes();
     const css = dt.getSeconds();
-    const ctm = `${chh < 10 ? `0${chh}` : chh}:${cmm < 10 ? `0${cmm}` : cmm}:${css < 10 ? `0${css}` : css}`;
+    const ctm = `${chh < 10 ? `0${chh}` : chh}:${cmm < 10 ? `0${cmm}` : cmm}:${
+      css < 10 ? `0${css}` : css
+    }`;
 
     if (msg === "") {
       terminal.innerHTML += "<br/>";
