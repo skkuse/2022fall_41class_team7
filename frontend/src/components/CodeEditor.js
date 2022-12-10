@@ -11,22 +11,24 @@ import {
   Select,
   useToast,
 } from "@chakra-ui/react";
-import { CopyIcon, DownloadIcon, RepeatClockIcon, SearchIcon } from "@chakra-ui/icons";
+import { CopyIcon, DownloadIcon, RepeatClockIcon, ArrowUpIcon } from "@chakra-ui/icons";
 import FileSaver from "file-saver";
 import Editor, { DiffEditor } from "@monaco-editor/react";
 import axios from "../utils/axios";
 import CodeDiffWindow from "./CodeDiffWindow";
+import { formatEpochTime } from "../utils/dateUtil";
+import useMyToast from "../utils/toastUtil";
 
 const progress = {
   width: "32px",
   height: "32px",
 };
 
-function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, closeDiff }) {
+function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeDiff, isOpenDiff }) {
   const fileInput = useRef();
   const editorRef = useRef(null);
   const selectRef = useRef(null);
-  const toast = useToast();
+  const toast = useMyToast();
   const [storageNum, setStorageNum] = useState(-1);
 
   const handleEditorDidMount = (editor, monaco) => {
@@ -46,9 +48,6 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, 
     fileReader.readAsText(file);
     toast({
       title: "파일로부터 코드를 불러옵니다.",
-      position: "bottom-right",
-      isClosable: true,
-      duration: 1000,
     });
   };
 
@@ -56,25 +55,13 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, 
     editorRef.current.setValue(skeletonCode);
     toast({
       title: "코드가 초기화 되었습니다.",
-      position: "bottom-right",
-      isClosable: true,
-      duration: 1000,
     });
-  };
-
-  const formatEpochTime = (updatedAt) => {
-    const date = new Date(0);
-    date.setUTCSeconds(updatedAt);
-    return date.toISOString();
   };
 
   const copyValue = () => {
     navigator.clipboard.writeText(editorRef.current.getValue());
     toast({
       title: "코드가 클립보드에 복사되었습니다.",
-      position: "bottom-right",
-      isClosable: true,
-      duration: 1000,
     });
   };
 
@@ -86,9 +73,6 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, 
     FileSaver.saveAs(blob, `${problem.name}.py`);
     toast({
       title: `코드가 ${problem.name}.py로 다운로드되었습니다.`,
-      position: "bottom-right",
-      isClosable: true,
-      duration: 1000,
     });
   };
 
@@ -115,18 +99,12 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, 
 
       toast({
         title: "코드를 저장했습니다.",
-        position: "bottom-right",
-        isClosable: true,
         status: "success",
-        duration: 1000,
       });
     } catch (e) {
       toast({
         title: "코드를 저장에 실패했습니다.",
-        position: "bottom-right",
-        isClosable: true,
         status: "error",
-        duration: 1000,
       });
     }
   };
@@ -156,7 +134,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, 
             background="#718096"
             className="iconBtn"
             aria-label="Search"
-            icon={<SearchIcon />}
+            icon={<ArrowUpIcon />}
             onClick={inputFile}
           />
           <input
@@ -198,7 +176,6 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, 
             size="sm"
             bg="gray.900"
             borderColor="whiteAlpha.200"
-            placeholder="저장소 선택"
             onChange={onChangeStorage}
             ref={selectRef}
             defaultValue="DEFAULT"
@@ -258,9 +235,9 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, diff, 
         onChange={onChangeEditor}
       />
       <input type="hidden" id="hiddenCodeValue" value={skeletonCode} />
-      {diff ? (
+      {isOpenDiff ? (
         <CodeDiffWindow
-          original={editorRef.current.getValue()}
+          original={editorRef.current?.getValue()}
           modified="#answer code" // 나중에 정답 코드 넣어야 함
           closeDiff={closeDiff}
         />
@@ -283,8 +260,8 @@ CodeEditor.propTypes = {
   }).isRequired,
   setProblem: PropTypes.func.isRequired,
   skeletonCode: PropTypes.string.isRequired,
-  diff: PropTypes.bool.isRequired,
   closeDiff: PropTypes.func.isRequired,
+  isOpenDiff: PropTypes.bool.isRequired,
 };
 
 export default CodeEditor;

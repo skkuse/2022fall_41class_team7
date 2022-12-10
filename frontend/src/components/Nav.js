@@ -10,6 +10,7 @@ import {
   Text,
   Avatar,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import "../styles/style.css";
@@ -18,22 +19,24 @@ import PropTypes from "prop-types";
 import logo from "../assets/images/service_logo.svg";
 import setting from "../assets/images/setting.svg";
 import Logout from "./modals/Logout";
-import EndTest from "./modals/EndTest";
+import axios from "../utils/axios";
+import useMyToast from "../utils/toastUtil";
 
-function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
+function Nav({
+  lectureName,
+  lectureId,
+  deadline,
+  userName,
+  problems,
+  onChangeProblem,
+  isTestEnded,
+  setIsTestEnded,
+}) {
   const [selected, setSelected] = useState(1);
   const interval = useRef(null);
   const [remainText, setRemainText] = useState("");
-  const {
-    isOpen: isOpenLogoutModal,
-    onOpen: onOpenLogoutModal,
-    onClose: onCloseLogoutModal,
-  } = useDisclosure();
-  const {
-    isOpen: isOpenEndTestModal,
-    onOpen: onOpenEndTestModal,
-    onClose: onCloseEndTestModal,
-  } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useMyToast();
 
   const onChangeProblemNav = (event) => {
     setSelected(event.target.value);
@@ -41,23 +44,48 @@ function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
   };
 
   function UnixTimestamp() {
-    const currentTime = Math.floor(new Date().getTime() / 1000);
-    const remainTime = deadline ? deadline - currentTime : 0;
-    const date = new Date(remainTime * 1000);
-    const day = Math.floor(remainTime / 60 / 60 / 24);
-    const hour = date.getHours();
-    const minute = date.getMinutes();
-    const second = date.getSeconds();
-    setRemainText(`${day}일 ${hour}시간 ${minute}분 ${second}초`);
+    if (!isTestEnded) {
+      const currentTime = Math.floor(new Date().getTime() / 1000);
+      const remainTime = deadline ? deadline - currentTime : 0;
+      const date = new Date(remainTime * 1000);
+      const day = Math.floor(remainTime / 60 / 60 / 24);
+      const hour = date.getHours();
+      const minute = date.getMinutes();
+      const second = date.getSeconds();
+      setRemainText(`${day}일 ${hour}시간 ${minute}분 ${second}초`);
+    }
   }
+
+  const endTest = async () => {
+    try {
+      await axios.post(`lectures/${lectureId}/end/`);
+      // 종료 처리
+      setIsTestEnded(true);
+    } catch (e) {
+      toast({
+        title: "종료에 실패했습니다.",
+        status: "error",
+      });
+    }
+  };
 
   useEffect(() => {
     interval.current = setInterval(() => {
       UnixTimestamp();
     }, 1000);
 
+    if (isTestEnded) {
+      setRemainText("시험 종료");
+    }
+
     return () => clearInterval(interval.current);
   }, []);
+
+  useEffect(() => {
+    if (isTestEnded) {
+      setRemainText("시험 종료");
+    }
+  }, [isTestEnded]);
 
   return (
     <Box className="nav">
@@ -69,7 +97,7 @@ function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
             alt="service logo"
             boxSize="32px"
             borderRadius="6px"
-            onClick={onOpenLogoutModal}
+            onClick={onOpen}
           />
         </Box>
         <Box>
@@ -105,25 +133,28 @@ function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
           <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" size="xs" />
           <Text className="profile_text">{userName}</Text>
         </Box>
-        <Input
-          className="deadline_input"
-          border="1px"
-          borderColor="whiteAlpha.200"
-          color="white"
-          width="176px"
-          height="32px"
-          fontSize="14px"
-          padding="6px 12px"
-          textAlign="center"
-          value={remainText}
-          readOnly
-        />
+        {!isTestEnded && (
+          <Input
+            className="deadline_input"
+            border="1px"
+            borderColor="whiteAlpha.200"
+            color="white"
+            width="176px"
+            height="32px"
+            fontSize="14px"
+            padding="6px 12px"
+            textAlign="center"
+            value={remainText}
+            readOnly
+          />
+        )}
         <Button
           className="button_test_end"
           size="sm"
           backgroundColor="red.500"
           color="white"
-          onClick={onOpenEndTestModal}
+          onClick={endTest}
+          disabled={isTestEnded}
         >
           시험 종료
         </Button>
@@ -131,14 +162,14 @@ function Nav({ lectureName, deadline, userName, problems, onChangeProblem }) {
           <Image src={setting} alt="setting" />
         </Box>
       </Box>
-      <EndTest isOpen={isOpenEndTestModal} onClose={onCloseEndTestModal} />
-      <Logout isOpen={isOpenLogoutModal} onClose={onCloseLogoutModal} />
+      <Logout isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 }
 
 Nav.propTypes = {
   lectureName: PropTypes.string.isRequired,
+  lectureId: PropTypes.number.isRequired,
   deadline: PropTypes.number.isRequired,
   userName: PropTypes.string.isRequired,
   problems: PropTypes.arrayOf(
@@ -148,6 +179,8 @@ Nav.propTypes = {
     })
   ).isRequired,
   onChangeProblem: PropTypes.func.isRequired,
+  isTestEnded: PropTypes.bool.isRequired,
+  setIsTestEnded: PropTypes.func.isRequired,
 };
 
 export default Nav;
