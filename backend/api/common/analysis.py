@@ -6,7 +6,7 @@ import json
 import subprocess
 import random
 import tempfile
-from copydetect import CopyDetector
+import copydetect
 from memory_profiler import memory_usage
 
 
@@ -14,7 +14,7 @@ def execute_codex(full_filename):
     with open(full_filename, "r") as f:
         example = f.read()
 
-    My_OpenAI_key = "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"
+    My_OpenAI_key = "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"
     openai.api_key = My_OpenAI_key
 
     response = Completion.create(
@@ -135,42 +135,41 @@ def execute_efficiency(full_filename: str, answer_filename: str):
     df_complexity_score2 = round(max(mem_usage2), 2)
 
     loc_score = sloc_score2 - sloc_score1
-    if loc_score < 0:
-        loc_score_final = 25 + loc_score
+    if loc_score > 0:
+        loc_score_final = 25 - loc_score
         if loc_score_final < 0:
             loc_score_final = 0
     else:
         loc_score_final = 25
 
     # halstead_difficulty
-    if (r_words_score1 <= r_words_score2):
-        r_words_score_result = 25
+    diff = r_words_score2 - r_words_score1
+    if diff > 0:
+        r_words_score_result = 25 - diff
+        if r_words_score_result < 0:
+            r_words_score_result = 0
     else:
-        r_words_score_result = 24
-        diffdiff = r_words_score1 - r_words_score2
-        while (r_words_score_result > 0 and diffdiff > 0):
-            r_words_score_result -= 1
-            diffdiff -= 0.2 * r_words_score2
+        r_words_score_result = 25
 
     # dataflow complexity
-    if (df_complexity_score1 <= df_complexity_score2):
-        df_complexity_score_result = 25
+    diff = df_complexity_score2 - df_complexity_score1
+    if diff > 0:
+        df_complexity_score_result = 25 - diff
+        if df_complexity_score_result < 0:
+            df_complexity_score_result = 0
     else:
-        df_complexity_score_result = 24
-        memmax_copy = df_complexity_score1
-        while (memmax_copy > df_complexity_score2 and df_complexity_score_result > 0):
-            df_complexity_score_result -= 1
-            memmax_copy /= 2
+        df_complexity_score_result = 25
+    
 
     # cyclomatic complexity
-    if (cf_complexity_score1 <= cf_complexity_score2):
-        cf_complexity_score_result = 25
+    diff = cf_complexity_score2 - cf_complexity_score1
+    if diff > 0:
+        cf_complexity_score_result = 25 - diff
+        if cf_complexity_score_result < 0:
+            cf_complexity_score_result = 0
     else:
-        cf_complexity_score_result = 24
-        cycompdiff = cf_complexity_score1 - cf_complexity_score2
-        while (cf_complexity_score_result > 0 and cycompdiff > 0):
-            cf_complexity_score_result -= 1
-            cycompdiff -= 1
+        cf_complexity_score_result = 25
+    
 
     return {
         "loc": int(loc_score_final),
@@ -180,39 +179,11 @@ def execute_efficiency(full_filename: str, answer_filename: str):
     }
 
 
-def execute_plagiarism(full_filename: str):
-    # DISPLAY_THRESHOLD = 0.5
-    # ANTO_OPEN_FLAG = False
-    # SILENT_FLAG = True
-    # NUM_FILES_COMPARED_FIELD = 'num_files_compared'
-    # SIMILARITY_FIELD = 'similarity_score'
+def execute_plagiarism(full_filename: str, answer_filename: str):
+    fp1 = copydetect.CodeFingerprint(full_filename, 25, 1)
+    fp2 = copydetect.CodeFingerprint(answer_filename, 25, 1)
+    _, similarities, _ = copydetect.compare_files(fp1, fp2)
 
-    # temp_report = tempfile.NamedTemporaryFile()
+    plagiarism = 100 * similarities[0]
 
-    # Initialize CopyDetector
-    # detector = CopyDetector(
-    #     test_dirs=test_dirs,
-    #     ref_dirs=ref_dirs,
-    #     out_file=temp_report.name,
-    #     display_t=DISPLAY_THRESHOLD,
-    #     autoopen=ANTO_OPEN_FLAG,
-    #     silent=SILENT_FLAG,
-    # )
-    # detector.add_file(full_filename)
-    # detector.run()
-    # detector.generate_html_report()
-
-    # # BeautifulSoup HTML Parsing
-    # with open(f'{temp_report.name}.html', 'r') as fp:
-    #     soup = BeautifulSoup(fp, "html.parser")
-    # soup.get_text()
-
-    # # Get the number of files compared (int)
-    # num_of_files_string = soup.find("p").find_next("p").contents[2].strip()
-    # num_files = int(''.join(filter(str.isdigit, num_of_files_string)))
-
-    # # Get the similarity score (float)
-    # similarity_string = soup.find("p").find_next("p").contents[4].strip()
-    # sim_score = [float(s) for s in re.findall(r'\d+\.\d+', similarity_string)]
-
-    return random.randrange(30, 45)
+    return int(plagiarism)
