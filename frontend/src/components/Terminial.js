@@ -5,13 +5,13 @@ import {
   CircularProgressLabel,
   Text,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import { AxiosHeaders } from "axios";
+import { useState } from "react";
 import RunCode from "./modals/RunCode";
 import axios from "../utils/axios";
 import useMyToast from "../utils/toastUtil";
+import SubmitAlert from "./modals/SumbitAlert";
 
 const progress = {
   width: "32px",
@@ -20,8 +20,10 @@ const progress = {
 
 function Terminal({ submissionCapacity, submissionNum, problem, testcases, openDiff, testEnd }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const alert = useDisclosure();
   const getCode = () => document.getElementById("hiddenCodeValue").value;
   const toast = useMyToast();
+  const [curSubmissionNum, SetCurSubmissionNum] = useState(submissionNum);
 
   const dt = new Date();
   const hh = dt.getHours();
@@ -102,26 +104,25 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
   };
 
   const submitTest = async () => {
-    axios
-      .post(
-        "/submissions/",
-        { code: getCode() },
-        {
-          params: {
-            problem_id: problem.id,
-          },
-        }
-      )
-      .then((response) => {
-        toast({
-          title: "제출 성공!",
-          status: "success",
-        });
-        // if (submissionCapacity > submissionNum) {
-        // console.log("");
-        // }
-      })
-      .catch((err) => null);
+    const res = await axios.post(
+      "/submissions/",
+      { code: getCode() },
+      {
+        params: {
+          problem_id: problem.id,
+        },
+      }
+    );
+
+    toast({
+      title: "제출 성공!",
+      status: "success",
+    });
+
+    SetCurSubmissionNum((prev) => prev + 1);
+    // if (submissionCapacity > submissionNum) {
+    // console.log("");
+    // }
   };
 
   return (
@@ -140,16 +141,16 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
           <Button onClick={getTotalGrade} size="sm" backgroundColor="gray.500">
             채점
           </Button>
-          <Button onClick={submitTest} size="sm" backgroundColor="blue.500">
+          <Button onClick={alert.onOpen} size="sm" backgroundColor="blue.500">
             제출
           </Button>
           <CircularProgress
-            value={(submissionNum / submissionCapacity) * 100}
+            value={(curSubmissionNum / submissionCapacity) * 100}
             size="32px"
             style={progress}
           >
             <CircularProgressLabel>
-              {submissionNum}/{submissionCapacity}
+              {curSubmissionNum}/{submissionCapacity}
             </CircularProgressLabel>
           </CircularProgress>
         </Box>
@@ -160,6 +161,14 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
         </Text>
       </Box>
       <RunCode isOpen={isOpen} onClose={onClose} />
+      <SubmitAlert
+        isOpen={alert.isOpen}
+        onClose={alert.onClose}
+        getCode={getCode}
+        submissionCount={curSubmissionNum}
+        capacity={submissionCapacity}
+        submit={submitTest}
+      />
     </Box>
   );
 }
