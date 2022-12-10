@@ -4,12 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import axios from "../utils/axios";
 import PassTag from "./PassTag";
 import FailTag from "./FailTag";
+import useMyToast from "../utils/toastUtil";
 
 function Testcase({ problemID, number, title, input, output }) {
   const [result, setResult] = useState(null);
   const [myoutput, setMyoutput] = useState(0);
   const [testcase, setTestcase] = useState(null);
-  const toast = useToast({ position: "bottom-right", isClosable: true, duration: 1000 });
+  const toast = useMyToast();
 
   const getCode = () => document.getElementById("hiddenCodeValue").value;
 

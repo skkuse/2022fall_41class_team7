@@ -18,6 +18,7 @@ import axios from "../utils/axios";
 import logo from "../assets/images/logo.png";
 import SelectLecture from "../components/modals/SelectLecture";
 import { useUserDispatch } from "../utils/contextProvider";
+import useMyToast from "../utils/toastUtil";
 
 function Home() {
   const [id, setId] = useState("");
@@ -26,7 +27,7 @@ function Home() {
   const [isFailed2, setIsFailed2] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useUserDispatch();
-  const toast = useToast();
+  const toast = useMyToast();
 
   const onChangeId = (event) => {
     setId(event.target.value);
@@ -56,10 +57,7 @@ function Home() {
       setIsFailed(true);
       toast({
         title: "아이디나 비밀번호가 올바르지 않습니다.",
-        position: "bottom-right",
         status: "error",
-        isClosable: true,
-        duration: 2000,
       });
     }
   };

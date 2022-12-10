@@ -20,6 +20,7 @@ import logo from "../assets/images/service_logo.svg";
 import setting from "../assets/images/setting.svg";
 import Logout from "./modals/Logout";
 import axios from "../utils/axios";
+import useMyToast from "../utils/toastUtil";
 
 function Nav({
   lectureName,
@@ -35,7 +36,7 @@ function Nav({
   const interval = useRef(null);
   const [remainText, setRemainText] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const toast = useToast({ position: "bottom-right", isClosable: true, duration: 1000 });
+  const toast = useMyToast();
 
   const onChangeProblemNav = (event) => {
     setSelected(event.target.value);
