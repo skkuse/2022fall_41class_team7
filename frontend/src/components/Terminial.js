@@ -11,6 +11,7 @@ import PropTypes from "prop-types";
 import { AxiosHeaders } from "axios";
 import RunCode from "./modals/RunCode";
 import axios from "../utils/axios";
+import useMyToast from "../utils/toastUtil";
 
 const progress = {
   width: "32px",
@@ -20,7 +21,7 @@ const progress = {
 function Terminal({ submissionCapacity, submissionNum, problem, testcases, openDiff, testEnd }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const getCode = () => document.getElementById("hiddenCodeValue").value;
-  const toast = useToast();
+  const toast = useMyToast();
 
   const dt = new Date();
   const hh = dt.getHours();
@@ -44,7 +45,6 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
         toast({
           title: "채점 실패",
           isClosable: true,
-          duration: 3000,
         });
       });
   }
@@ -64,10 +64,7 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
     const result2 = await Promise.all(result).catch((e) => {
       toast({
         title: "채점 실패",
-        position: "bottom-right",
-        isClosable: true,
         status: "error",
-        duration: 3000,
       });
     });
 
@@ -100,10 +97,7 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
 
     toast({
       title: "채점 성공",
-      position: "bottom-right",
-      isClosable: true,
       status: "success",
-      duration: 3000,
     });
   };
 
@@ -121,10 +115,7 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
       .then((response) => {
         toast({
           title: "제출 성공!",
-          position: "bottom-right",
-          isClosable: true,
           status: "success",
-          duration: 3000,
         });
         // if (submissionCapacity > submissionNum) {
         // console.log("");

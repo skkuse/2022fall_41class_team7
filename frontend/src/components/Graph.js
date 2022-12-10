@@ -5,6 +5,28 @@ const theme = {
   fontSize: "14px",
 };
 
+function CenteredMetric({ dataWithArc, centerX, centerY }) {
+  let total = 0;
+  dataWithArc.forEach((datum) => {
+    total += datum.value;
+  });
+
+  return (
+    <text
+      x={centerX}
+      y={centerY}
+      textAnchor="middle"
+      dominantBaseline="central"
+      style={{
+        fontSize: "20px",
+        fontWeight: 600,
+      }}
+    >
+      {total}
+    </text>
+  );
+}
+
 function Graph({ efficiencyScore, readabilityScore, score }) {
   const data = [
     {
@@ -51,6 +73,7 @@ function Graph({ efficiencyScore, readabilityScore, score }) {
         from: "color",
         modifiers: [["darker", 2]],
       }}
+      layers={["arcs", "arcLabels", "arcLinkLabels", CenteredMetric]}
     />
   );
 }
@@ -59,6 +82,12 @@ Graph.propTypes = {
   efficiencyScore: PropTypes.number.isRequired,
   readabilityScore: PropTypes.number.isRequired,
   score: PropTypes.number.isRequired,
+};
+
+CenteredMetric.propTypes = {
+  dataWithArc: PropTypes.string.isRequired,
+  centerX: PropTypes.number.isRequired,
+  centerY: PropTypes.number.isRequired,
 };
 
 export default Graph;

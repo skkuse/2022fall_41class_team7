@@ -17,6 +17,7 @@ import Editor, { DiffEditor } from "@monaco-editor/react";
 import axios from "../utils/axios";
 import CodeDiffWindow from "./CodeDiffWindow";
 import { formatEpochTime } from "../utils/dateUtil";
+import useMyToast from "../utils/toastUtil";
 
 const progress = {
   width: "32px",
@@ -27,7 +28,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeD
   const fileInput = useRef();
   const editorRef = useRef(null);
   const selectRef = useRef(null);
-  const toast = useToast();
+  const toast = useMyToast();
   const [storageNum, setStorageNum] = useState(-1);
 
   const handleEditorDidMount = (editor, monaco) => {
@@ -47,9 +48,6 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeD
     fileReader.readAsText(file);
     toast({
       title: "파일로부터 코드를 불러옵니다.",
-      position: "bottom-right",
-      isClosable: true,
-      duration: 1000,
     });
   };
 
@@ -57,9 +55,6 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeD
     editorRef.current.setValue(skeletonCode);
     toast({
       title: "코드가 초기화 되었습니다.",
-      position: "bottom-right",
-      isClosable: true,
-      duration: 1000,
     });
   };
 
@@ -67,9 +62,6 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeD
     navigator.clipboard.writeText(editorRef.current.getValue());
     toast({
       title: "코드가 클립보드에 복사되었습니다.",
-      position: "bottom-right",
-      isClosable: true,
-      duration: 1000,
     });
   };
 
@@ -81,9 +73,6 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeD
     FileSaver.saveAs(blob, `${problem.name}.py`);
     toast({
       title: `코드가 ${problem.name}.py로 다운로드되었습니다.`,
-      position: "bottom-right",
-      isClosable: true,
-      duration: 1000,
     });
   };
 
@@ -110,18 +99,12 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeD
 
       toast({
         title: "코드를 저장했습니다.",
-        position: "bottom-right",
-        isClosable: true,
         status: "success",
-        duration: 1000,
       });
     } catch (e) {
       toast({
         title: "코드를 저장에 실패했습니다.",
-        position: "bottom-right",
-        isClosable: true,
         status: "error",
-        duration: 1000,
       });
     }
   };
