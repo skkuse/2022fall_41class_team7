@@ -257,6 +257,7 @@ function CodeEditor({
           minimap: {
             enabled: false,
           },
+          glyphMargin: true,
         }}
         beforeMount={(monaco) => {
           monaco.editor.defineTheme("my-theme", {
@@ -269,7 +270,11 @@ function CodeEditor({
         onMount={handleEditorDidMount}
         onChange={onChangeEditor}
       />
-      <input type="hidden" id="hiddenCodeValue" value={skeletonCode} />
+      <input
+        type="hidden"
+        id="hiddenCodeValue"
+        value={!editorRef.current ? skeletonCode : editorRef.current.getValue()}
+      />
       {isOpenDiff ? (
         <CodeDiffWindow original={submittedCode} modified={answerCode} closeDiff={closeDiff} />
       ) : null}

@@ -49,7 +49,6 @@ function Nav({
       await axios.post(`lectures/${lectureId}/end/`);
       // 종료 처리
     } catch (e) {
-      console.log(e);
       toast({
         title: "종료에 실패했습니다.",
         status: "error",
