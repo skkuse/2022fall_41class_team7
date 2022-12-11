@@ -1,13 +1,15 @@
-import openai
-from openai import Completion
+import json
 import os
 import re
-import json
 import subprocess
-import random
-import tempfile
+from typing import TextIO
+
 import copydetect
+import openai
 from memory_profiler import memory_usage
+from openai import Completion
+
+from api.common import file_interceptor
 
 
 def execute_codex(full_filename):
@@ -30,6 +32,16 @@ def execute_codex(full_filename):
 
     answer = response.choices[0].text.strip()
     return answer
+
+
+def execute_readability(full_filename: str):
+    return {
+        "mypy": execute_mypy(full_filename),
+        "pylint": execute_pylint(full_filename),
+        "eradicate": execute_eradicate(full_filename),
+        "radon": execute_radon(full_filename),
+        "pycodestyle": execute_pycodestyle(full_filename)
+    }
 
 
 def execute_pylint(full_filename: str):
@@ -100,7 +112,11 @@ def execute_radon(full_filename: str):
         return [result, output]
 
 
-def execute_efficiency(full_filename: str, answer_filename: str):
+@file_interceptor()
+def execute_efficiency(full_filename: str, answer_code: str, file: TextIO):
+    file.write(answer_code)
+    file.close()
+
     process1 = subprocess.run(
         ["multimetric", f"{full_filename}"],
         stdout=subprocess.PIPE,
@@ -118,7 +134,7 @@ def execute_efficiency(full_filename: str, answer_filename: str):
     df_complexity_score1 = round(max(mem_usage1), 2)
 
     process2 = subprocess.run(
-        ["multimetric", f"{answer_filename}"],
+        ["multimetric", f"{file.name}"],
         stdout=subprocess.PIPE,
         universal_newlines=True
     )
@@ -176,9 +192,13 @@ def execute_efficiency(full_filename: str, answer_filename: str):
     }
 
 
-def execute_plagiarism(full_filename: str, answer_filename: str):
+@file_interceptor()
+def execute_plagiarism(full_filename: str, answer_code: str, file: TextIO):
+    file.write(answer_code)
+    file.close()
+
     fp1 = copydetect.CodeFingerprint(full_filename, 25, 1)
-    fp2 = copydetect.CodeFingerprint(answer_filename, 25, 1)
+    fp2 = copydetect.CodeFingerprint(file.name, 25, 1)
     _, similarities, _ = copydetect.compare_files(fp1, fp2)
 
     plagiarism = 100 * similarities[0]
