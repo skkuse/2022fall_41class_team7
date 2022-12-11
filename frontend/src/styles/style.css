@@ -243,6 +243,10 @@
   margin-right: 0px;
 }
 
+.lecSelect option {
+  color: black !important;
+}
+
 @media screen and (min-width: 1500px) {
   body {
     overflow-x: hidden;

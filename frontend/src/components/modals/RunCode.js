@@ -31,8 +31,14 @@ function RunCode({ isOpen, onClose }) {
     const ss = dt.getSeconds();
     const tm = `${hh < 10 ? `0${hh}` : hh}:${mm < 10 ? `0${mm}` : mm}:${ss < 10 ? `0${ss}` : ss}`;
 
+    if (msg === "") {
+      terminal.innerHTML += "<br/>";
+      return;
+    }
+
     const color0 = color === undefined ? "" : ` style="color:${color}"`;
     terminal.innerHTML += `<p class="chakra-text css-1kuy7z7" ${color0}">${tm} &gt;&gt; ${msg}</p>`;
+    terminal.scrollTop = terminal.scrollHeight;
   };
 
   const getInput = () => input;
@@ -64,6 +70,7 @@ function RunCode({ isOpen, onClose }) {
   const onExecute = () => {
     if (!checkParam()) return;
 
+    setTerminal("");
     setTerminal("실행 시작", "yellow");
 
     axios

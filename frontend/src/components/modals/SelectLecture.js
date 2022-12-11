@@ -60,6 +60,7 @@ function SelectLecture({ isOpen, onClose }) {
         <ModalBody color="white" pb={6}>
           <FormControl>
             <Select
+              className="lecSelect"
               bg="gray.900"
               borderColor="whiteAlpha.200"
               onChange={handleSelect}

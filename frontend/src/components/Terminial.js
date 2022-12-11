@@ -29,6 +29,26 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
   const ss = dt.getSeconds();
   const tm = `${hh < 10 ? `0${hh}` : hh}:${mm < 10 ? `0${mm}` : mm}:${ss < 10 ? `0${ss}` : ss}`;
 
+  const terminal = document.getElementById("terminal_body");
+  const setTerminal = (msg, color) => {
+    const cdt = new Date();
+    const chh = dt.getHours();
+    const cmm = dt.getMinutes();
+    const css = dt.getSeconds();
+    const ctm = `${chh < 10 ? `0${chh}` : chh}:${cmm < 10 ? `0${cmm}` : cmm}:${
+      css < 10 ? `0${css}` : css
+    }`;
+
+    if (msg === "") {
+      terminal.innerHTML += "<br/>";
+      return;
+    }
+    const color0 = color === undefined ? "" : ` style="color:${color}"`;
+    terminal.innerHTML += `<p class="chakra-text css-1kuy7z7" ${color0}">${ctm} &gt;&gt; ${msg}</p>`;
+
+    terminal.scrollTop = terminal.scrollHeight;
+  };
+
   async function getGrade2(testcasesID) {
     return axios
       .post(
@@ -46,14 +66,10 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
           title: "채점 실패",
           isClosable: true,
         });
+        setTerminal("");
+        setTerminal("채점 실패", "white");
       });
   }
-
-  const terminal = document.getElementById("terminal_body");
-  const setTerminal = (msg, color) => {
-    const color0 = color === undefined ? "" : ` style="color:${color}"`;
-    terminal.innerHTML += `<p class="chakra-text css-1kuy7z7" ${color0}">${tm} &gt;&gt; ${msg}</p>`;
-  };
 
   const getTotalGrade = async () => {
     const result = [];
@@ -66,6 +82,8 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
         title: "채점 실패",
         status: "error",
       });
+      setTerminal("");
+      setTerminal("채점 실패", "white");
     });
 
     let score = 0;
@@ -74,7 +92,7 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
         score += 1;
       }
     }
-
+    setTerminal("");
     setTerminal(`총점: ${(score * 100) / testcases.length}점`, "white");
     for (let i = 0; i < testcases.length; i += 1) {
       if (result2[i].data.is_passed === true) {
