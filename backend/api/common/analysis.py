@@ -100,7 +100,7 @@ def execute_radon(full_filename: str):
         return [result, output]
 
 
-def execute_efficiency(full_filename: str):
+def execute_efficiency(full_filename: str, answer_filename: str):
     process1 = subprocess.run(
         ["multimetric", f"{full_filename}"],
         stdout=subprocess.PIPE,
@@ -158,7 +158,7 @@ def execute_efficiency(full_filename: str):
             df_complexity_score_result = 0
     else:
         df_complexity_score_result = 25
-        
+
     # cyclomatic complexity
     diff = cf_complexity_score2 - cf_complexity_score1
     if diff > 0:
@@ -167,7 +167,7 @@ def execute_efficiency(full_filename: str):
             cf_complexity_score_result = 0
     else:
         cf_complexity_score_result = 25
-    
+
     return {
         "loc": int(loc_score_final),
         "halstead": int(r_words_score_result),
