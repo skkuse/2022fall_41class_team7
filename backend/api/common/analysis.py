@@ -101,7 +101,7 @@ def execute_radon(full_filename: str):
 
 
 def execute_efficiency(full_filename: str):
-        process1 = subprocess.run(
+    process1 = subprocess.run(
         ["multimetric", f"{full_filename}"],
         stdout=subprocess.PIPE,
         universal_newlines=True
