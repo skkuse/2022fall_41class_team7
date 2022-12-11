@@ -31,6 +31,8 @@ function Nav({
   onChangeProblem,
   isTestEnded,
   setIsTestEnded,
+  lastSubmissionId,
+  getSubmitResult,
 }) {
   const [selected, setSelected] = useState(1);
   const interval = useRef(null);
@@ -44,15 +46,28 @@ function Nav({
   };
 
   function UnixTimestamp() {
+    if (isTestEnded) return;
+
     if (!isTestEnded) {
       const currentTime = Math.floor(new Date().getTime() / 1000);
-      const remainTime = deadline ? deadline - currentTime : 0;
-      const date = new Date(remainTime * 1000);
-      const day = Math.floor(remainTime / 60 / 60 / 24);
-      const hour = date.getHours();
-      const minute = date.getMinutes();
-      const second = date.getSeconds();
-      setRemainText(`${day}일 ${hour}시간 ${minute}분 ${second}초`);
+      // deadline이랑 설정한 시간이랑 9시간이 차이남..
+      let remainTime = deadline ? deadline - currentTime + 9 * 60 * 60 : 0;
+      if (remainTime > 0) {
+        // const date = new Date(remainTime * 1000);
+        const day = Math.floor(remainTime / 60 / 60 / 24);
+        remainTime -= day * 60 * 60 * 24;
+        const hour = Math.floor(remainTime / 60 / 60);
+        remainTime -= hour * 60 * 60;
+        const minute = Math.floor(remainTime / 60);
+        remainTime -= minute * 60;
+        const second = remainTime;
+
+        setRemainText(`${day}일 ${hour}시간 ${minute}분 ${second}초`);
+      } else {
+        setRemainText("시험 종료");
+        getSubmitResult(lastSubmissionId);
+        setIsTestEnded(true);
+      }
     }
   }
 
@@ -60,6 +75,7 @@ function Nav({
     try {
       await axios.post(`lectures/${lectureId}/end/`);
       // 종료 처리
+      getSubmitResult(lastSubmissionId); // 마지막에 제출한걸로 결과 보여줌
       setIsTestEnded(true);
     } catch (e) {
       toast({
@@ -181,6 +197,8 @@ Nav.propTypes = {
   onChangeProblem: PropTypes.func.isRequired,
   isTestEnded: PropTypes.bool.isRequired,
   setIsTestEnded: PropTypes.func.isRequired,
+  lastSubmissionId: PropTypes.number.isRequired,
+  getSubmitResult: PropTypes.func.isRequired,
 };
 
 export default Nav;

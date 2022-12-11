@@ -11,6 +11,7 @@ import Terminal from "../components/Terminial";
 import { useUserState } from "../utils/contextProvider";
 import SubmitResult from "../components/SubmitResult";
 import { epochToDate } from "../utils/dateUtil";
+import useMyToast from "../utils/toastUtil";
 
 function App() {
   const { id } = useParams();
@@ -23,6 +24,8 @@ function App() {
   const [submitResult, setSubmitResult] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(true);
   const [errorInfo, setErrorInfo] = useState(null);
+  const [lastSubmissionId, setLastSubmissionId] = useState(0);
+  const toast = useMyToast();
 
   const userName = loggedUser.name;
 
@@ -38,17 +41,28 @@ function App() {
     const isEnded = response.data.enrollment.is_ended;
     const deadline = epochToDate(response.data.deadline);
 
-    if (deadline < Date.now() || isEnded) {
+    if (deadline + 9 * 60 * 60 < Date.now() || isEnded) {
       setIsTestEnded(true);
       setIsOpenDiff(true);
     }
   };
 
   const getSubmitResult = async (submissionId) => {
-    const res = await axios.get(`submissions/${submissionId}`);
-    setSubmitResult(res.data);
-    // state가 complete면 get으로 가져오기???
-    // submissionId를 모를 때는?
+    if (submissionId === 0) {
+      toast({
+        title: "제출한 코드가 없습니다",
+        status: "error",
+      });
+    } else {
+      const res = await axios.get(`submissions/${submissionId}`);
+      if (res.data.state < 2) getSubmitResult(submissionId);
+      else {
+        setSubmitResult(res.data);
+      } // staet가 analyzing일 때까지 기다리기?
+
+      // state가 complete면 get으로 가져오기???
+      // submissionId를 모를 때는?
+    }
   };
 
   useEffect(() => {
@@ -68,7 +82,7 @@ function App() {
   }, [isTestEnded]);
 
   useEffect(() => {
-    if (submitResult !== null) {
+    if (submitResult !== null && submitResult.state >= 2) {
       setSubmitLoading(false);
     }
   }, [submitResult]);
@@ -103,6 +117,8 @@ function App() {
           onChangeProblem={onChangeProblem}
           isTestEnded={isTestEnded}
           setIsTestEnded={setIsTestEnded}
+          lastSubmissionId={lastSubmissionId}
+          getSubmitResult={getSubmitResult}
         />
         <Divider borderColor="whiteAlpha.200" />
         <Box className="body_container">
@@ -133,6 +149,7 @@ function App() {
               setIsTestEnded={setIsTestEnded}
               getSubmitResult={getSubmitResult}
               setErrorInfo={setErrorInfo}
+              setLastSubmissionId={setLastSubmissionId}
             />
           ) : (
             <SubmitResult submitResult={submitResult} />
