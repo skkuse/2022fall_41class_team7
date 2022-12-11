@@ -18,12 +18,22 @@ const progress = {
   height: "32px",
 };
 
-function Terminal({ submissionCapacity, submissionNum, problem, testcases, openDiff, testEnd }) {
+function Terminal({
+  submissionCapacity,
+  submissionNum,
+  problem,
+  testcases,
+  openDiff,
+  setIsTestEnded,
+  getSubmitResult,
+  setErrorInfo,
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const alert = useDisclosure();
   const getCode = () => document.getElementById("hiddenCodeValue").value;
   const toast = useMyToast();
   const [curSubmissionNum, SetCurSubmissionNum] = useState(submissionNum);
+  // const [submissionId, setSubmissoinId] = useState(0);
 
   const dt = new Date();
   const hh = dt.getHours();
@@ -103,6 +113,11 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
     });
   };
 
+  // const getSubmitResult = async (submissionId) => {
+  //   const r = await axios.get(`submissions/${submissionId}`);
+  //   console.log(r.data);
+  // };
+
   const submitTest = async () => {
     const res = await axios.post(
       "/submissions/",
@@ -114,15 +129,20 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
       }
     );
 
+    // setSubmissoinId(res.data.id);
+
     toast({
       title: "제출 성공!",
       status: "success",
     });
 
-    SetCurSubmissionNum((prev) => prev + 1);
-    // if (submissionCapacity > submissionNum) {
-    // console.log("");
-    // }
+    SetCurSubmissionNum((prev) => {
+      if (prev + 1 === submissionCapacity) {
+        getSubmitResult(res.data.id);
+        setIsTestEnded(true);
+      }
+      return prev + 1;
+    });
   };
 
   return (
@@ -160,7 +180,7 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
           {tm} {">>"} 출력 대기중입니다.
         </Text>
       </Box>
-      <RunCode isOpen={isOpen} onClose={onClose} />
+      <RunCode isOpen={isOpen} onClose={onClose} setErrorInfo={setErrorInfo} />
       <SubmitAlert
         isOpen={alert.isOpen}
         onClose={alert.onClose}
@@ -187,7 +207,9 @@ Terminal.propTypes = {
     })
   ).isRequired,
   openDiff: PropTypes.func.isRequired,
-  testEnd: PropTypes.func.isRequired,
+  setIsTestEnded: PropTypes.func.isRequired,
+  getSubmitResult: PropTypes.func.isRequired,
+  setErrorInfo: PropTypes.func.isRequired,
 };
 
 export default Terminal;

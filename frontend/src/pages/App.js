@@ -20,6 +20,9 @@ function App() {
   const { loggedUser, loggedIn } = useUserState();
   const [isOpenDiff, setIsOpenDiff] = useState(false);
   const [isTestEnded, setIsTestEnded] = useState(false);
+  const [submitResult, setSubmitResult] = useState(null);
+  const [submitLoading, setSubmitLoading] = useState(true);
+  const [errorInfo, setErrorInfo] = useState(null);
 
   const userName = loggedUser.name;
 
@@ -41,6 +44,13 @@ function App() {
     }
   };
 
+  const getSubmitResult = async (submissionId) => {
+    const res = await axios.get(`submissions/${submissionId}`);
+    setSubmitResult(res.data);
+    // state가 complete면 get으로 가져오기???
+    // submissionId를 모를 때는?
+  };
+
   useEffect(() => {
     getLecture();
   }, []);
@@ -57,6 +67,12 @@ function App() {
     }
   }, [isTestEnded]);
 
+  useEffect(() => {
+    if (submitResult !== null) {
+      setSubmitLoading(false);
+    }
+  }, [submitResult]);
+
   const onChangeProblem = (problemId) => {
     getProblem(problemId);
   };
@@ -69,11 +85,11 @@ function App() {
     setIsOpenDiff(false);
   };
 
-  const testEnd = () => {
-    // 임시로 제출 버튼 누르면 diff 열기 & 제출 결과창 나오도록
-    setIsTestEnded(true);
-    setIsOpenDiff(true);
-  };
+  // const testEnd = () => {
+  //   // 임시로 제출 버튼 누르면 diff 열기 & 제출 결과창 나오도록
+  //   setIsTestEnded(true);
+  //   setIsOpenDiff(true);
+  // };
 
   return loading ? null : (
     <ChakraProvider>
@@ -104,19 +120,22 @@ function App() {
             skeletonCode={problem?.skeleton_code}
             closeDiff={closeDiff}
             isOpenDiff={isOpenDiff}
+            errorInfo={errorInfo}
           />
           <Divider orientation="vertical" borderColor="whiteAlpha.200" />
-          {!isTestEnded ? (
+          {!isTestEnded || submitLoading ? (
             <Terminal
               submissionCapacity={lecture?.submission_capacity}
               submissionNum={problem?.submissions.length}
               problem={problem}
               testcases={problem?.testcases}
               openDiff={openDiff}
-              testEnd={testEnd}
+              setIsTestEnded={setIsTestEnded}
+              getSubmitResult={getSubmitResult}
+              setErrorInfo={setErrorInfo}
             />
           ) : (
-            <SubmitResult />
+            <SubmitResult submitResult={submitResult} />
           )}
         </Box>
       </Box>

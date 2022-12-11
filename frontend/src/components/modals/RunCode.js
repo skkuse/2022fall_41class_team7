@@ -14,7 +14,7 @@ import {
 
 import axios from "../../utils/axios";
 
-function RunCode({ isOpen, onClose }) {
+function RunCode({ isOpen, onClose, setErrorInfo }) {
   const initialRef = React.useRef(null);
   const toast = useToast();
 
@@ -76,10 +76,13 @@ function RunCode({ isOpen, onClose }) {
           } else if (response.data.error != null) {
             setTerminal("실행 실패", "yellow");
             setTerminal(response.data.error);
+            setErrorInfo(response.data);
           }
         }
       })
-      .catch((error) => setTerminal("API 호출 실패", "yellow"));
+      .catch((error) => {
+        setTerminal("API 호출 실패", "yellow");
+      });
 
     onClose();
   };
@@ -114,6 +117,7 @@ function RunCode({ isOpen, onClose }) {
 RunCode.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  setErrorInfo: PropTypes.func.isRequired,
 };
 
 export default RunCode;
