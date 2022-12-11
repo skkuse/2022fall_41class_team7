@@ -106,7 +106,6 @@ def execute_efficiency(full_filename: str):
         stdout=subprocess.PIPE,
         universal_newlines=True
     )
-
     output1 = process1.stdout
     output_json1 = json.loads(output1)
 
