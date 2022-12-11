@@ -27,6 +27,7 @@ function Terminal({
   setIsTestEnded,
   getSubmitResult,
   setErrorInfo,
+  setLastSubmissionId,
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const alert = useDisclosure();
@@ -129,13 +130,12 @@ function Terminal({
       }
     );
 
-    // setSubmissoinId(res.data.id);
-
     toast({
       title: "제출 성공!",
       status: "success",
     });
 
+    setLastSubmissionId(res.data.id);
     SetCurSubmissionNum((prev) => {
       if (prev + 1 === submissionCapacity) {
         getSubmitResult(res.data.id);
@@ -210,6 +210,7 @@ Terminal.propTypes = {
   setIsTestEnded: PropTypes.func.isRequired,
   getSubmitResult: PropTypes.func.isRequired,
   setErrorInfo: PropTypes.func.isRequired,
+  setLastSubmissionId: PropTypes.func.isRequired,
 };
 
 export default Terminal;
