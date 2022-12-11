@@ -2,7 +2,7 @@ import "../styles/base.css";
 import "../styles/hover.css";
 import { ChakraProvider, Box, Divider } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 import Nav from "../components/Nav";
 import Problem from "../components/Problem";
@@ -25,6 +25,7 @@ function App() {
   const [submitLoading, setSubmitLoading] = useState(0);
   const [errorInfo, setErrorInfo] = useState(null);
   const [answerCode, setAnsewerCode] = useState("");
+  const navigate = useNavigate();
   const toast = useMyToast();
 
   const userName = loggedUser.name;
@@ -82,7 +83,15 @@ function App() {
   };
 
   useEffect(() => {
-    getLecture();
+    if (loggedUser.name == null) {
+      toast({
+        title: "로그인 정보가 존재하지 않습니다.",
+        status: "error",
+      });
+      navigate("/");
+    } else {
+      getLecture();
+    }
   }, []);
 
   useEffect(() => {
