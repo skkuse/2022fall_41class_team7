@@ -1,0 +1,45 @@
+.submit_container {
+  flex: 1;
+  min-width: 500px;
+  z-index: 1;
+}
+
+.submit_accordion {
+  border-top-width: 0;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.tab_element {
+  font-size: 14px;
+  padding: 10px;
+  width: 300px;
+  height: "160px";
+}
+
+.tab_element_header {
+  display: flex;
+}
+
+.tab_element_body {
+  padding: 0px 50px;
+  font-size: 12px;
+}
+
+.tab_panels {
+  overflow-y: scroll;
+  height: calc(100% - 40px);
+}
+
+.tab_panels::-webkit-scrollbar {
+  width: 3px;
+}
+
+.tab_panels::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: gainsboro;
+}
+
+.tab_panels::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: white;
+}

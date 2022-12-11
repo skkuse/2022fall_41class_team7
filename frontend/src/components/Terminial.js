@@ -8,18 +8,20 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import PropTypes from "prop-types";
+import { AxiosHeaders } from "axios";
 import RunCode from "./modals/RunCode";
 import axios from "../utils/axios";
+import useMyToast from "../utils/toastUtil";
 
 const progress = {
   width: "32px",
   height: "32px",
 };
 
-function Terminal({ submissionCapacity, submissionNum, problem, testcases, openDiff }) {
+function Terminal({ submissionCapacity, submissionNum, problem, testcases, openDiff, testEnd }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const getCode = () => document.getElementById("hiddenCodeValue").value;
-  const toast = useToast();
+  const toast = useMyToast();
 
   const dt = new Date();
   const hh = dt.getHours();
@@ -43,7 +45,6 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
         toast({
           title: "채점 실패",
           isClosable: true,
-          duration: 3000,
         });
       });
   }
@@ -63,10 +64,7 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
     const result2 = await Promise.all(result).catch((e) => {
       toast({
         title: "채점 실패",
-        position: "bottom-right",
-        isClosable: true,
         status: "error",
-        duration: 3000,
       });
     });
 
@@ -99,15 +97,31 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
 
     toast({
       title: "채점 성공",
-      position: "bottom-right",
-      isClosable: true,
       status: "success",
-      duration: 3000,
     });
   };
 
-  const submit = () => {
-    openDiff();
+  const submitTest = async () => {
+    axios
+      .post(
+        "/submissions/",
+        { code: getCode() },
+        {
+          params: {
+            problem_id: problem.id,
+          },
+        }
+      )
+      .then((response) => {
+        toast({
+          title: "제출 성공!",
+          status: "success",
+        });
+        // if (submissionCapacity > submissionNum) {
+        // console.log("");
+        // }
+      })
+      .catch((err) => null);
   };
 
   return (
@@ -126,7 +140,7 @@ function Terminal({ submissionCapacity, submissionNum, problem, testcases, openD
           <Button onClick={getTotalGrade} size="sm" backgroundColor="gray.500">
             채점
           </Button>
-          <Button onClick={submit} size="sm" backgroundColor="blue.500">
+          <Button onClick={submitTest} size="sm" backgroundColor="blue.500">
             제출
           </Button>
           <CircularProgress
@@ -164,6 +178,7 @@ Terminal.propTypes = {
     })
   ).isRequired,
   openDiff: PropTypes.func.isRequired,
+  testEnd: PropTypes.func.isRequired,
 };
 
 export default Terminal;
