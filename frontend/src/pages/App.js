@@ -22,9 +22,9 @@ function App() {
   const [isOpenDiff, setIsOpenDiff] = useState(false);
   const [isTestEnded, setIsTestEnded] = useState(false);
   const [submitResult, setSubmitResult] = useState(null);
-  const [submitLoading, setSubmitLoading] = useState(true);
+  const [submitLoading, setSubmitLoading] = useState(0);
   const [errorInfo, setErrorInfo] = useState(null);
-  const [lastSubmissionId, setLastSubmissionId] = useState(0);
+  const [answerCode, setAnsewerCode] = useState("");
   const toast = useMyToast();
 
   const userName = loggedUser.name;
@@ -39,30 +39,46 @@ function App() {
     const response = await axios.get(`lectures/${id}/`, {});
     setLecture(response.data);
     const isEnded = response.data.enrollment.is_ended;
-    const deadline = epochToDate(response.data.deadline);
+    const deadline = epochToDate(response.data.deadline + 9 * 60 * 60);
 
-    if (deadline + 9 * 60 * 60 < Date.now() || isEnded) {
+    if (deadline < epochToDate(Math.floor(Date.now() / 1000)) || isEnded) {
       setIsTestEnded(true);
-      setIsOpenDiff(true);
     }
   };
 
   const getSubmitResult = async (submissionId) => {
-    if (submissionId === 0) {
+    setSubmitLoading(1); // 1: 로딩 중, 2: 로딩 끝남
+
+    const res = await axios.get(`submissions/${submissionId}`);
+    if (res.data.state < 3) {
+      getSubmitResult(submissionId);
+    } else {
+      setSubmitResult(res.data);
+    }
+  };
+
+  const getLastSumbitResult = async () => {
+    const response = await axios.get(`problems/${problem.id}/`);
+    const { submissions } = response.data;
+    if (submissions.length === 0) {
       toast({
         title: "제출한 코드가 없습니다",
         status: "error",
       });
-    } else {
-      const res = await axios.get(`submissions/${submissionId}`);
-      if (res.data.state < 2) getSubmitResult(submissionId);
-      else {
-        setSubmitResult(res.data);
-      } // staet가 analyzing일 때까지 기다리기?
-
-      // state가 complete면 get으로 가져오기???
-      // submissionId를 모를 때는?
+      return;
     }
+    const lastSubmissionId = submissions[submissions.length - 1];
+    getSubmitResult(lastSubmissionId);
+  };
+
+  const getLines = (code) => {
+    let lines = 1;
+    for (let i = 0; i < code.length; i += 1) {
+      if (code[i] === "\n") {
+        lines += 1;
+      }
+    }
+    return lines;
   };
 
   useEffect(() => {
@@ -76,14 +92,21 @@ function App() {
   }, [lecture]);
 
   useEffect(() => {
-    if (isTestEnded) {
+    if (submitLoading === 2) {
       setIsOpenDiff(true);
     }
-  }, [isTestEnded]);
+  }, [submitLoading]);
 
   useEffect(() => {
-    if (submitResult !== null && submitResult.state >= 2) {
-      setSubmitLoading(false);
+    // 처음 시작 시 시험 종료 상태면 제출 결과 바로 가져옴
+    if (isTestEnded && Object.keys(problem).length !== 0) {
+      getLastSumbitResult();
+    }
+  }, [isTestEnded, problem]);
+
+  useEffect(() => {
+    if (submitResult !== null && submitResult.state >= 3) {
+      setSubmitLoading(2); // 1: 로딩 중, 2: 로딩 끝남
     }
   }, [submitResult]);
 
@@ -99,12 +122,6 @@ function App() {
     setIsOpenDiff(false);
   };
 
-  // const testEnd = () => {
-  //   // 임시로 제출 버튼 누르면 diff 열기 & 제출 결과창 나오도록
-  //   setIsTestEnded(true);
-  //   setIsOpenDiff(true);
-  // };
-
   return loading ? null : (
     <ChakraProvider>
       <Box className="bg">
@@ -117,8 +134,7 @@ function App() {
           onChangeProblem={onChangeProblem}
           isTestEnded={isTestEnded}
           setIsTestEnded={setIsTestEnded}
-          lastSubmissionId={lastSubmissionId}
-          getSubmitResult={getSubmitResult}
+          getLastSumbitResult={getLastSumbitResult}
         />
         <Divider borderColor="whiteAlpha.200" />
         <Box className="body_container">
@@ -137,9 +153,12 @@ function App() {
             closeDiff={closeDiff}
             isOpenDiff={isOpenDiff}
             errorInfo={errorInfo}
+            getLines={getLines}
+            submittedCode={submitResult?.code}
+            answerCode={answerCode}
           />
           <Divider orientation="vertical" borderColor="whiteAlpha.200" />
-          {!isTestEnded || submitLoading ? (
+          {!isTestEnded || submitLoading < 2 ? (
             <Terminal
               submissionCapacity={lecture?.submission_capacity}
               submissionNum={problem?.submissions.length}
@@ -149,10 +168,14 @@ function App() {
               setIsTestEnded={setIsTestEnded}
               getSubmitResult={getSubmitResult}
               setErrorInfo={setErrorInfo}
-              setLastSubmissionId={setLastSubmissionId}
+              submitLoading={submitLoading}
             />
           ) : (
-            <SubmitResult submitResult={submitResult} />
+            <SubmitResult
+              submitResult={submitResult}
+              getLines={getLines}
+              setAnsewerCode={setAnsewerCode}
+            />
           )}
         </Box>
       </Box>

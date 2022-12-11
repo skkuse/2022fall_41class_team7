@@ -31,6 +31,8 @@ function CodeEditor({
   closeDiff,
   isOpenDiff,
   errorInfo,
+  submittedCode,
+  answerCode,
 }) {
   const fileInput = useRef();
   const editorRef = useRef(null);
@@ -142,7 +144,7 @@ function CodeEditor({
           range: new monacoRef.current.Range(errorinfo.error_line, 1, errorinfo.error_line, 1),
           options: {
             className: "errorLine",
-            glyphMarginClassName: "bbb",
+            glyphMarginClassName: "errorMark",
             isWholeLine: true,
             glyphMarginHoverMessage: { value: errorinfo.error },
           },
@@ -268,13 +270,13 @@ function CodeEditor({
         onMount={handleEditorDidMount}
         onChange={onChangeEditor}
       />
-      <input type="hidden" id="hiddenCodeValue" value={skeletonCode} />
+      <input
+        type="hidden"
+        id="hiddenCodeValue"
+        value={!editorRef.current ? skeletonCode : editorRef.current.getValue()}
+      />
       {isOpenDiff ? (
-        <CodeDiffWindow
-          original={editorRef.current?.getValue()}
-          modified="#answer code" // 나중에 정답 코드 넣어야 함
-          closeDiff={closeDiff}
-        />
+        <CodeDiffWindow original={submittedCode} modified={answerCode} closeDiff={closeDiff} />
       ) : null}
     </Box>
   );
@@ -300,6 +302,8 @@ CodeEditor.propTypes = {
     error: PropTypes.string,
     error_line: PropTypes.number,
   }),
+  submittedCode: PropTypes.string.isRequired,
+  answerCode: PropTypes.string.isRequired,
 };
 
 CodeEditor.defaultProps = {

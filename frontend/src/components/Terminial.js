@@ -23,18 +23,16 @@ function Terminal({
   submissionNum,
   problem,
   testcases,
-  openDiff,
   setIsTestEnded,
   getSubmitResult,
   setErrorInfo,
-  setLastSubmissionId,
+  submitLoading,
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const alert = useDisclosure();
   const getCode = () => document.getElementById("hiddenCodeValue").value;
   const toast = useMyToast();
   const [curSubmissionNum, SetCurSubmissionNum] = useState(submissionNum);
-  // const [submissionId, setSubmissoinId] = useState(0);
 
   const dt = new Date();
   const hh = dt.getHours();
@@ -114,11 +112,6 @@ function Terminal({
     });
   };
 
-  // const getSubmitResult = async (submissionId) => {
-  //   const r = await axios.get(`submissions/${submissionId}`);
-  //   console.log(r.data);
-  // };
-
   const submitTest = async () => {
     const res = await axios.post(
       "/submissions/",
@@ -135,7 +128,6 @@ function Terminal({
       status: "success",
     });
 
-    setLastSubmissionId(res.data.id);
     SetCurSubmissionNum((prev) => {
       if (prev + 1 === submissionCapacity) {
         getSubmitResult(res.data.id);
@@ -161,9 +153,16 @@ function Terminal({
           <Button onClick={getTotalGrade} size="sm" backgroundColor="gray.500">
             채점
           </Button>
-          <Button onClick={alert.onOpen} size="sm" backgroundColor="blue.500">
-            제출
-          </Button>
+          {submitLoading === 1 ? (
+            <Button isLoading onClick={alert.onOpen} size="sm" backgroundColor="blue.500">
+              제출
+            </Button>
+          ) : (
+            <Button onClick={alert.onOpen} size="sm" backgroundColor="blue.500">
+              제출
+            </Button>
+          )}
+
           <CircularProgress
             value={(curSubmissionNum / submissionCapacity) * 100}
             size="32px"
@@ -206,11 +205,10 @@ Terminal.propTypes = {
       is_hidden: PropTypes.bool.isRequired,
     })
   ).isRequired,
-  openDiff: PropTypes.func.isRequired,
   setIsTestEnded: PropTypes.func.isRequired,
   getSubmitResult: PropTypes.func.isRequired,
   setErrorInfo: PropTypes.func.isRequired,
-  setLastSubmissionId: PropTypes.func.isRequired,
+  submitLoading: PropTypes.number.isRequired,
 };
 
 export default Terminal;

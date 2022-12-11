@@ -10,7 +10,6 @@ import {
   Text,
   Avatar,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import "../styles/style.css";
@@ -31,8 +30,7 @@ function Nav({
   onChangeProblem,
   isTestEnded,
   setIsTestEnded,
-  lastSubmissionId,
-  getSubmitResult,
+  getLastSumbitResult,
 }) {
   const [selected, setSelected] = useState(1);
   const interval = useRef(null);
@@ -46,14 +44,11 @@ function Nav({
   };
 
   function UnixTimestamp() {
-    if (isTestEnded) return;
-
     if (!isTestEnded) {
       const currentTime = Math.floor(new Date().getTime() / 1000);
-      // deadline이랑 설정한 시간이랑 9시간이 차이남..
+      // deadline이랑 설정한 시간이랑 9시간이 차이나서...
       let remainTime = deadline ? deadline - currentTime + 9 * 60 * 60 : 0;
       if (remainTime > 0) {
-        // const date = new Date(remainTime * 1000);
         const day = Math.floor(remainTime / 60 / 60 / 24);
         remainTime -= day * 60 * 60 * 24;
         const hour = Math.floor(remainTime / 60 / 60);
@@ -64,8 +59,9 @@ function Nav({
 
         setRemainText(`${day}일 ${hour}시간 ${minute}분 ${second}초`);
       } else {
+        clearInterval(interval.current);
         setRemainText("시험 종료");
-        getSubmitResult(lastSubmissionId);
+        getLastSumbitResult(); // 마지막에 제출한걸로 결과 보여줌
         setIsTestEnded(true);
       }
     }
@@ -75,7 +71,7 @@ function Nav({
     try {
       await axios.post(`lectures/${lectureId}/end/`);
       // 종료 처리
-      getSubmitResult(lastSubmissionId); // 마지막에 제출한걸로 결과 보여줌
+      getLastSumbitResult(); // 마지막에 제출한걸로 결과 보여줌
       setIsTestEnded(true);
     } catch (e) {
       toast({
@@ -197,8 +193,7 @@ Nav.propTypes = {
   onChangeProblem: PropTypes.func.isRequired,
   isTestEnded: PropTypes.bool.isRequired,
   setIsTestEnded: PropTypes.func.isRequired,
-  lastSubmissionId: PropTypes.number.isRequired,
-  getSubmitResult: PropTypes.func.isRequired,
+  getLastSumbitResult: PropTypes.func.isRequired,
 };
 
 export default Nav;

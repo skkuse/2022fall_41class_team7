@@ -12,21 +12,19 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import Graph from "./Graph";
 import SubmitTab from "./SubmitTab";
-import DummySubmissions from "../dummyFiles/DummySubmissions.json";
 
-function Submit({ submitResult }) {
-  const { plagiarism } = DummySubmissions.analysis;
-  const { explanation } = DummySubmissions.analysis;
+function Submit({ submitResult, getLines, setAnsewerCode }) {
+  const { plagiarism } = submitResult.analysis;
+  const { explanation } = submitResult.analysis;
   const results = submitResult.result;
-  const { efficiency } = DummySubmissions.analysis;
-  const { readability } = DummySubmissions.analysis;
-  const relatedContent = DummySubmissions.problem.related_content;
+  const { efficiency } = submitResult.analysis;
+  const { readability } = submitResult.analysis;
+  const relatedContent = submitResult.problem.related_content;
   const readabilityNames = ["mypy", "pylint", "eradicate", "radon", "pycodestyle"];
   const efficiencyNames = ["loc", "halstead", "data_flow", "control_flow"];
   const [score, setScore] = useState(0);
   const [effiScore, setEffiScore] = useState(0);
   const [readScore, setReadScore] = useState(0);
-  // const [results, setResults] = useState(null);
 
   const getEfficiencyScore = () => {
     let Escore = 0;
@@ -46,8 +44,6 @@ function Submit({ submitResult }) {
   };
 
   const getScore = () => {
-    // console.log(submitResult);
-    console.log(results);
     let Tscore = 0;
     for (let i = 0; i < results.length; i += 1) {
       if (results[i].is_passed) {
@@ -56,14 +52,13 @@ function Submit({ submitResult }) {
     }
 
     setScore((Tscore * 100) / results.length);
-    // return (score * 100) / results.length;
   };
 
   useEffect(() => {
-    // console.log(results);
     getEfficiencyScore();
     getReadabilityScore();
     getScore();
+    setAnsewerCode(submitResult.problem.answer_code);
   }, [results]);
 
   return (
@@ -95,7 +90,7 @@ function Submit({ submitResult }) {
               <Graph efficiencyScore={effiScore} readabilityScore={readScore} score={score} />
             </Box>
             <Box height="60%" width="100%">
-              <SubmitTab submitResult={submitResult} />
+              <SubmitTab submitResult={submitResult} getLines={getLines} />
             </Box>
           </AccordionPanel>
         </AccordionItem>
@@ -190,6 +185,8 @@ Submit.propTypes = {
     }).isRequired,
     user: PropTypes.number.isRequired,
   }).isRequired,
+  getLines: PropTypes.func.isRequired,
+  setAnsewerCode: PropTypes.func.isRequired,
 };
 
 export default Submit;

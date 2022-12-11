@@ -11,14 +11,15 @@ import {
   Circle,
 } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import DummySubmissions from "../dummyFiles/DummySubmissions.json";
 
-function SubmitTab({ submitResult }) {
+function SubmitTab({ submitResult, getLines }) {
   const { testcases } = submitResult.problem;
   const results = submitResult.result;
-  const { efficiency } = DummySubmissions.analysis;
-  const { readability } = DummySubmissions.analysis;
+  const { efficiency } = submitResult.analysis;
+  const { readability } = submitResult.analysis;
   const readabilityNames = ["mypy", "pylint", "eradicate", "radon", "pycodestyle"];
+  const answerCode = submitResult.problem.answer_code;
+  const { code } = submitResult;
 
   return (
     <Tabs isFitted variant="enclosed" height="100%">
@@ -61,8 +62,8 @@ function SubmitTab({ submitResult }) {
                 <Box marginLeft="auto">{efficiency.loc}점</Box>
               </Box>
               <Box className="tab_element_body">
-                <Text>Line of Correct Code: 5 lines</Text>
-                <Text>Line of Your Code: 5 lines</Text>
+                <Text>Line of Correct Code: {getLines(answerCode)} lines</Text>
+                <Text>Line of Your Code: {getLines(code)} lines</Text>
               </Box>
             </Box>
             <Box className="tab_element">
@@ -163,6 +164,7 @@ SubmitTab.propTypes = {
     }).isRequired,
     user: PropTypes.number.isRequired,
   }).isRequired,
+  getLines: PropTypes.func.isRequired,
 };
 
 export default SubmitTab;
