@@ -46,7 +46,6 @@ function App() {
 
   useEffect(() => {
     if (loggedUser.name == null) {
-      console.log(loggedUser);
       toast({
         title: "로그인 정보가 존재하지 않습니다.",
         status: "error",
