@@ -43,31 +43,44 @@ function Nav({
     onChangeProblem(event.target.value);
   };
 
-  function UnixTimestamp() {
-    if (!isTestEnded) {
-      const currentTime = Math.floor(new Date().getTime() / 1000);
-      const remainTime = deadline ? deadline - currentTime : 0;
-      const date = new Date(remainTime * 1000);
-      const day = Math.floor(remainTime / 60 / 60 / 24);
-      const hour = date.getHours();
-      const minute = date.getMinutes();
-      const second = date.getSeconds();
-      setRemainText(`${day}일 ${hour}시간 ${minute}분 ${second}초`);
-    }
-  }
-
   const endTest = async () => {
+    setIsTestEnded(true);
     try {
       await axios.post(`lectures/${lectureId}/end/`);
       // 종료 처리
-      setIsTestEnded(true);
     } catch (e) {
+      console.log(e);
       toast({
         title: "종료에 실패했습니다.",
         status: "error",
       });
     }
   };
+
+  function UnixTimestamp() {
+    if (!isTestEnded) {
+      const currentTime = Math.floor(new Date().getTime() / 1000);
+      // deadline이랑 설정한 시간이랑 9시간이 차이나서...
+      let remainTime = deadline ? deadline - currentTime + 9 * 60 * 60 : 0;
+      if (remainTime > 0) {
+        const day = Math.floor(remainTime / 60 / 60 / 24);
+        remainTime -= day * 60 * 60 * 24;
+        const hour = Math.floor(remainTime / 60 / 60);
+        remainTime -= hour * 60 * 60;
+        const minute = Math.floor(remainTime / 60);
+        remainTime -= minute * 60;
+        const second = remainTime;
+
+        setRemainText(`${day}일 ${hour}시간 ${minute}분 ${second}초`);
+      } else {
+        clearInterval(interval.current);
+        setRemainText("시험 종료");
+        // endTest();
+        // getLastSumbitResult(); // 마지막에 제출한걸로 결과 보여줌
+        // setIsTestEnded(true);
+      }
+    }
+  }
 
   useEffect(() => {
     interval.current = setInterval(() => {

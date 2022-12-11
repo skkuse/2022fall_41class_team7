@@ -21,6 +21,10 @@ function App() {
   const { loggedUser, loggedIn } = useUserState();
   const [isOpenDiff, setIsOpenDiff] = useState(false);
   const [isTestEnded, setIsTestEnded] = useState(false);
+  const [submitResult, setSubmitResult] = useState(null);
+  const [submitLoading, setSubmitLoading] = useState(0);
+  const [errorInfo, setErrorInfo] = useState(null);
+  const [answerCode, setAnswerCode] = useState("");
   const navigate = useNavigate();
   const toast = useMyToast();
 
@@ -36,12 +40,37 @@ function App() {
     const response = await axios.get(`lectures/${id}/`, {});
     setLecture(response.data);
     const isEnded = response.data.enrollment.is_ended;
-    const deadline = epochToDate(response.data.deadline);
+    const deadline = epochToDate(response.data.deadline + 9 * 60 * 60);
 
-    if (deadline < Date.now() || isEnded) {
+    if (deadline < epochToDate(Math.floor(Date.now() / 1000)) || isEnded) {
       setIsTestEnded(true);
-      setIsOpenDiff(true);
+      // setIsOpenDiff(true);
     }
+  };
+
+  const getSubmitResult = async (submissionId) => {
+    setSubmitLoading(1); // 1: 로딩 중, 2: 로딩 끝남
+
+    const res = await axios.get(`submissions/${submissionId}`);
+    if (res.data.state < 3) {
+      getSubmitResult(submissionId);
+    } else {
+      setSubmitResult(res.data);
+    }
+  };
+
+  const getLastSumbitResult = async () => {
+    const response = await axios.get(`problems/${problem.id}/`);
+    const { submissions } = response.data;
+    if (submissions.length === 0) {
+      toast({
+        title: "제출한 코드가 없습니다",
+        status: "error",
+      });
+      return;
+    }
+    const lastSubmissionId = submissions[submissions.length - 1];
+    getSubmitResult(lastSubmissionId);
   };
 
   useEffect(() => {
@@ -63,10 +92,23 @@ function App() {
   }, [lecture]);
 
   useEffect(() => {
-    if (isTestEnded) {
+    if (submitLoading === 2) {
       setIsOpenDiff(true);
     }
-  }, [isTestEnded]);
+  }, [submitLoading]);
+
+  useEffect(() => {
+    // 처음 시작 시 시험 종료 상태면 제출 결과 바로 가져옴
+    if (isTestEnded && Object.keys(problem).length !== 0) {
+      getLastSumbitResult();
+    }
+  }, [isTestEnded, problem]);
+
+  useEffect(() => {
+    if (submitResult !== null && submitResult.state >= 3) {
+      setSubmitLoading(2); // 1: 로딩 중, 2: 로딩 끝남
+    }
+  }, [submitResult]);
 
   const onChangeProblem = (problemId) => {
     getProblem(problemId);
@@ -115,9 +157,12 @@ function App() {
             skeletonCode={problem?.skeleton_code}
             closeDiff={closeDiff}
             isOpenDiff={isOpenDiff}
+            errorInfo={errorInfo}
+            submittedCode={submitResult?.code}
+            answerCode={answerCode}
           />
           <Divider orientation="vertical" borderColor="whiteAlpha.200" />
-          {!isTestEnded ? (
+          {!isTestEnded || submitLoading < 2 ? (
             <Terminal
               submissionCapacity={lecture?.submission_capacity}
               submissionNum={problem?.submissions.length}
@@ -125,9 +170,12 @@ function App() {
               testcases={problem?.testcases}
               openDiff={openDiff}
               testEnd={testEnd}
+              setIsTestEnded={setIsTestEnded}
+              setErrorInfo={setErrorInfo}
+              submitLoading={submitLoading}
             />
           ) : (
-            <SubmitResult />
+            <SubmitResult submitResult={submitResult} setAnswerCode={setAnswerCode} />
           )}
         </Box>
       </Box>
