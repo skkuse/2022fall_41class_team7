@@ -43,3 +43,14 @@
   border-radius: 10px;
   background-color: white;
 }
+
+.submit_select {
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #171923;
+  color: #ffffff;
+}
+
+.submit_select option {
+  color: black;
+}

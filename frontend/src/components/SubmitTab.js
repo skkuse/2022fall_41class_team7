@@ -154,11 +154,26 @@ SubmitTab.propTypes = {
         control_flow: PropTypes.number.isRequired,
       }).isRequired,
       readability: PropTypes.shape({
-        mypy: PropTypes.arrayOf(PropTypes.string).isRequired,
-        pylint: PropTypes.arrayOf(PropTypes.string).isRequired,
-        eradicate: PropTypes.arrayOf(PropTypes.string).isRequired,
-        radon: PropTypes.arrayOf(PropTypes.string).isRequired,
-        pycodestyle: PropTypes.arrayOf(PropTypes.string).isRequired,
+        mypy: PropTypes.shape({
+          score: PropTypes.number.isRequired,
+          error: PropTypes.string.isRequired,
+        }).isRequired,
+        pylint: PropTypes.shape({
+          score: PropTypes.number.isRequired,
+          error: PropTypes.string.isRequired,
+        }).isRequired,
+        eradicate: PropTypes.shape({
+          score: PropTypes.number.isRequired,
+          error: PropTypes.string.isRequired,
+        }).isRequired,
+        radon: PropTypes.shape({
+          score: PropTypes.number.isRequired,
+          error: PropTypes.string.isRequired,
+        }).isRequired,
+        pycodestyle: PropTypes.shape({
+          score: PropTypes.number.isRequired,
+          error: PropTypes.string.isRequired,
+        }).isRequired,
       }).isRequired,
       explanation: PropTypes.bool.isRequired,
     }).isRequired,

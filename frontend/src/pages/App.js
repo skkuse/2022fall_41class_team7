@@ -190,6 +190,8 @@ function App() {
                 submitResult={submitResult}
                 getLines={getLines}
                 setAnsewerCode={setAnsewerCode}
+                submissions={problem?.submissions}
+                setSubmitResult={setSubmitResult}
               />
             )}
           </Box>

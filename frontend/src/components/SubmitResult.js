@@ -7,15 +7,17 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
+  Select,
 } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import Graph from "./Graph";
 import SubmitTab from "./SubmitTab";
+import axios from "../utils/axios";
 
-function Submit({ submitResult, getLines, setAnsewerCode }) {
+function Submit({ submitResult, getLines, setAnsewerCode, submissions, setSubmitResult }) {
   const { readability, efficiency, plagiarism, explanation } = submitResult.analysis;
-  console.log(explanation);
+  // console.log(explanation);
   const results = submitResult.result;
   const relatedContent = submitResult.problem.related_content;
   const readabilityNames = ["mypy", "pylint", "eradicate", "radon", "pycodestyle"];
@@ -52,6 +54,13 @@ function Submit({ submitResult, getLines, setAnsewerCode }) {
     setScore((Tscore * 100) / results.length);
   };
 
+  const onChangeSubmit = async (event) => {
+    const id = event.target.value;
+
+    const res = await axios.get(`/submissions/${id}`);
+    setSubmitResult(res.data);
+  };
+
   useEffect(() => {
     getEfficiencyScore();
     getReadabilityScore();
@@ -61,6 +70,26 @@ function Submit({ submitResult, getLines, setAnsewerCode }) {
 
   return (
     <Box className="submit_container">
+      <Box className="terminal_header">
+        <Select
+          className="submit_select"
+          size="sm"
+          bg="gray.900"
+          borderColor="whiteAlpha.200"
+          onChange={onChangeSubmit}
+          // ref={selectRef}
+          defaultValue="DEFAULT"
+        >
+          <option value="DEFAULT" disabled hidden>
+            제출물 선택
+          </option>
+          {submissions.map((id, index) => (
+            <option value={id} key={id}>
+              제출 결과 {index + 1}
+            </option>
+          ))}
+        </Select>
+      </Box>
       <Accordion className="submit_accordion" allowToggle={false} defaultIndex={0}>
         <AccordionItem>
           <h2>
@@ -78,7 +107,7 @@ function Submit({ submitResult, getLines, setAnsewerCode }) {
             pb={4}
             backgroundColor="#1a202c"
             color="black"
-            height="calc(100vh - 61px*4 - 3px)"
+            height="calc(100vh - 61px*4 - 3px - 60px)"
             display="flex"
             flexDirection="column"
             justifyContent="center"
@@ -105,7 +134,7 @@ function Submit({ submitResult, getLines, setAnsewerCode }) {
             pb={4}
             backgroundColor="#1a202c"
             color="white"
-            height="calc(100vh - 61px*4 - 3px)"
+            height="calc(100vh - 61px*4 - 3px- 60px)"
             whiteSpace="pre-wrap"
           >
             {explanation}
@@ -124,7 +153,7 @@ function Submit({ submitResult, getLines, setAnsewerCode }) {
             pb={4}
             backgroundColor="#1a202c"
             color="white"
-            height="calc(100vh - 61px*4 - 3px)"
+            height="calc(100vh - 61px*4 - 3px- 60px)"
             whiteSpace="pre-wrap"
           >
             {relatedContent}
@@ -175,11 +204,26 @@ Submit.propTypes = {
         control_flow: PropTypes.number.isRequired,
       }).isRequired,
       readability: PropTypes.shape({
-        mypy: PropTypes.arrayOf(PropTypes.string).isRequired,
-        pylint: PropTypes.arrayOf(PropTypes.string).isRequired,
-        eradicate: PropTypes.arrayOf(PropTypes.string).isRequired,
-        radon: PropTypes.arrayOf(PropTypes.string).isRequired,
-        pycodestyle: PropTypes.arrayOf(PropTypes.string).isRequired,
+        mypy: PropTypes.shape({
+          score: PropTypes.number.isRequired,
+          error: PropTypes.string.isRequired,
+        }).isRequired,
+        pylint: PropTypes.shape({
+          score: PropTypes.number.isRequired,
+          error: PropTypes.string.isRequired,
+        }).isRequired,
+        eradicate: PropTypes.shape({
+          score: PropTypes.number.isRequired,
+          error: PropTypes.string.isRequired,
+        }).isRequired,
+        radon: PropTypes.shape({
+          score: PropTypes.number.isRequired,
+          error: PropTypes.string.isRequired,
+        }).isRequired,
+        pycodestyle: PropTypes.shape({
+          score: PropTypes.number.isRequired,
+          error: PropTypes.string.isRequired,
+        }).isRequired,
       }).isRequired,
       explanation: PropTypes.bool.isRequired,
     }).isRequired,
@@ -187,6 +231,8 @@ Submit.propTypes = {
   }).isRequired,
   getLines: PropTypes.func.isRequired,
   setAnsewerCode: PropTypes.func.isRequired,
+  submissions: PropTypes.arrayOf(PropTypes.number.isRequired).isRequired,
+  setSubmitResult: PropTypes.func.isRequired,
 };
 
 export default Submit;
