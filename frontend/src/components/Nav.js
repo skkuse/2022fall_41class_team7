@@ -43,10 +43,23 @@ function Nav({
     onChangeProblem(event.target.value);
   };
 
+  const endTest = async () => {
+    setIsTestEnded(true);
+    try {
+      await axios.post(`lectures/${lectureId}/end/`);
+      // 종료 처리
+      // getLastSumbitResult(); // 마지막에 제출한걸로 결과 보여줌
+    } catch (e) {
+      toast({
+        title: "종료에 실패했습니다.",
+        status: "error",
+      });
+    }
+  };
+
   function UnixTimestamp() {
     if (!isTestEnded) {
       const currentTime = Math.floor(new Date().getTime() / 1000);
-      // deadline이랑 설정한 시간이랑 9시간이 차이나서...
       let remainTime = deadline ? deadline - currentTime + 9 * 60 * 60 : 0;
       if (remainTime > 0) {
         const day = Math.floor(remainTime / 60 / 60 / 24);
@@ -61,25 +74,12 @@ function Nav({
       } else {
         clearInterval(interval.current);
         setRemainText("시험 종료");
-        getLastSumbitResult(); // 마지막에 제출한걸로 결과 보여줌
-        setIsTestEnded(true);
+        // endTest();
+        // getLastSumbitResult(); // 마지막에 제출한걸로 결과 보여줌
+        // setIsTestEnded(true);
       }
     }
   }
-
-  const endTest = async () => {
-    try {
-      await axios.post(`lectures/${lectureId}/end/`);
-      // 종료 처리
-      getLastSumbitResult(); // 마지막에 제출한걸로 결과 보여줌
-      setIsTestEnded(true);
-    } catch (e) {
-      toast({
-        title: "종료에 실패했습니다.",
-        status: "error",
-      });
-    }
-  };
 
   useEffect(() => {
     interval.current = setInterval(() => {
