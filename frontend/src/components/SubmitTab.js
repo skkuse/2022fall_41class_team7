@@ -10,14 +10,16 @@ import {
   Text,
   Circle,
 } from "@chakra-ui/react";
-import DummySubmissions from "../dummyFiles/DummySubmissions.json";
+import PropTypes from "prop-types";
 
-function SubmitTab() {
-  const { testcases } = DummySubmissions.problem;
-  const results = DummySubmissions.result;
-  const { efficiency } = DummySubmissions.analysis;
-  const { readability } = DummySubmissions.analysis;
+function SubmitTab({ submitResult, getLines }) {
+  const { testcases } = submitResult.problem;
+  const results = submitResult.result;
+  const { efficiency } = submitResult.analysis;
+  const { readability } = submitResult.analysis;
   const readabilityNames = ["mypy", "pylint", "eradicate", "radon", "pycodestyle"];
+  const answerCode = submitResult.problem.answer_code;
+  const { code } = submitResult;
 
   return (
     <Tabs isFitted variant="enclosed" height="100%">
@@ -60,8 +62,8 @@ function SubmitTab() {
                 <Box marginLeft="auto">{efficiency.loc}점</Box>
               </Box>
               <Box className="tab_element_body">
-                <Text>Line of Correct Code: 5 lines</Text>
-                <Text>Line of Your Code: 5 lines</Text>
+                <Text>Line of Correct Code: {getLines(answerCode)} lines</Text>
+                <Text>Line of Your Code: {getLines(code)} lines</Text>
               </Box>
             </Box>
             <Box className="tab_element">
@@ -111,5 +113,58 @@ function SubmitTab() {
     </Tabs>
   );
 }
+
+SubmitTab.propTypes = {
+  submitResult: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    created_at: PropTypes.number.isRequired,
+    problem: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      explanation: PropTypes.string.isRequired,
+      reference: PropTypes.string.isRequired,
+      testcases: PropTypes.arrayOf(
+        PropTypes.shape({
+          input: PropTypes.string,
+          output: PropTypes.string,
+          is_hidden: PropTypes.bool.isRequired,
+        })
+      ).isRequired,
+      skeleton_code: PropTypes.string.isRequired,
+      answer_code: PropTypes.string.isRequired,
+      related_content: PropTypes.string.isRequired,
+      lecture: PropTypes.number.isRequired,
+    }).isRequired,
+    code: PropTypes.string.isRequired,
+    state: PropTypes.number.isRequired,
+    result: PropTypes.arrayOf(
+      PropTypes.shape({
+        input: PropTypes.string,
+        output: PropTypes.string,
+        user_output: PropTypes.string,
+        is_passed: PropTypes.bool.isRequired,
+      })
+    ).isRequired,
+    analysis: PropTypes.shape({
+      plagiarism: PropTypes.number.isRequired,
+      efficiency: PropTypes.shape({
+        loc: PropTypes.number.isRequired,
+        halstead: PropTypes.number.isRequired,
+        data_flow: PropTypes.number.isRequired,
+        control_flow: PropTypes.number.isRequired,
+      }).isRequired,
+      readability: PropTypes.shape({
+        mypy: PropTypes.arrayOf(PropTypes.string).isRequired,
+        pylint: PropTypes.arrayOf(PropTypes.string).isRequired,
+        eradicate: PropTypes.arrayOf(PropTypes.string).isRequired,
+        radon: PropTypes.arrayOf(PropTypes.string).isRequired,
+        pycodestyle: PropTypes.arrayOf(PropTypes.string).isRequired,
+      }).isRequired,
+      explanation: PropTypes.bool.isRequired,
+    }).isRequired,
+    user: PropTypes.number.isRequired,
+  }).isRequired,
+  getLines: PropTypes.func.isRequired,
+};
 
 export default SubmitTab;

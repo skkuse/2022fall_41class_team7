@@ -1,6 +1,6 @@
 import "../styles/editor.css";
 import PropTypes from "prop-types";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -9,11 +9,10 @@ import {
   Divider,
   IconButton,
   Select,
-  useToast,
 } from "@chakra-ui/react";
 import { CopyIcon, DownloadIcon, RepeatClockIcon, ArrowUpIcon } from "@chakra-ui/icons";
 import FileSaver from "file-saver";
-import Editor, { DiffEditor } from "@monaco-editor/react";
+import Editor from "@monaco-editor/react";
 import axios from "../utils/axios";
 import CodeDiffWindow from "./CodeDiffWindow";
 import { formatEpochTime } from "../utils/dateUtil";
@@ -24,15 +23,28 @@ const progress = {
   height: "32px",
 };
 
-function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeDiff, isOpenDiff }) {
+function CodeEditor({
+  storageCapacity,
+  problem,
+  setProblem,
+  skeletonCode,
+  closeDiff,
+  isOpenDiff,
+  errorInfo,
+  submittedCode,
+  answerCode,
+}) {
   const fileInput = useRef();
   const editorRef = useRef(null);
+  const monacoRef = useRef(null);
   const selectRef = useRef(null);
   const toast = useMyToast();
   const [storageNum, setStorageNum] = useState(-1);
+  const [decorations, setDecorations] = useState([]);
 
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
+    monacoRef.current = monaco;
   };
   const inputFile = () => {
     fileInput.current.value = "";
@@ -124,6 +136,29 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeD
   const onChangeEditor = () => {
     document.getElementById("hiddenCodeValue").value = editorRef.current.getValue();
   };
+
+  const showErrorLine = (errorinfo) => {
+    if (errorInfo.error !== "") {
+      const decoration = editorRef.current.deltaDecorations(decorations, [
+        {
+          range: new monacoRef.current.Range(errorinfo.error_line, 1, errorinfo.error_line, 1),
+          options: {
+            className: "errorLine",
+            glyphMarginClassName: "errorMark",
+            isWholeLine: true,
+            glyphMarginHoverMessage: { value: errorinfo.error },
+          },
+        },
+      ]);
+      setDecorations([...decorations, decoration]);
+    }
+  };
+
+  useEffect(() => {
+    if (errorInfo !== null) {
+      showErrorLine(errorInfo);
+    }
+  }, [errorInfo]);
 
   return (
     <Box className="container">
@@ -222,6 +257,7 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeD
           minimap: {
             enabled: false,
           },
+          glyphMargin: true,
         }}
         beforeMount={(monaco) => {
           monaco.editor.defineTheme("my-theme", {
@@ -234,13 +270,13 @@ function CodeEditor({ storageCapacity, problem, setProblem, skeletonCode, closeD
         onMount={handleEditorDidMount}
         onChange={onChangeEditor}
       />
-      <input type="hidden" id="hiddenCodeValue" value={skeletonCode} />
+      <input
+        type="hidden"
+        id="hiddenCodeValue"
+        value={!editorRef.current ? skeletonCode : editorRef.current.getValue()}
+      />
       {isOpenDiff ? (
-        <CodeDiffWindow
-          original={editorRef.current?.getValue()}
-          modified="#answer code" // 나중에 정답 코드 넣어야 함
-          closeDiff={closeDiff}
-        />
+        <CodeDiffWindow original={submittedCode} modified={answerCode} closeDiff={closeDiff} />
       ) : null}
     </Box>
   );
@@ -262,6 +298,19 @@ CodeEditor.propTypes = {
   skeletonCode: PropTypes.string.isRequired,
   closeDiff: PropTypes.func.isRequired,
   isOpenDiff: PropTypes.bool.isRequired,
+  errorInfo: PropTypes.shape({
+    error: PropTypes.string,
+    error_line: PropTypes.number,
+  }),
+  submittedCode: PropTypes.string.isRequired,
+  answerCode: PropTypes.string.isRequired,
+};
+
+CodeEditor.defaultProps = {
+  errorInfo: PropTypes.shape({
+    error: "",
+    error_line: 0,
+  }),
 };
 
 export default CodeEditor;

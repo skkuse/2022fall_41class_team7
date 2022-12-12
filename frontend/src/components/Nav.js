@@ -10,7 +10,6 @@ import {
   Text,
   Avatar,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import "../styles/style.css";
@@ -31,6 +30,7 @@ function Nav({
   onChangeProblem,
   isTestEnded,
   setIsTestEnded,
+  getLastSumbitResult,
 }) {
   const [selected, setSelected] = useState(1);
   const interval = useRef(null);
@@ -43,24 +43,12 @@ function Nav({
     onChangeProblem(event.target.value);
   };
 
-  function UnixTimestamp() {
-    if (!isTestEnded) {
-      const currentTime = Math.floor(new Date().getTime() / 1000);
-      const remainTime = deadline ? deadline - currentTime : 0;
-      const date = new Date(remainTime * 1000);
-      const day = Math.floor(remainTime / 60 / 60 / 24);
-      const hour = date.getHours();
-      const minute = date.getMinutes();
-      const second = date.getSeconds();
-      setRemainText(`${day}일 ${hour}시간 ${minute}분 ${second}초`);
-    }
-  }
-
   const endTest = async () => {
+    setIsTestEnded(true);
     try {
       await axios.post(`lectures/${lectureId}/end/`);
       // 종료 처리
-      setIsTestEnded(true);
+      // getLastSumbitResult(); // 마지막에 제출한걸로 결과 보여줌
     } catch (e) {
       toast({
         title: "종료에 실패했습니다.",
@@ -68,6 +56,30 @@ function Nav({
       });
     }
   };
+
+  function UnixTimestamp() {
+    if (!isTestEnded) {
+      const currentTime = Math.floor(new Date().getTime() / 1000);
+      let remainTime = deadline ? deadline - currentTime + 9 * 60 * 60 : 0;
+      if (remainTime > 0) {
+        const day = Math.floor(remainTime / 60 / 60 / 24);
+        remainTime -= day * 60 * 60 * 24;
+        const hour = Math.floor(remainTime / 60 / 60);
+        remainTime -= hour * 60 * 60;
+        const minute = Math.floor(remainTime / 60);
+        remainTime -= minute * 60;
+        const second = remainTime;
+
+        setRemainText(`${day}일 ${hour}시간 ${minute}분 ${second}초`);
+      } else {
+        clearInterval(interval.current);
+        setRemainText("시험 종료");
+        // endTest();
+        // getLastSumbitResult(); // 마지막에 제출한걸로 결과 보여줌
+        // setIsTestEnded(true);
+      }
+    }
+  }
 
   useEffect(() => {
     interval.current = setInterval(() => {
@@ -181,6 +193,7 @@ Nav.propTypes = {
   onChangeProblem: PropTypes.func.isRequired,
   isTestEnded: PropTypes.bool.isRequired,
   setIsTestEnded: PropTypes.func.isRequired,
+  getLastSumbitResult: PropTypes.func.isRequired,
 };
 
 export default Nav;
