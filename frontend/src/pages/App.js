@@ -1,8 +1,8 @@
 import "../styles/base.css";
 import "../styles/hover.css";
-import { ChakraProvider, Box, Divider } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { Box, ChakraProvider, Divider } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "../utils/axios";
 import Nav from "../components/Nav";
 import Problem from "../components/Problem";
@@ -14,21 +14,20 @@ import { epochToDate } from "../utils/dateUtil";
 import useToast from "../utils/toast";
 
 function App() {
-  const { id } = useParams();
   const [problem, setProblem] = useState({});
   const [lecture, setLecture] = useState({});
   const [loading, setLoading] = useState(true);
-  const { loggedUser, loggedIn } = useUserState();
   const [isOpenDiff, setIsOpenDiff] = useState(false);
   const [isTestEnded, setIsTestEnded] = useState(false);
   const [submitResult, setSubmitResult] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(0);
   const [errorInfo, setErrorInfo] = useState(null);
   const [answerCode, setAnsewerCode] = useState("");
-  const navigate = useNavigate();
-  const toast = useToast();
 
-  const userName = loggedUser.name;
+  const { loggedUser, loggedIn } = useUserState();
+  const { id } = useParams();
+  const toast = useToast();
+  const navigate = useNavigate();
 
   const getProblem = async (problemId) => {
     const response = await axios.get(`problems/${problemId}/`, {});
@@ -37,13 +36,22 @@ function App() {
   };
 
   const getLecture = async () => {
-    const response = await axios.get(`lectures/${id}/`, {});
-    setLecture(response.data);
-    const isEnded = response.data.enrollment.is_ended;
-    const deadline = epochToDate(response.data.deadline + 9 * 60 * 60);
+    try {
+      const { data } = await axios.get(`lectures/${id}/`, {});
 
-    if (deadline < epochToDate(Math.floor(Date.now() / 1000)) || isEnded) {
-      setIsTestEnded(true);
+      setLecture(data);
+      const isEnded = data.enrollment.is_ended;
+      const deadline = epochToDate(data.deadline);
+
+      if (deadline < Date.now() || isEnded) {
+        setIsTestEnded(true);
+        setIsOpenDiff(true);
+      }
+    } catch (e) {
+      if (e.response.status === 403) {
+        alert("로그인 정보가 없습니다.");
+        navigate("/");
+      }
     }
   };
 
@@ -83,15 +91,7 @@ function App() {
   };
 
   useEffect(() => {
-    if (loggedUser.name == null) {
-      toast({
-        title: "로그인 정보가 존재하지 않습니다.",
-        status: "error",
-      });
-      navigate("/");
-    } else {
-      getLecture();
-    }
+    getLecture();
   }, []);
 
   useEffect(() => {
@@ -131,63 +131,71 @@ function App() {
     setIsOpenDiff(false);
   };
 
-  return loading ? null : (
+  const testEnd = () => {
+    // 임시로 제출 버튼 누르면 diff 열기 & 제출 결과창 나오도록
+    setIsTestEnded(true);
+    setIsOpenDiff(true);
+  };
+
+  return (
     <ChakraProvider>
-      <Box className="bg">
-        <Nav
-          lectureName={lecture?.name}
-          lectureId={lecture?.id}
-          deadline={lecture?.deadline}
-          userName={loggedIn ? userName : ""}
-          problems={lecture?.problems}
-          onChangeProblem={onChangeProblem}
-          isTestEnded={isTestEnded}
-          setIsTestEnded={setIsTestEnded}
-          getLastSumbitResult={getLastSumbitResult}
-        />
-        <Divider borderColor="whiteAlpha.200" />
-        <Box className="body_container">
-          <Problem
-            problem={problem}
-            explanation={problem?.explanation}
-            reference={problem?.reference}
-            testcases={problem?.testcases}
+      {!loading && (
+        <Box className="bg">
+          <Nav
+            lectureName={lecture?.name}
+            lectureId={lecture?.id}
+            deadline={lecture?.deadline}
+            userName={loggedIn ? loggedUser.name : ""}
+            problems={lecture?.problems}
+            onChangeProblem={onChangeProblem}
+            isTestEnded={isTestEnded}
+            setIsTestEnded={setIsTestEnded}
+            getLastSumbitResult={getLastSumbitResult}
           />
-          <Divider orientation="vertical" borderColor="whiteAlpha.200" />
-          <CodeEditor
-            storageCapacity={lecture?.storage_capacity}
-            problem={problem}
-            setProblem={setProblem}
-            skeletonCode={problem?.skeleton_code}
-            closeDiff={closeDiff}
-            isOpenDiff={isOpenDiff}
-            errorInfo={errorInfo}
-            getLines={getLines}
-            submittedCode={submitResult?.code}
-            answerCode={answerCode}
-          />
-          <Divider orientation="vertical" borderColor="whiteAlpha.200" />
-          {!isTestEnded || submitLoading < 2 ? (
-            <Terminal
-              submissionCapacity={lecture?.submission_capacity}
-              submissionNum={problem?.submissions.length}
+          <Divider borderColor="whiteAlpha.200" />
+          <Box className="body_container">
+            <Problem
               problem={problem}
+              explanation={problem?.explanation}
+              reference={problem?.reference}
               testcases={problem?.testcases}
-              openDiff={openDiff}
-              setIsTestEnded={setIsTestEnded}
-              getSubmitResult={getSubmitResult}
-              setErrorInfo={setErrorInfo}
-              submitLoading={submitLoading}
             />
-          ) : (
-            <SubmitResult
-              submitResult={submitResult}
+            <Divider orientation="vertical" borderColor="whiteAlpha.200" />
+            <CodeEditor
+              storageCapacity={lecture?.storage_capacity}
+              problem={problem}
+              setProblem={setProblem}
+              skeletonCode={problem?.skeleton_code}
+              closeDiff={closeDiff}
+              isOpenDiff={isOpenDiff}
+              errorInfo={errorInfo}
               getLines={getLines}
-              setAnsewerCode={setAnsewerCode}
+              submittedCode={submitResult?.code}
+              answerCode={answerCode}
             />
-          )}
+            <Divider orientation="vertical" borderColor="whiteAlpha.200" />
+            {!isTestEnded || submitLoading < 2 ? (
+              <Terminal
+                submissionCapacity={lecture?.submission_capacity}
+                submissionNum={problem?.submissions.length}
+                problem={problem}
+                testcases={problem?.testcases}
+                openDiff={openDiff}
+                setIsTestEnded={setIsTestEnded}
+                getSubmitResult={getSubmitResult}
+                setErrorInfo={setErrorInfo}
+                submitLoading={submitLoading}
+              />
+            ) : (
+              <SubmitResult
+                submitResult={submitResult}
+                getLines={getLines}
+                setAnsewerCode={setAnsewerCode}
+              />
+            )}
+          </Box>
         </Box>
-      </Box>
+      )}
     </ChakraProvider>
   );
 }

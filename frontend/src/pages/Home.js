@@ -4,7 +4,6 @@ import {
   ChakraProvider,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   FormLabel,
   Image,
   Input,
@@ -21,26 +20,18 @@ import useToast from "../utils/toast";
 function Home() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
-  const [isFailed, setIsFailed] = useState(false);
-  const [isFailed2, setIsFailed2] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const dispatch = useUserDispatch();
-  const toast = useToast();
+  const [isLoginFailed, setIsLoginFailed] = useState(false);
 
-  const onChangeId = (event) => {
-    setId(event.target.value);
-  };
-  const onChangePassword = (event) => {
-    setPassword(event.target.value);
-  };
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
+  const dispatch = useUserDispatch();
 
   const login = async () => {
     try {
       const res = await axios.post("login/", { student_id: id, password });
 
       if (res.status === 200) {
-        setIsFailed(false);
-        setIsFailed2(false);
+        setIsLoginFailed(false);
         onOpen();
         dispatch({
           type: "LOGIN",
@@ -52,7 +43,7 @@ function Home() {
         });
       }
     } catch (err) {
-      setIsFailed(true);
+      setIsLoginFailed(true);
       toast({
         title: "아이디나 비밀번호가 올바르지 않습니다.",
         status: "error",
@@ -60,8 +51,8 @@ function Home() {
     }
   };
 
-  const isErrorId = id === "" && isFailed;
-  const isErrorPassword = password === "" && isFailed;
+  const isErrorId = id === "" && isLoginFailed;
+  const isErrorPassword = password === "" && isLoginFailed;
 
   return (
     <ChakraProvider>
@@ -77,12 +68,10 @@ function Home() {
                 placeholder="입력"
                 name="loginId"
                 value={id}
-                onChange={onChangeId}
+                onChange={(e) => setId(e.target.value)}
               />
-              {isErrorId ? (
+              {isErrorId && (
                 <FormErrorMessage>아이디를 입력하세요.</FormErrorMessage>
-              ) : (
-                <FormHelperText />
               )}
             </FormControl>
             <FormControl height="100px" isInvalid={isErrorPassword}>
@@ -92,12 +81,10 @@ function Home() {
                 placeholder="입력"
                 name="loginPwd"
                 value={password}
-                onChange={onChangePassword}
+                onChange={(e) => setPassword(e.target.value)}
               />
-              {isErrorPassword ? (
+              {isErrorPassword && (
                 <FormErrorMessage>비밀번호를 입력하세요.</FormErrorMessage>
-              ) : (
-                <FormHelperText />
               )}
             </FormControl>
           </Box>

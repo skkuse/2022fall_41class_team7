@@ -10,14 +10,12 @@ import { UserProvider } from "./utils/contextProvider";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <UserProvider>
-    <React.StrictMode>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="test/:id" element={<App />} />
-        </Routes>
-      </BrowserRouter>
-    </React.StrictMode>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="test/:id" element={<App />} />
+      </Routes>
+    </BrowserRouter>
   </UserProvider>
 );
 
