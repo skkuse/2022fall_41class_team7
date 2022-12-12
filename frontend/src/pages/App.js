@@ -41,9 +41,9 @@ function App() {
 
       setLecture(data);
       const isEnded = data.enrollment.is_ended;
-      const deadline = epochToDate(data.deadline);
 
-      if (deadline < Date.now() || isEnded) {
+      const currentTime = parseInt(Date.now() / 1000, 10) - 32400;
+      if (data.deadline < currentTime || isEnded) {
         setIsTestEnded(true);
         setIsOpenDiff(true);
       }
