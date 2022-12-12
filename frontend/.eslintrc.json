@@ -19,6 +19,7 @@
     "react/jsx-no-undef": 0,
     "eol-last": 0,
     "no-unused-vars": 0,
-    "quotes": ["error", "double"]
+    "quotes": ["error", "double"],
+    "no-alert": "off"
   }
 }
