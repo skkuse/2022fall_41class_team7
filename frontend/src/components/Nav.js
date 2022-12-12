@@ -74,9 +74,10 @@ function Nav({
       } else {
         clearInterval(interval.current);
         setRemainText("시험 종료");
+        alert("시험이 종료되었습니다.");
         // endTest();
         // getLastSumbitResult(); // 마지막에 제출한걸로 결과 보여줌
-        // setIsTestEnded(true);
+        setIsTestEnded(true);
       }
     }
   }
