@@ -14,11 +14,9 @@ import Graph from "./Graph";
 import SubmitTab from "./SubmitTab";
 
 function Submit({ submitResult, getLines, setAnsewerCode }) {
-  const { plagiarism } = submitResult.analysis;
-  const { explanation } = submitResult.analysis;
+  const { readability, efficiency, plagiarism, explanation } = submitResult.analysis;
+  console.log(explanation);
   const results = submitResult.result;
-  const { efficiency } = submitResult.analysis;
-  const { readability } = submitResult.analysis;
   const relatedContent = submitResult.problem.related_content;
   const readabilityNames = ["mypy", "pylint", "eradicate", "radon", "pycodestyle"];
   const efficiencyNames = ["loc", "halstead", "data_flow", "control_flow"];
@@ -38,7 +36,7 @@ function Submit({ submitResult, getLines, setAnsewerCode }) {
   const getReadabilityScore = () => {
     let Rscore = 0;
     for (let i = 0; i < 5; i += 1) {
-      Rscore += readability[readabilityNames[i]][0];
+      Rscore += readability[readabilityNames[i]].score;
     }
     setReadScore(Rscore);
   };
@@ -63,7 +61,7 @@ function Submit({ submitResult, getLines, setAnsewerCode }) {
 
   return (
     <Box className="submit_container">
-      <Accordion className="submit_accordion">
+      <Accordion className="submit_accordion" allowToggle={false} defaultIndex={0}>
         <AccordionItem>
           <h2>
             <AccordionButton height="60px">
@@ -78,7 +76,7 @@ function Submit({ submitResult, getLines, setAnsewerCode }) {
           </h2>
           <AccordionPanel
             pb={4}
-            backgroundColor="white"
+            backgroundColor="#1a202c"
             color="black"
             height="calc(100vh - 61px*4 - 3px)"
             display="flex"
@@ -89,7 +87,7 @@ function Submit({ submitResult, getLines, setAnsewerCode }) {
             <Box height="40%" width="100%">
               <Graph efficiencyScore={effiScore} readabilityScore={readScore} score={score} />
             </Box>
-            <Box height="60%" width="100%">
+            <Box height="60%" width="100%" color="white">
               <SubmitTab submitResult={submitResult} getLines={getLines} />
             </Box>
           </AccordionPanel>
@@ -105,9 +103,10 @@ function Submit({ submitResult, getLines, setAnsewerCode }) {
           </h2>
           <AccordionPanel
             pb={4}
-            backgroundColor="white"
-            color="black"
+            backgroundColor="#1a202c"
+            color="white"
             height="calc(100vh - 61px*4 - 3px)"
+            whiteSpace="pre-wrap"
           >
             {explanation}
           </AccordionPanel>
@@ -123,9 +122,10 @@ function Submit({ submitResult, getLines, setAnsewerCode }) {
           </h2>
           <AccordionPanel
             pb={4}
-            backgroundColor="white"
-            color="black"
+            backgroundColor="#1a202c"
+            color="white"
             height="calc(100vh - 61px*4 - 3px)"
+            whiteSpace="pre-wrap"
           >
             {relatedContent}
           </AccordionPanel>

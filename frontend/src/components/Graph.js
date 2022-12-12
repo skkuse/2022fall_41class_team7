@@ -18,8 +18,9 @@ function CenteredMetric({ dataWithArc, centerX, centerY }) {
       textAnchor="middle"
       dominantBaseline="central"
       style={{
-        fontSize: "20px",
+        fontSize: "24px",
         fontWeight: 600,
+        fill: "white",
       }}
     >
       {total}
@@ -65,7 +66,7 @@ function Graph({ efficiencyScore, readabilityScore, score }) {
         modifiers: [["darker", 0.2]],
       }}
       arcLinkLabelsSkipAngle={10}
-      arcLinkLabelsTextColor="#333333"
+      arcLinkLabelsTextColor="white"
       arcLinkLabelsThickness={2}
       arcLinkLabelsColor={{ from: "color" }}
       arcLabelsSkipAngle={10}

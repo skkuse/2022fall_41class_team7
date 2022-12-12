@@ -100,10 +100,10 @@ function SubmitTab({ submitResult, getLines }) {
                   <Box display="flex" alignItems="center" gap="8px">
                     <Circle size="10px" bg="blue.300" /> {name}
                   </Box>
-                  <Box marginLeft="auto">{readability[name][0]}점</Box>
+                  <Box marginLeft="auto">{readability[name].score}점</Box>
                 </Box>
                 <Box className="tab_element_body">
-                  <Text whiteSpace="pre-wrap">{readability[name][1]}</Text>
+                  <Text whiteSpace="pre-wrap">{readability[name].error}</Text>
                 </Box>
               </Box>
             ))}
