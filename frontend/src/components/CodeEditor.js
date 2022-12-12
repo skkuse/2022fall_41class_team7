@@ -16,7 +16,7 @@ import Editor from "@monaco-editor/react";
 import axios from "../utils/axios";
 import CodeDiffWindow from "./CodeDiffWindow";
 import { formatEpochTime } from "../utils/dateUtil";
-import useMyToast from "../utils/toastUtil";
+import useToast from "../utils/toast";
 
 const progress = {
   width: "32px",
@@ -38,7 +38,7 @@ function CodeEditor({
   const editorRef = useRef(null);
   const monacoRef = useRef(null);
   const selectRef = useRef(null);
-  const toast = useMyToast();
+  const toast = useToast();
   const [storageNum, setStorageNum] = useState(-1);
   const [decorations, setDecorations] = useState([]);
 

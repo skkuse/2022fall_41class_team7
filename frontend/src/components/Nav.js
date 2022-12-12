@@ -1,25 +1,25 @@
 import {
+  Avatar,
+  Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Select,
-  Box,
-  Image,
   Button,
+  Image,
   Input,
+  Select,
   Text,
-  Avatar,
   useDisclosure,
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import "../styles/style.css";
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import logo from "../assets/images/service_logo.svg";
 import setting from "../assets/images/setting.svg";
 import Logout from "./modals/Logout";
 import axios from "../utils/axios";
-import useMyToast from "../utils/toastUtil";
+import useToast from "../utils/toast";
 
 function Nav({
   lectureName,
@@ -36,7 +36,7 @@ function Nav({
   const interval = useRef(null);
   const [remainText, setRemainText] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const toast = useMyToast();
+  const toast = useToast();
 
   const onChangeProblemNav = (event) => {
     setSelected(event.target.value);

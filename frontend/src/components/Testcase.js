@@ -1,16 +1,16 @@
 import PropTypes from "prop-types";
-import { ChakraProvider, Box, Button, Text, useToast } from "@chakra-ui/react";
-import { useState, useEffect, useRef } from "react";
+import { Box, Button, ChakraProvider, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import axios from "../utils/axios";
 import PassTag from "./PassTag";
 import FailTag from "./FailTag";
-import useMyToast from "../utils/toastUtil";
+import useToast from "../utils/toast";
 
 function Testcase({ problemID, number, title, input, output }) {
   const [result, setResult] = useState(null);
   const [myoutput, setMyoutput] = useState(0);
   const [testcase, setTestcase] = useState(null);
-  const toast = useMyToast();
+  const toast = useToast();
 
   const getCode = () => document.getElementById("hiddenCodeValue").value;
 

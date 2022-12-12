@@ -11,7 +11,7 @@ import Terminal from "../components/Terminial";
 import { useUserState } from "../utils/contextProvider";
 import SubmitResult from "../components/SubmitResult";
 import { epochToDate } from "../utils/dateUtil";
-import useMyToast from "../utils/toastUtil";
+import useToast from "../utils/toast";
 
 function App() {
   const { id } = useParams();
@@ -26,7 +26,7 @@ function App() {
   const [errorInfo, setErrorInfo] = useState(null);
   const [answerCode, setAnsewerCode] = useState("");
   const navigate = useNavigate();
-  const toast = useMyToast();
+  const toast = useToast();
 
   const userName = loggedUser.name;
 

@@ -1,16 +1,14 @@
 import {
-  ChakraProvider,
   Box,
-  Text,
-  Image,
   Button,
-  Input,
-  useDisclosure,
+  ChakraProvider,
   FormControl,
-  FormLabel,
   FormErrorMessage,
   FormHelperText,
-  useToast,
+  FormLabel,
+  Image,
+  Input,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import "../styles/home.css";
@@ -18,7 +16,7 @@ import axios from "../utils/axios";
 import logo from "../assets/images/logo.png";
 import SelectLecture from "../components/modals/SelectLecture";
 import { useUserDispatch } from "../utils/contextProvider";
-import useMyToast from "../utils/toastUtil";
+import useToast from "../utils/toast";
 
 function Home() {
   const [id, setId] = useState("");
@@ -27,7 +25,7 @@ function Home() {
   const [isFailed2, setIsFailed2] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useUserDispatch();
-  const toast = useMyToast();
+  const toast = useToast();
 
   const onChangeId = (event) => {
     setId(event.target.value);

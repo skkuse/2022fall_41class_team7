@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import RunCode from "./modals/RunCode";
 import axios from "../utils/axios";
-import useMyToast from "../utils/toastUtil";
+import useToast from "../utils/toast";
 import SubmitAlert from "./modals/SumbitAlert";
 
 const progress = {
@@ -31,8 +31,9 @@ function Terminal({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const alert = useDisclosure();
   const getCode = () => document.getElementById("hiddenCodeValue").value;
-  const toast = useMyToast();
   const [curSubmissionNum, SetCurSubmissionNum] = useState(submissionNum);
+
+  const toast = useToast();
 
   const dt = new Date();
   const hh = dt.getHours();
