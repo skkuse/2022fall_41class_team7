@@ -167,8 +167,8 @@ def get_submission_by_id(request: Request, submission_id: int):
     )
 
     if (
-            submission.problem.lecture.deadline > timezone.now()
-            and enrollment.is_ended is False
+        submission.problem.lecture.deadline > timezone.now()
+        and enrollment.is_ended is False
     ):
         raise PermissionDenied("강의가 마감되지 않았습니다.")
 

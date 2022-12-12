@@ -40,7 +40,7 @@ def execute_readability(full_filename: str):
         "pylint": execute_pylint(full_filename),
         "eradicate": execute_eradicate(full_filename),
         "radon": execute_radon(full_filename),
-        "pycodestyle": execute_pycodestyle(full_filename)
+        "pycodestyle": execute_pycodestyle(full_filename),
     }
 
 
@@ -106,7 +106,7 @@ def execute_efficiency(full_filename: str, answer_code: str, file: TextIO):
     process1 = subprocess.run(
         ["multimetric", f"{full_filename}"],
         stdout=subprocess.PIPE,
-        universal_newlines=True
+        universal_newlines=True,
     )
 
     output1 = process1.stdout
@@ -121,9 +121,7 @@ def execute_efficiency(full_filename: str, answer_code: str, file: TextIO):
     df_complexity_score1 = round(max(mem_usage1), 2)
 
     process2 = subprocess.run(
-        ["multimetric", f"{file.name}"],
-        stdout=subprocess.PIPE,
-        universal_newlines=True
+        ["multimetric", f"{file.name}"], stdout=subprocess.PIPE, universal_newlines=True
     )
 
     output2 = process2.stdout

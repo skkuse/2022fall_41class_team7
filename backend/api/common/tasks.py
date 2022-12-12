@@ -5,7 +5,12 @@ from rest_framework.generics import get_object_or_404
 
 from api.common import executor, file_interceptor
 from api.models import Submission, SubmissionState, Problem
-from .analysis import execute_plagiarism, execute_readability, execute_efficiency, execute_codex
+from .analysis import (
+    execute_plagiarism,
+    execute_readability,
+    execute_efficiency,
+    execute_codex,
+)
 
 
 @shared_task
@@ -58,9 +63,7 @@ def analyze_submission(submission_id: int, file: TextIO):
         Submission.objects.filter(id=submission_id).select_related("problem")
     )
 
-    problem = get_object_or_404(
-        Problem.objects.filter(id=submission.problem_id)
-    )
+    problem = get_object_or_404(Problem.objects.filter(id=submission.problem_id))
 
     # change state to analyzing
     submission.state = SubmissionState.ANALYZING
