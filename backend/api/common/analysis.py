@@ -1,21 +1,24 @@
-import openai
-from openai import Completion
+import json
 import os
 import re
-import json
 import subprocess
-import random
-import tempfile
+from typing import TextIO
+
 import copydetect
+import openai
 from memory_profiler import memory_usage
+from openai import Completion
+
+from api.common import file_interceptor
+
+OPENAI_API_KEY = ""  # 입력 필수
 
 
 def execute_codex(full_filename):
     with open(full_filename, "r") as f:
         example = f.read()
 
-    My_OpenAI_key = "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"
-    openai.api_key = My_OpenAI_key
+    openai.api_key = OPENAI_API_KEY
 
     response = Completion.create(
         model="code-davinci-002",
@@ -28,84 +31,84 @@ def execute_codex(full_filename):
         stop=["''''"],
     )
 
-    answer = response.choices[0].text.strip()
-    return answer
+    return response.choices[0].text.strip()
 
 
-def execute_pylint(full_filename: str):
-    terminal_command = f"pylint {full_filename}"
-    stream = os.popen(terminal_command)
-    output = stream.read()
-
-    error = float(re.findall(r"\d+.\d+", output.split("\n")[-3])[0])
-
-    result = int(20 - error)
-    if result < 0:
-        return [0, output]
-    else:
-        return [result, output]
-
-
-def execute_pycodestyle(full_filename: str):
-    terminal_command = f"pycodestyle --count {full_filename}"
-    stream = os.popen(terminal_command)
-    output = stream.read()
-    error = len(output.split("\n")) - 1
-    result = 20 - error
-    if result < 0:
-        return [0, output]
-    else:
-        return [result, output]
+def execute_readability(full_filename: str):
+    return {
+        "mypy": execute_mypy(full_filename),
+        "pylint": execute_pylint(full_filename),
+        "eradicate": execute_eradicate(full_filename),
+        "radon": execute_radon(full_filename),
+        "pycodestyle": execute_pycodestyle(full_filename),
+    }
 
 
 def execute_mypy(full_filename: str):
-    terminal_command = f"mypy {full_filename}"
-    stream = os.popen(terminal_command)
-    output = stream.read()
+    command = f"mypy {full_filename}"
+    output = os.popen(command).read()
+
     output_last = output.split("\n")[-2]
     if output_last.split(" ")[0] == "Found":
         error = int(re.findall(r"\d+", output_last)[0])
     else:
         error = 0
     result = 20 - error
-    if result < 0:
-        return [0, output]
-    else:
-        return [result, output]
+
+    return {"score": result if result >= 0 else 0, "error": output}
+
+
+def execute_pylint(full_filename: str):
+    command = f"pylint {full_filename}"
+    output = os.popen(command).read()
+
+    error = float(re.findall(r"\d+.\d+", output.split("\n")[-3])[0])
+    result = int(20 - error)
+
+    return {"score": result if result >= 0 else 0, "error": output}
 
 
 def execute_eradicate(full_filename: str):
-    terminal_command = f"eradicate {full_filename}"
-    stream = os.popen(terminal_command)
-    output = stream.read()
-    error = len(output.split("\n")) - 1
+    command = f"eradicate {full_filename}"
+    output = os.popen(command).read()
 
+    error = len(output.split("\n")) - 1
     result = 20 - error
-    if result < 0:
-        return [0, output]
-    else:
-        return [result, output]
+
+    return {"score": result if result >= 0 else 0, "error": output}
 
 
 def execute_radon(full_filename: str):
-    terminal_command = f"radon {full_filename}"
-    stream = os.popen(terminal_command)
-    output = stream.read()
+    command = f"radon {full_filename}"
+    output = os.popen(command).read()
+
     error = len(output.split("\n")) - 1
-
     result = 20 - error
-    if result < 0:
-        return [0, output]
-    else:
-        return [result, output]
+
+    return {"score": result if result >= 0 else 0, "error": output}
 
 
-def execute_efficiency(full_filename: str, answer_filename: str):
+def execute_pycodestyle(full_filename: str):
+    command = f"pycodestyle --count {full_filename}"
+    output = os.popen(command).read()
+
+    error = len(output.split("\n")) - 1
+    result = 20 - error
+
+    return {"score": result if result >= 0 else 0, "error": output}
+
+
+@file_interceptor()
+def execute_efficiency(full_filename: str, answer_code: str, file: TextIO):
+    file.write(answer_code)
+    file.close()
+
     process1 = subprocess.run(
         ["multimetric", f"{full_filename}"],
         stdout=subprocess.PIPE,
-        universal_newlines=True
+        universal_newlines=True,
     )
+
     output1 = process1.stdout
     output_json1 = json.loads(output1)
 
@@ -118,9 +121,7 @@ def execute_efficiency(full_filename: str, answer_filename: str):
     df_complexity_score1 = round(max(mem_usage1), 2)
 
     process2 = subprocess.run(
-        ["multimetric", f"{answer_filename}"],
-        stdout=subprocess.PIPE,
-        universal_newlines=True
+        ["multimetric", f"{file.name}"], stdout=subprocess.PIPE, universal_newlines=True
     )
 
     output2 = process2.stdout
@@ -176,9 +177,13 @@ def execute_efficiency(full_filename: str, answer_filename: str):
     }
 
 
-def execute_plagiarism(full_filename: str, answer_filename: str):
+@file_interceptor()
+def execute_plagiarism(full_filename: str, answer_code: str, file: TextIO):
+    file.write(answer_code)
+    file.close()
+
     fp1 = copydetect.CodeFingerprint(full_filename, 25, 1)
-    fp2 = copydetect.CodeFingerprint(answer_filename, 25, 1)
+    fp2 = copydetect.CodeFingerprint(file.name, 25, 1)
     _, similarities, _ = copydetect.compare_files(fp1, fp2)
 
     plagiarism = 100 * similarities[0]

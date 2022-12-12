@@ -3,9 +3,14 @@ from typing import TextIO
 from celery import shared_task
 from rest_framework.generics import get_object_or_404
 
-from api.common import file_interceptor, executor
+from api.common import executor, file_interceptor
 from api.models import Submission, SubmissionState, Problem
-from .analysis import *
+from .analysis import (
+    execute_plagiarism,
+    execute_readability,
+    execute_efficiency,
+    execute_codex,
+)
 
 
 @shared_task
@@ -32,7 +37,7 @@ def grade_submission(submission_id: int, file: TextIO):
 
         user_out, err, err_line = executor.run(file.name, tc_in, timeout)
 
-        is_passed = str(user_out.strip()) == str(tc_out.strip()) if user_out else False
+        is_passed = str(user_out) == str(tc_out.strip()) if user_out else False
         result.append(
             {
                 "input": tc_in,
@@ -58,9 +63,7 @@ def analyze_submission(submission_id: int, file: TextIO):
         Submission.objects.filter(id=submission_id).select_related("problem")
     )
 
-    problem = get_object_or_404(
-        Problem.objects.filter(id=submission.problem_id)
-    )
+    problem = get_object_or_404(Problem.objects.filter(id=submission.problem_id))
 
     # change state to analyzing
     submission.state = SubmissionState.ANALYZING
@@ -70,24 +73,14 @@ def analyze_submission(submission_id: int, file: TextIO):
     file.write(submission.code)
     file.close()
 
-    # Open a new file in write mode
-    answer_filename = "answer.py"
-    with open(answer_filename, "w") as f:
-        # Write to the file
-        f.write(problem.answer_code)
-
     # 표절 검사
-    plagiarism = execute_plagiarism(file.name, answer_filename)
+    plagiarism = execute_plagiarism(file.name, problem.answer_code)
 
     # 가독성 채점
-    readability = {}
-    readability["mypy"] = execute_mypy(file.name)
-    readability["pylint"] = execute_pylint(file.name)
-    readability["eradicate"] = execute_eradicate(file.name)
-    readability["radon"] = execute_radon(file.name)
-    readability["pycodestyle"] = execute_pycodestyle(file.name)
+    readability = execute_readability(file.name)
 
-    efficiency = execute_efficiency(file.name, answer_filename)
+    # 효율성 채점
+    efficiency = execute_efficiency(file.name, problem.answer_code)
 
     # 코드 설명
     explanation = execute_codex(file.name)
