@@ -17,7 +17,7 @@ import axios from "../utils/axios";
 
 function Submit({ submitResult, getLines, setAnsewerCode, submissions, setSubmitResult }) {
   const { readability, efficiency, plagiarism, explanation } = submitResult.analysis;
-  console.log(explanation);
+  // console.log(explanation);
   const results = submitResult.result;
   const relatedContent = submitResult.problem.related_content;
   const readabilityNames = ["mypy", "pylint", "eradicate", "radon", "pycodestyle"];
