@@ -5,7 +5,7 @@ MAX_TIMEOUT = 10.0
 
 
 def run(
-    file_path: str, inp: str, timeout: float = MAX_TIMEOUT
+        file_path: str, inp: str, timeout: float = MAX_TIMEOUT
 ) -> Union[Tuple[str, None, None], Tuple[None, str, int or None]]:
     # 최대 timeout = MAX_TIMEOUT
     if timeout is None or timeout > MAX_TIMEOUT:
@@ -36,8 +36,6 @@ def process_err(stderr) -> (int, str):
     for i in range(len(lines)):
         line = lines[i]
         if line.strip().startswith("File"):
-            # change file name to "main.py"
-            lines[i] = line.replace(line.split('"')[1], "<stdin>")
             # get error line number
             line_num = int(line.split(",")[1].strip().split()[1])
             break

@@ -11,13 +11,14 @@ from openai import Completion
 
 from api.common import file_interceptor
 
+OPENAI_API_KEY = ""  # 입력 필수
+
 
 def execute_codex(full_filename):
     with open(full_filename, "r") as f:
         example = f.read()
 
-    My_OpenAI_key = "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"
-    openai.api_key = My_OpenAI_key
+    openai.api_key = OPENAI_API_KEY
 
     response = Completion.create(
         model="code-davinci-002",
@@ -30,8 +31,7 @@ def execute_codex(full_filename):
         stop=["''''"],
     )
 
-    answer = response.choices[0].text.strip()
-    return answer
+    return response.choices[0].text.strip()
 
 
 def execute_readability(full_filename: str):
@@ -44,72 +44,58 @@ def execute_readability(full_filename: str):
     }
 
 
-def execute_pylint(full_filename: str):
-    terminal_command = f"pylint {full_filename}"
-    stream = os.popen(terminal_command)
-    output = stream.read()
-
-    error = float(re.findall(r"\d+.\d+", output.split("\n")[-3])[0])
-
-    result = int(20 - error)
-    if result < 0:
-        return [0, output]
-    else:
-        return [result, output]
-
-
-def execute_pycodestyle(full_filename: str):
-    terminal_command = f"pycodestyle --count {full_filename}"
-    stream = os.popen(terminal_command)
-    output = stream.read()
-    error = len(output.split("\n")) - 1
-    result = 20 - error
-    if result < 0:
-        return [0, output]
-    else:
-        return [result, output]
-
-
 def execute_mypy(full_filename: str):
-    terminal_command = f"mypy {full_filename}"
-    stream = os.popen(terminal_command)
-    output = stream.read()
+    command = f"mypy {full_filename}"
+    output = os.popen(command).read()
+
     output_last = output.split("\n")[-2]
     if output_last.split(" ")[0] == "Found":
         error = int(re.findall(r"\d+", output_last)[0])
     else:
         error = 0
     result = 20 - error
-    if result < 0:
-        return [0, output]
-    else:
-        return [result, output]
+
+    return {"score": result if result >= 0 else 0, "error": output}
+
+
+def execute_pylint(full_filename: str):
+    command = f"pylint {full_filename}"
+    output = os.popen(command).read()
+
+    error = float(re.findall(r"\d+.\d+", output.split("\n")[-3])[0])
+    result = int(20 - error)
+
+    return {"score": result if result >= 0 else 0, "error": output}
 
 
 def execute_eradicate(full_filename: str):
-    terminal_command = f"eradicate {full_filename}"
-    stream = os.popen(terminal_command)
-    output = stream.read()
-    error = len(output.split("\n")) - 1
+    command = f"eradicate {full_filename}"
+    output = os.popen(command).read()
 
+    error = len(output.split("\n")) - 1
     result = 20 - error
-    if result < 0:
-        return [0, output]
-    else:
-        return [result, output]
+
+    return {"score": result if result >= 0 else 0, "error": output}
 
 
 def execute_radon(full_filename: str):
-    terminal_command = f"radon {full_filename}"
-    stream = os.popen(terminal_command)
-    output = stream.read()
-    error = len(output.split("\n")) - 1
+    command = f"radon {full_filename}"
+    output = os.popen(command).read()
 
+    error = len(output.split("\n")) - 1
     result = 20 - error
-    if result < 0:
-        return [0, output]
-    else:
-        return [result, output]
+
+    return {"score": result if result >= 0 else 0, "error": output}
+
+
+def execute_pycodestyle(full_filename: str):
+    command = f"pycodestyle --count {full_filename}"
+    output = os.popen(command).read()
+
+    error = len(output.split("\n")) - 1
+    result = 20 - error
+
+    return {"score": result if result >= 0 else 0, "error": output}
 
 
 @file_interceptor()
@@ -122,6 +108,7 @@ def execute_efficiency(full_filename: str, answer_code: str, file: TextIO):
         stdout=subprocess.PIPE,
         universal_newlines=True
     )
+
     output1 = process1.stdout
     output_json1 = json.loads(output1)
 
