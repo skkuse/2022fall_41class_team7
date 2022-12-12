@@ -146,31 +146,31 @@ function Nav({
           <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" size="xs" />
           <Text className="profile_text">{userName}</Text>
         </Box>
-        {!isTestEnded && (
-          <Input
-            className="deadline_input"
-            border="1px"
-            borderColor="whiteAlpha.200"
-            color="white"
-            width="176px"
-            height="32px"
-            fontSize="14px"
-            padding="6px 12px"
-            textAlign="center"
-            value={remainText}
-            readOnly
-          />
-        )}
-        <Button
-          className="button_test_end"
-          size="sm"
-          backgroundColor="red.500"
+        <Input
+          className="deadline_input"
+          border="1px"
+          borderColor="whiteAlpha.200"
           color="white"
-          onClick={endTest}
-          disabled={isTestEnded}
-        >
-          시험 종료
-        </Button>
+          width="176px"
+          height="32px"
+          fontSize="14px"
+          padding="6px 12px"
+          textAlign="center"
+          value={remainText}
+          readOnly
+        />
+        {!isTestEnded && (
+          <Button
+            className="button_test_end"
+            size="sm"
+            backgroundColor="red.500"
+            color="white"
+            onClick={endTest}
+            disabled={isTestEnded}
+          >
+            시험 종료
+          </Button>
+        )}
         <Box>
           <Image src={setting} alt="setting" />
         </Box>

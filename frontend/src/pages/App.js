@@ -10,7 +10,6 @@ import CodeEditor from "../components/CodeEditor";
 import Terminal from "../components/Terminial";
 import { useUserState } from "../utils/contextProvider";
 import SubmitResult from "../components/SubmitResult";
-import { epochToDate } from "../utils/dateUtil";
 import useToast from "../utils/toast";
 
 function App() {
