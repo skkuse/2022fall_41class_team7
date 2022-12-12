@@ -82,10 +82,7 @@ def grade(request: Request, file: TextIO):
 
     user_out, err, err_line_num = executor.run(file.name, tc_in, timeout)
 
-    print(user_out)
-    print(tc_in, tc_out)
-
-    is_passed = str(user_out.strip()) == str(tc_out.strip()) if user_out else False
+    is_passed = str(user_out) == str(tc_out.strip()) if user_out else False
 
     response_serializer = GradeResultSerializer(
         data={

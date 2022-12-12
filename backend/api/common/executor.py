@@ -27,7 +27,7 @@ def run(
         line_num, replaced_err = process_err(result.stderr)
         return None, replaced_err, line_num
     else:
-        return result.stdout, None, None
+        return str(result.stdout).strip(), None, None
 
 
 def process_err(stderr) -> (int, str):
