@@ -70,9 +70,7 @@ function Home() {
                 value={id}
                 onChange={(e) => setId(e.target.value)}
               />
-              {isErrorId && (
-                <FormErrorMessage>아이디를 입력하세요.</FormErrorMessage>
-              )}
+              {isErrorId && <FormErrorMessage>아이디를 입력하세요.</FormErrorMessage>}
             </FormControl>
             <FormControl height="100px" isInvalid={isErrorPassword}>
               <FormLabel>비밀번호</FormLabel>
@@ -83,9 +81,7 @@ function Home() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              {isErrorPassword && (
-                <FormErrorMessage>비밀번호를 입력하세요.</FormErrorMessage>
-              )}
+              {isErrorPassword && <FormErrorMessage>비밀번호를 입력하세요.</FormErrorMessage>}
             </FormControl>
           </Box>
           <Box className="btn-pan">
