@@ -20,7 +20,8 @@ def file_interceptor(remove_file=True):
             f = open(file_path, "w")
 
             try:
-                ret = view_func(request, f, *args, **kwargs)
+                kwargs["file"] = f
+                ret = view_func(request, *args, **kwargs)
             finally:
                 # close file if open
                 if not f.closed:

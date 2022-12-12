@@ -82,10 +82,7 @@ def grade(request: Request, file: TextIO):
 
     user_out, err, err_line_num = executor.run(file.name, tc_in, timeout)
 
-    print(user_out)
-    print(tc_in, tc_out)
-
-    is_passed = str(user_out.strip()) == str(tc_out.strip()) if user_out else False
+    is_passed = str(user_out) == str(tc_out.strip()) if user_out else False
 
     response_serializer = GradeResultSerializer(
         data={
@@ -167,8 +164,8 @@ def get_submission_by_id(request: Request, submission_id: int):
     )
 
     if (
-            submission.problem.lecture.deadline > timezone.now()
-            and enrollment.is_ended is False
+        submission.problem.lecture.deadline > timezone.now()
+        and enrollment.is_ended is False
     ):
         raise PermissionDenied("강의가 마감되지 않았습니다.")
 

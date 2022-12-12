@@ -27,7 +27,7 @@ def run(
         line_num, replaced_err = process_err(result.stderr)
         return None, replaced_err, line_num
     else:
-        return result.stdout, None, None
+        return str(result.stdout).strip(), None, None
 
 
 def process_err(stderr) -> (int, str):
@@ -36,8 +36,6 @@ def process_err(stderr) -> (int, str):
     for i in range(len(lines)):
         line = lines[i]
         if line.strip().startswith("File"):
-            # change file name to "main.py"
-            lines[i] = line.replace(line.split('"')[1], "<stdin>")
             # get error line number
             line_num = int(line.split(",")[1].strip().split()[1])
             break
