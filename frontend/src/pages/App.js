@@ -58,11 +58,12 @@ function App() {
     setSubmitLoading(1); // 1: 로딩 중, 2: 로딩 끝남
 
     const res = await axios.get(`submissions/${submissionId}`);
-    if (res.data.state < 3) {
-      getSubmitResult(submissionId);
-    } else {
-      setSubmitResult(res.data);
-    }
+    // if (res.data.state < 3) {
+    //   getSubmitResult(submissionId);
+    // } else {
+    //   setSubmitResult(res.data);
+    // }
+    setSubmitResult(res.data);
   };
 
   const getLastSumbitResult = async () => {
