@@ -62,10 +62,11 @@ def end_lecture(request: Request, lecture_id):
     )
 
     # 강의 마감 체크
-    if lecture.deadline < timezone.now() or enrollment.is_ended is True:
+    if enrollment.is_ended or lecture.deadline < timezone.now():
+        if not enrollment.is_ended:
+            enrollment.end()
         raise PermissionDenied("강의가 마감되었습니다.")
 
-    enrollment.is_ended = True
-    enrollment.save()
+    enrollment.end()
 
     return Response(status=200)

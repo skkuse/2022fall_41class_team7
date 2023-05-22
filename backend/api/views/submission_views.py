@@ -63,7 +63,9 @@ def grade(request: Request, file: TextIO):
     )
 
     # 강의 마감 체크
-    if problem.lecture.deadline < timezone.now() or enrollment.is_ended is True:
+    if enrollment.is_ended or problem.lecture.deadline < timezone.now():
+        if not enrollment.is_ended:
+            enrollment.end()
         raise PermissionDenied("강의가 마감되었습니다.")
 
     # testcase_num 검증
@@ -109,7 +111,6 @@ def submit(request: Request):
     code_serializer = CodeSerializer(data=request.data)
     code_serializer.is_valid(raise_exception=True)
     code = code_serializer.validated_data.get("code")
-    print(problem_id, code)
 
     # get problem & enrollment & submissions
     problem = get_object_or_404(Problem.objects.filter(id=problem_id))
@@ -120,14 +121,10 @@ def submit(request: Request):
     )
     submissions = Submission.objects.filter(problem=problem, user=request.user).all()
 
-    # 강의 마감기한 초과시 종료
-    if problem.lecture.deadline < timezone.now() and enrollment.is_ended is False:
-        enrollment.is_ended = True
-        enrollment.save()
-        raise PermissionDenied("강의가 마감되었습니다.")
-
     # 강의 마감 체크
-    if problem.lecture.deadline < timezone.now() or enrollment.is_ended is True:
+    if enrollment.is_ended or problem.lecture.deadline < timezone.now():
+        if not enrollment.is_ended:
+            enrollment.end()
         raise PermissionDenied("강의가 마감되었습니다.")
 
     # 제출 횟수 체크
@@ -140,9 +137,8 @@ def submit(request: Request):
     )
 
     # 제출 최대 횟수 충족시 종료
-    if len(submissions) + 1 == problem.lecture.submission_capacity:
-        enrollment.is_ended = True
-        enrollment.save()
+    if len(submissions) > problem.lecture.submission_capacity:
+        enrollment.end()
 
     # send grade signal
     grade_submission.delay(submission.id)
@@ -163,10 +159,7 @@ def get_submission_by_id(request: Request, submission_id: int):
         )
     )
 
-    if (
-        submission.problem.lecture.deadline > timezone.now()
-        and enrollment.is_ended is False
-    ):
+    if not enrollment.is_ended and submission.problem.lecture.deadline > timezone.now():
         raise PermissionDenied("강의가 마감되지 않았습니다.")
 
     if submission.user != request.user:

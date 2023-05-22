@@ -26,7 +26,9 @@ def storage(request: Request):
     )
 
     # 강의 마감 체크
-    if lecture.deadline < timezone.now() or enrollment.is_ended is True:
+    if enrollment.is_ended or lecture.deadline < timezone.now():
+        if not enrollment.is_ended:
+            enrollment.end()
         raise PermissionDenied("강의가 마감되었습니다.")
 
     # 저장소 번호 체크

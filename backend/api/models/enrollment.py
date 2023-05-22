@@ -13,6 +13,10 @@ class Enrollment(models.Model):
     )
     is_ended = models.BooleanField(default=False)
 
+    def end(self):
+        self.is_ended = True
+        self.save()
+
     class Meta:
         unique_together = ("user", "lecture")
 
